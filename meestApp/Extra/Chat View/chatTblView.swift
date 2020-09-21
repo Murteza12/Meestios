@@ -11,7 +11,7 @@ import UIKit
 
 class chatTblView: UITableView {
   
-    var toUser:ChatUser?
+    var toUser:ChatHeads?
     lazy var inputAccessory: msgSendView = {
         let rect = CGRect(x: 0,y: 0,width: UIScreen.main.bounds.width,height: 70)
         let inputAccessory = msgSendView(frame: rect)

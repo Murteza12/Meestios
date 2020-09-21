@@ -18,7 +18,7 @@ import PushKit
 class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDelegate, PKPushRegistryDelegate {
     
     var window: UIWindow?
-    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
+//    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
     let gcmMessageIDKey = "gcm.message_id"
     var socket:SocketIOClient!
     var myViewController: RootBaseVC?
@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
         let vc = storyboard.instantiateInitialViewController()
         APIManager.sharedInstance.getCurrentUser(vc: vc!) { (user) in
             if Token.sharedInstance.getToken() != "" {
-                self.socket = self.manager.defaultSocket
+                self.socket = APIManager.sharedInstance.getSocket()
                 self.addHandlers(userid: user.id, username: user.username)
                 self.socket.connect()
             }
@@ -133,7 +133,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
 
     }
     func addHandlers(userid:String,username:String) {
-        socket.on("connection") { data, ack in
+        
+        self.socket.emit("connection") //{ data, ack in
             self.socket.on("connected") { data, ack in
                 print(data)
                 let data = data as! [[String:Any]]
@@ -141,16 +142,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
                 print(msg)
             }
             
-            let new = ["userId":userid,"name":username]
-            self.socket.emitWithAck("createSession", new).timingOut(after: 20) {data in
-                print(data)
+            let payload = ["userId":userid,"name":username]
+//            self.socket.emit("createSession", payload)
+//            self.socket.on("session") { (dataa, ack) in
+//                print(dataa)
+//            }
+        socket.once(clientEvent: .connect) {data, ack in
+            self.socket.emit("createSession", payload)//.timingOut(after: 20) {data in
+//                print(data)
                 self.socket.on("session") { (dataa, ack) in
                     print(dataa)
                 }
-                return
-            }
-            return
-        }
+//                return
+//            }
+
+              }
+            //            return
+//        }
     }
     
     // MARK: - UISceneSession Lifecycle

@@ -85,9 +85,10 @@ internal struct MockMessage: MessageType {
     var createdAt, deletedAt, id, msg: String
     var status: Int
     var toUserID, updatedAt, userID: String
-    var sent:String
+    var sent:Bool
+    var senderData:[String:Any]
 
-    private init(kind: MessageKind, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent:String) {
+    private init(kind: MessageKind, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent:Bool,senderData:[String:Any]) {
         self.kind = kind
         self.user = user
         self.messageId = messageId
@@ -102,46 +103,47 @@ internal struct MockMessage: MessageType {
         self.updatedAt = updatedAt
         self.userID = userID
         self.sent = sent
+        self.senderData=senderData
     }
     
-    init(custom: Any?, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: String) {
-        self.init(kind: .custom(custom), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent)
+    init(custom: Any?, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any]) {
+        self.init(kind: .custom(custom), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent,senderData:senderData)
     }
 
-    init(text: String, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: String) {
-        self.init(kind: .text(text), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID, sent: sent)
+    init(text: String, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any]) {
+        self.init(kind: .text(text), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID, sent: sent,senderData:senderData)
     }
 
-    init(attributedText: NSAttributedString, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: String) {
-    self.init(kind: .attributedText(attributedText), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent)
+    init(attributedText: NSAttributedString, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any]) {
+    self.init(kind: .attributedText(attributedText), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent,senderData:senderData)
     }
 
-    init(image: UIImage, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: String) {
+    init(image: UIImage, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any]) {
         let mediaItem = ImageMediaItem(image: image)
-        self.init(kind: .photo(mediaItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent)
+        self.init(kind: .photo(mediaItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent,senderData:senderData)
     }
 
-    init(thumbnail: UIImage, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: String) {
+    init(thumbnail: UIImage, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any]) {
         let mediaItem = ImageMediaItem(image: thumbnail)
-        self.init(kind: .video(mediaItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent)
+        self.init(kind: .video(mediaItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent,senderData:senderData)
     }
 
-    init(location: CLLocation, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: String) {
+    init(location: CLLocation, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any]) {
         let locationItem = CoordinateItem(location: location)
-        self.init(kind: .location(locationItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: toUserID,sent: sent)
+        self.init(kind: .location(locationItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: toUserID,sent: sent,senderData:senderData)
     }
 
-    init(emoji: String, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: String) {
-        self.init(kind: .emoji(emoji), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent)
+    init(emoji: String, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any]) {
+        self.init(kind: .emoji(emoji), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent,senderData:senderData)
     }
 
-    init(audioURL: URL, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: String) {
+    init(audioURL: URL, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any]) {
         let audioItem = MockAudiotem(url: audioURL)
-        self.init(kind: .audio(audioItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID, sent:sent)
+        self.init(kind: .audio(audioItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID, sent:sent,senderData:senderData)
     }
 
-    init(contact: MockContactItem, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: String) {
-        self.init(kind: .contact(contact), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent)
+    init(contact: MockContactItem, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any]) {
+        self.init(kind: .contact(contact), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent,senderData:senderData)
     }
 }
 

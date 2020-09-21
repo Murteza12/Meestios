@@ -25,9 +25,8 @@ class mainChatVC: RootBaseVC {
     
     var userid = ""
     var count = 0
-    var toUser:ChatUser?
+    var toUser:ChatHeads?
     var messages = [MockMessage]()
-    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
     var socket:SocketIOClient!
     
     override func viewDidLoad() {
@@ -48,21 +47,20 @@ class mainChatVC: RootBaseVC {
         self.tableView.dataSource = self
         
         
-        self.socket = self.manager.defaultSocket
+        self.socket = APIManager.sharedInstance.getSocket()
         self.addHandler()
-        self.socket.connect()
         self.tableView.becomeFirstResponder()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             self.userid = user.id
-            let neww = ["pageSize":50,"userId":user.id,"toUserId":self.toUser?.id ?? "","pageNumber":1] as [String : Any]
+            let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
             self.socket.emitWithAck("get_history", neww).timingOut(after: 20) {data in
                 return
             }
         }
-        self.nameLbl.text = self.toUser?.username
+        self.nameLbl.text = (self.toUser?.firstName ?? "") + " " + (self.toUser?.lastName ?? "")
         self.img.kf.indicatorType = .activity
         self.img.kf.setImage(with: URL(string: self.toUser?.dp),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
             switch result {
@@ -103,15 +101,15 @@ class mainChatVC: RootBaseVC {
             let toUserId = data["toUserId"] as? String ?? ""
             let updatedAt = data["updatedAt"] as? String ?? ""
             let userId = data["userId"] as? String ?? ""
-            let sent = data["sent"] as? String ?? ""
-            if sent == "TRUE" {
+            let sent = data["sender"] as? Bool ?? false
+            if sent {
                 
                 ChatUserID = self.toUser?.id ?? ""
             } else {
                 ChatUserID = self.userid
                 
             }
-            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent)
+            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: [:])
             
             self.messages.append(temp)
             
@@ -121,10 +119,10 @@ class mainChatVC: RootBaseVC {
         self.socket.on("chat_history") { (dataa, ack) in
             self.messages.removeAll()
             print(dataa)
-            let data = dataa as! [[String:Any]]
-            let count = data[0]["count"] as? Int ?? 0
-            self.count = count
-            let rows = data[0]["rows"] as! [[String:Any]]
+//            let data = dataa as! [[String:Any]]
+//            let count = data[0]["count"] as? Int ?? 0
+//            self.count = count
+            let rows = dataa[0] as! [[String:Any]]
             for ii in rows {
                 var ChatUserID = ""
                 let ChatUserName = ""
@@ -137,14 +135,15 @@ class mainChatVC: RootBaseVC {
                 let toUserId = ii["toUserId"] as? String ?? ""
                 let updatedAt = ii["updatedAt"] as? String ?? ""
                 let userId = ii["userId"] as? String ?? ""
-                let sent = ii["sent"] as? String ?? ""
-                if sent == "TRUE" {
+                let sent = ii["sender"] as? Bool ?? false
+                let senderData = ii["senderData"] as? [String: Any] ?? [:]
+                if sent {
                     ChatUserID = self.userid
                     
                 } else {
                     ChatUserID = self.toUser?.id ?? ""
                 }
-                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent)
+                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: senderData)
                 
                 self.messages.append(temp)
             }
@@ -162,7 +161,7 @@ class mainChatVC: RootBaseVC {
     @IBAction func sendMsg(_ sender:UIButton) {
         let new = ["msg":self.msgTxtView.text ?? "","toUserId":self.toUser?.id ?? "","type":0,"userId":self.userid] as [String : Any]
         
-        self.messages.append(MockMessage.init(text: self.msgTxtView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.msgTxtView.text ?? "", status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: "TRUE"))
+        self.messages.append(MockMessage.init(text: self.msgTxtView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.msgTxtView.text ?? "", status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true,senderData: [:]))
         self.msgTxtView.text = ""
         
         self.socket.emitWithAck("send", new).timingOut(after: 20) {data in
@@ -194,7 +193,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         return self.messages.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if self.messages[indexPath.row].sent == "FALSE" {
+        if self.messages[indexPath.row].sent == false {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
@@ -203,10 +202,41 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.view1.backgroundColor = UIColor.init(hex: 0x3B5998)
             cell.txt1.textColor = UIColor.white
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
+//            cell.img.kf.indicatorType = .activity
+//            cell.img.kf.setImage(with: URL(string: ind.senderData["displayPicture"] as? String),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
+//                switch result {
+//                case .success(let value):
+//                    print("Task done for: \(value.source.url?.absoluteString ?? "")")
+//
+//                case .failure(let error):
+////                    print(ind.dp)
+//                    print("Job failed: \(error.localizedDescription)")
+//
+//                }
+//            }
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell2") as! msgReceiverCell
-            
+            let ind = self.messages[indexPath.row]
+            cell.view1.cornerRadius(radius: 13)
+            cell.txt1.text = ind.msg
+//            cell.sentimg.image = UIImage.init(named: "sent")
+            cell.view1.backgroundColor = UIColor.init(hex: 0x3B5998)
+            cell.txt1.textColor = UIColor.init(hex: 0x354052)
+            cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
+//            cell.img.kf.indicatorType = .activity
+//            let url = ind.senderData["displayPicture"] as? String
+//            cell.img.kf.setImage(with: URL(string: url ?? ""),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
+//                switch result {
+//                case .success(let value):
+//                    print("Task done for: \(value.source.url?.absoluteString ?? "")")
+//
+//                case .failure(let error):
+//                    print(ind.senderData["displayPicture"])
+//                    print("Job failed: \(error.localizedDescription)")
+//
+//                }
+//            }
             return cell
         }
     }

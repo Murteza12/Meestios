@@ -9,11 +9,14 @@
 import Foundation
 import Alamofire
 import RealmSwift
+import SocketIO
 
 class APIManager {
     
     static let sharedInstance = APIManager()
     let realm = try! Realm()
+    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
+    var socket:SocketIOClient!
     
     func addToken(token:String,completion:@escaping () -> Void) {
         let realm = try! Realm()
@@ -1176,6 +1179,11 @@ class APIManager {
         for i in postData {
             
         }
+    }
+    
+    func getSocket() -> SocketIOClient{
+        self.socket = self.manager.defaultSocket
+        return self.socket
     }
 }
 //vc:RootBaseVC,

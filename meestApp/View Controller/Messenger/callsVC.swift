@@ -14,10 +14,10 @@ import JitsiMeet
 class callsVC: RootBaseVC {
     
     @IBOutlet weak var tableView:UITableView!
-    var allUser = [ChatUser]()
+    var allUser = [ChatHeads]()
     let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
     var socket:SocketIOClient!
-    var senduser:ChatUser?
+    var senduser:ChatHeads?
     fileprivate var jitsiMeetView: JitsiMeetView?
     
     override func viewDidLoad() {
@@ -27,7 +27,7 @@ class callsVC: RootBaseVC {
         self.tableView.dataSource = self
         self.socket = self.manager.defaultSocket
         self.addHandler()
-        self.socket.connect()
+//        self.socket.connect()
         
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -41,10 +41,10 @@ class callsVC: RootBaseVC {
     }
     
     func getAll() {
-        APIManager.sharedInstance.getAllConversation(vc: self) { (all) in
-            self.allUser = all
-            self.tableView.reloadData()
-        }
+//        APIManager.sharedInstance.getAllConversation(vc: self) { (all) in
+//            self.allUser = all
+//            self.tableView.reloadData()
+//        }
     }
     func addHandler() {
         self.socket.on("message") { (dataa, ack) in

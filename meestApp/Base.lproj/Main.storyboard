@@ -6738,7 +6738,7 @@
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </imageView>
                                                     </subviews>
-                                                    <color key="backgroundColor" systemColor="separatorColor"/>
+                                                    <color key="backgroundColor" red="0.92549019607843142" green="0.96862745098039216" blue="0.99607843137254903" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstItem="qkd-Fn-nLW" firstAttribute="leading" secondItem="yuP-uh-gpR" secondAttribute="leading" id="EKW-Mb-jar"/>
                                                         <constraint firstItem="TWh-k1-IEa" firstAttribute="leading" secondItem="yuP-uh-gpR" secondAttribute="leading" constant="4" id="HCN-35-ALO"/>
@@ -7175,7 +7175,6 @@
                                                                         <constraint firstAttribute="height" constant="65" id="438-Cf-BAu"/>
                                                                         <constraint firstAttribute="width" constant="65" id="H3n-SW-GsX"/>
                                                                     </constraints>
-                                                                    <state key="normal" image="propic"/>
                                                                 </button>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Office Colleage" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="znL-k2-2Ji">
                                                                     <rect key="frame" x="8" y="142" width="150" height="10.5"/>
@@ -14238,6 +14237,14 @@ Nam a nisi eu arcu dictum mattis. Aenean varius justo a sollicitudin tincidunt. 
             <point key="canvasLocation" x="15078" y="724"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="0mI-Es-372">
+            <size key="intrinsicContentSize" width="-1" height="65"/>
+        </designable>
+        <designable name="w5q-bQ-5vo">
+            <size key="intrinsicContentSize" width="-1" height="65"/>
+        </designable>
+    </designables>
     <inferredMetricsTieBreakers>
         <segue reference="TcL-PG-Gm6"/>
         <segue reference="dCK-KW-u8Y"/>

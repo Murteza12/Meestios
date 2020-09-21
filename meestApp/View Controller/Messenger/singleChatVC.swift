@@ -34,7 +34,7 @@ class singleChatVC:MessagesViewController {
         configureMessageInputBar()
         self.socket = self.manager.defaultSocket
         self.addHandler()
-        self.socket.connect()
+//        self.socket.connect()
         NotificationCenter.default.addObserver(self, selector: #selector(sendMsg), name: NSNotification.Name.init("msgsend"), object: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -141,7 +141,7 @@ class singleChatVC:MessagesViewController {
         
         let new = ["msg":info["msg"] as! String ,"toUserId":self.toUser?.id ?? "","type":0,"userId":self.userid] as [String : Any]
         
-        self.messages.append(MockMessage.init(text: self.messageInputBar.inputTextView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.messageInputBar.inputTextView.text, status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: "TRUE"))
+        self.messages.append(MockMessage.init(text: self.messageInputBar.inputTextView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.messageInputBar.inputTextView.text, status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true, senderData: [ : ]))
         self.messageInputBar.inputTextView.text = ""
         self.messagesCollectionView.reloadData()
         self.socket.emitWithAck("send", new).timingOut(after: 20) {data in
@@ -176,15 +176,16 @@ class singleChatVC:MessagesViewController {
             let toUserId = data["toUserId"] as? String ?? ""
             let updatedAt = data["updatedAt"] as? String ?? ""
             let userId = data["userId"] as? String ?? ""
-            let sent = data["sent"] as? String ?? ""
-            if sent == "TRUE" {
+            let sent = data["sender"] as? Bool ?? false
+            let senderData = data["senderData"] as? [String:Any] ?? [:]
+            if sent {
                 
                 ChatUserID = self.toUser?.id ?? ""
             } else {
                 ChatUserID = self.userid
                 
             }
-            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent)
+            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent,senderData: senderData)
             
             self.messages.append(temp)
             
@@ -210,14 +211,15 @@ class singleChatVC:MessagesViewController {
                 let toUserId = ii["toUserId"] as? String ?? ""
                 let updatedAt = ii["updatedAt"] as? String ?? ""
                 let userId = ii["userId"] as? String ?? ""
-                let sent = ii["sent"] as? String ?? ""
-                if sent == "TRUE" {
+                let sent = ii["sender"] as? Bool ?? false
+                let senderData = ii["senderData"] as? [String:Any] ?? [:]
+                if sent {
                     ChatUserID = self.userid
                     
                 } else {
                     ChatUserID = self.toUser?.id ?? ""
                 }
-                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent)
+                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent,senderData: senderData)
                 
                 self.messages.append(temp)
             }

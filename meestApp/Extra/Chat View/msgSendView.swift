@@ -12,7 +12,7 @@ import SocketIO
 
 class msgSendView: UIView {
     
-    var toUser:ChatUser?
+    var toUser:ChatHeads?
     var userid = ""
     let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
     var socket:SocketIOClient!
@@ -79,7 +79,7 @@ extension msgSendView {
             
         }
         
-        self.socket.connect()
+//        self.socket.connect()
         let view = viewFromNibForClass()
         view.frame = bounds
         view.autoresizingMask = [
