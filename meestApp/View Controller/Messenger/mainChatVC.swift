@@ -11,6 +11,8 @@ import SocketIO
 import Kingfisher
 import MessageKit
 import IHKeyboardAvoiding
+import AVKit
+import AVFoundation
 
 class mainChatVC: RootBaseVC {
 
@@ -30,7 +32,7 @@ class mainChatVC: RootBaseVC {
     var messages = [MockMessage]()
     var socket:SocketIOClient!
 //    var attachmentButtonClicked : (()->())!
-    
+    var playerController : AVPlayerViewController!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -121,6 +123,8 @@ class mainChatVC: RootBaseVC {
             let datamsg = dataa as! [[String:Any]]
             let data = datamsg[0]["msg"] as! [String:Any]
             let attachment = data["attachment"] as? Int ?? 0
+            let attachmentType = data["attachmentType"] as? String ?? ""
+            let fileURL = data["fileURL"] as? String ?? ""
             let createdAt = data["createdAt"] as? String ?? ""
             let deletedAt = data["deletedAt"] as? String ?? ""
             let id = data["id"] as? String ?? ""
@@ -137,7 +141,7 @@ class mainChatVC: RootBaseVC {
                 ChatUserID = self.userid
                 
             }
-            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: [:])
+            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: [:], fileURL:fileURL, attachmentType: attachmentType)
             
             self.messages.append(temp)
             
@@ -152,6 +156,8 @@ class mainChatVC: RootBaseVC {
                 var ChatUserID = ""
                 let ChatUserName = ""
                 let attachment = ii["attachment"] as? Int ?? 0
+                let attachmentType = ii["attachmentType"] as? String ?? ""
+                let fileURL = ii["fileURL"] as? String ?? ""
                 let createdAt = ii["createdAt"] as? String ?? ""
                 let deletedAt = ii["deletedAt"] as? String ?? ""
                 let id = ii["id"] as? String ?? ""
@@ -168,7 +174,7 @@ class mainChatVC: RootBaseVC {
                 } else {
                     ChatUserID = self.toUser?.id ?? ""
                 }
-                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: senderData)
+                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: senderData, fileURL:fileURL, attachmentType: attachmentType )
                 
                 self.messages.append(temp)
             }
@@ -190,7 +196,7 @@ class mainChatVC: RootBaseVC {
                    "userId": self.userid ,
                    "attachment":false] as [String : Any]
         
-        self.messages.append(MockMessage.init(text: self.msgTxtView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.msgTxtView.text ?? "", status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true,senderData: [:]))
+        self.messages.append(MockMessage.init(text: self.msgTxtView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.msgTxtView.text ?? "", status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true,senderData: [:], fileURL:"", attachmentType: ""))
         self.msgTxtView.text = ""
         
         self.socket.emit("send", new)
@@ -229,6 +235,15 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.txt1.textColor = UIColor.white
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
+            if ind.attachment == 1{
+                if ind.attachmentType == "video"{
+                    if !ind.fileURL.isEmpty{
+                        if let url = URL(string: ind.fileURL) {
+                        cell.img.image = videoPreviewImage(url: url)
+                        }
+                    }
+                }
+            }
 //            cell.img.kf.indicatorType = .activity
 //            cell.img.kf.setImage(with: URL(string: ind.senderData["displayPicture"] as? String),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
 //                switch result {
@@ -251,6 +266,16 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.txt1.textColor = UIColor.init(hex: 0x354052)
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
+            if ind.attachment == 1{
+                if ind.attachmentType == "video"{
+                    if !ind.fileURL.isEmpty{
+                        if let url = URL(string: ind.fileURL) {
+                        cell.img.image = videoPreviewImage(url: url)
+                            //cell.img
+                        }
+                    }
+                }
+            }
 //            cell.img.kf.indicatorType = .activity
 //            let url = ind.senderData["displayPicture"] as? String
 //            cell.img.kf.setImage(with: URL(string: url ?? ""),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
@@ -269,6 +294,24 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
+    }
+    
+    func videoPreviewImage(url: URL) -> UIImage? {
+        let asset = AVURLAsset(url: url)
+        let generator = AVAssetImageGenerator(asset: asset)
+        generator.appliesPreferredTrackTransform = true
+        let timestamp = CMTime(seconds: 1, preferredTimescale: 60)
+
+        do {
+            let imageRef = try generator.copyCGImage(at: timestamp, actualTime: nil)
+            return UIImage(cgImage: imageRef)
+        }
+        catch let error as NSError
+        {
+            print("Image generation failed with error \(error)")
+            return nil
+        }
+        
     }
 }
 class msgSenderCell:UITableViewCell {
@@ -290,10 +333,60 @@ class msgReceiverCell:UITableViewCell {
     @IBOutlet weak var proImg:UIImageView!
 }
 
+extension mainChatVC : AVPlayerViewControllerDelegate {
+    func play(url1: String) {
+        
+//        let path = Bundle.main.path(forResource: "video", ofType: "mp4")!
+//
+//        let url = NSURL(fileURLWithPath: path)
+        guard let urlFromString = URL(string: url1) else { return }
+
+        let player = AVPlayer(url: urlFromString as URL)
+        
+        playerController = AVPlayerViewController()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didfinishPlaying(note:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
+        
+        playerController.player = player
+        
+        playerController.allowsPictureInPicturePlayback = true
+        
+        playerController.delegate = self
+        
+        playerController.player?.play()
+        
+        self.present(playerController, animated: true, completion : nil)
+        
+        
+    }
+    
+    @objc func didfinishPlaying(note : NSNotification)  {
+        
+        playerController.dismiss(animated: true, completion: nil)
+//        let alertView = UIAlertController(title: "Finished", message: "Video finished", preferredStyle: .alert)
+//        alertView.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+//        self.present(alertView, animated: true, completion: nil)
+    }
+    
+    
+    func playerViewController(_ playerViewController: AVPlayerViewController, restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void) {
+        
+        let currentviewController = navigationController?.visibleViewController
+        
+        if currentviewController != playerViewController{
+            
+            currentviewController?.present(playerViewController, animated: true, completion: nil)
+            
+        }
+        
+    }
+}
+
 extension mainChatVC{
     
     @objc func attachmentButtonClicked(){
-        openGallery()
+//        openGallery()
+        play(url1: "https://www.youtube.com/watch?v=Ot_XnQjhgj8")
     }
     
     func openGallery() {

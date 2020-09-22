@@ -641,7 +641,7 @@ class APIManager {
             if statusCode == 200 {
                 let data = responseData.value as! [String:Any]
                 let code = data["code"] as! Int
-                if code == 200 {
+                if code == 1 {
                     completion("success")
                 } else {
                     completion("failure")
@@ -733,15 +733,16 @@ class APIManager {
                     let postLikeComment = k["comment"] as? String ?? ""
                     let postLikecreatedAt = k["createdAt"] as? String ?? ""
                     let postLikeUpdatedAt = k["updatedAt"] as? String ?? ""
-                    
+//                    let postSubcommentID = k["subCommentId"] as? String ?? ""
                     //Post Like USER
                     let postLikeuser = k["user"] as! [String:Any]
                     let postlikeUserID = postLikeuser["id"] as? String ?? ""
                     let postlikeUserName = postLikeuser["username"] as? String ?? ""
                     let postlikeUserDP = postLikeuser["displayPicture"] as? String ?? ""
+//                    var subcommenttemp:SubComment = SubComment.init(id: postSubcommentID, comment: "", subCommentID: "", postID: "", userID: "", status: false, deletedAt: "", createdAt: "", updatedAt: "", user:  PostCommentUser.init(id: "", username: "", displayPicture: ""))
                     var subcommenttemp:SubComment = SubComment.init(id: "", comment: "", subCommentID: "", postID: "", userID: "", status: false, deletedAt: "", createdAt: "", updatedAt: "", user:  PostCommentUser.init(id: "", username: "", displayPicture: ""))
                     if let subcomment = k["subCommentData"] as? [String:Any] {
-                        
+
                         let subid = subcomment["id"] as? String ?? ""
                         let subcommentTxt = subcomment["comment"] as? String ?? ""
                         let subPostid = subcomment["postId"] as? String ?? ""
@@ -814,7 +815,7 @@ class APIManager {
             if statusCode == 200 {
                 let data = responseData.value as! [String:Any]
                 let code = data["code"] as! Int
-                if code == 200 {
+                if code == 1 {
                     completion("success")
                 } else {
                     completion("failure")

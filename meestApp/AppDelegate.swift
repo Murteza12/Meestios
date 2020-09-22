@@ -12,6 +12,7 @@ import Firebase
 import SocketIO
 import FirebaseMessaging
 import PushKit
+import AVFoundation
 
 @available(iOS 13.0, *)
 @UIApplicationMain
@@ -103,7 +104,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
                 application.registerForRemoteNotifications(matching: types)
         }
 
-
+        let audioSession = AVAudioSession.sharedInstance()
+                
+                do {
+                    try audioSession.setCategory(AVAudioSession.Category.playback)
+                } catch  {
+                    print("Audio session failed")
+                }
         //self.PushKitRegistration()
         
         return true
