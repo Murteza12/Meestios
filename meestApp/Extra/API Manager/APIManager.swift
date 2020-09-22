@@ -108,6 +108,9 @@ class APIManager {
                     let innerData = data["data"] as! [String:Any]
                     let message = innerData["message"] as? String ?? ""
                     completion(message)
+                }else {
+                    let errormsg = data["errorMessage"] as? String ?? ""
+                    completion(errormsg)
                 }
                 
             } else if statusCode == 0 {
@@ -154,17 +157,29 @@ class APIManager {
         let para = ["username": "+91" + username,"password":password]
         APICall.sharedInstance.alamofireCall(url: APIS.login, method: .post, para: para, header: [:], vc: vc) { (url, responseData, statusCode) in
             if statusCode == 200 {
-                let data = responseData.value as! [String:Any]
-                let innerData = data["data"] as! [String:Any]
-                let token = innerData["token"] as? String ?? ""
-                
-                self.clearDB {
-                    self.addToken(token: token) {
-                        self.getCurrentUser(vc: RootBaseVC()) { (user) in
-                            completion("success")
+                guard let data = responseData.value as? [String : Any] else {
+                    return
+                }
+                //                let data = responseData.value as? [String:Any] ?? [:]
+                if let code = data["code"] as? Bool{
+                    if code{
+                        let innerData = data["data"] as? [String:Any] ?? [:]
+                        let token = innerData["token"] as? String ?? ""
+                        
+                        self.clearDB {
+                            self.addToken(token: token) {
+                                self.getCurrentUser(vc: RootBaseVC()) { (user) in
+                                    completion("success")
+                                }
+                            }
+                        }
+                    }else{
+                        if let message = data["errorMessage"] as? String {
+                            completion(message)
                         }
                     }
                 }
+                
             } else if statusCode == 400 {
                 let data = responseData.value as! [String:Any]
                 let message = data["errorMessage"] as? String ?? ""
@@ -252,7 +267,7 @@ class APIManager {
         }
     }
     func uploadImage(vc:UIViewController,img:UIImage,completion:@escaping(String) -> Void) {
-       let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
         
         let imgData1 = img.jpegData(compressionQuality: 0.5)
         AF.upload(multipartFormData: { multipartFormData in
@@ -379,7 +394,7 @@ class APIManager {
                             }
                         }
                     }
-                                    
+                    
                     let tempUser = CurrentUser.init(id: id, likes: likes, email: email, firstName: firstName, lastName: lastName, mobile: mobile, dob: dob, status: status, username: username, gender: gender, dp: displayPicture, about: about, totalFollowers: totalFollowers, totalFollowings: totalFollowings, totalPosts: totalPosts)
                     completion(tempUser)
                 }
@@ -427,7 +442,7 @@ class APIManager {
                     let innerData = data["data"] as! [String:Any]
                     let rows = innerData["rows"] as! [[String:Any]]
                     for i in rows {
-                                       
+                        
                         let id = i["id"] as? String ?? ""
                         let caption = i["caption"] as? String ?? ""
                         let topicid = i["topicId"] as? String ?? ""
@@ -436,7 +451,7 @@ class APIManager {
                         let liked = i["liked"] as? Int ?? 0
                         let disliked = i["disliked"] as? Int ?? 0
                         let commentCounts = i["commentCounts"] as? Int ?? 0
-                    
+                        
                         //MARK:- Media
                         
                         var postElement = [PostElement]()
@@ -446,8 +461,8 @@ class APIManager {
                             let image = j["image"] as? Int ?? 0
                             postElement.append(.init(post: postt, image: image))
                         }
-                                       
-                                       
+                        
+                        
                         //MARK:- Likes
                         var postLike = [PostCommentElement]()
                         let postLikes = i["postLikes"] as! [[String:Any]]
@@ -469,8 +484,8 @@ class APIManager {
                             
                             var subcommenttemp:SubComment = SubComment.init(id: "", comment: "", subCommentID: "", postID: "", userID: "", status: false, deletedAt: "", createdAt: "", updatedAt: "", user:  PostCommentUser.init(id: "", username: "", displayPicture: ""))
                             if let subcomment = k["subCommentData"] as? [String:Any] {
-                                               
-                            let subid = subcomment["id"] as? String ?? ""
+                                
+                                let subid = subcomment["id"] as? String ?? ""
                                 let subcommentTxt = subcomment["comment"] as? String ?? ""
                                 let subPostid = subcomment["postId"] as? String ?? ""
                                 let subUserid = subcomment["userId"] as? String ?? ""
@@ -484,78 +499,78 @@ class APIManager {
                                 let temp = SubComment.init(id: subid, comment: subcommentTxt, subCommentID: "", postID: subPostid, userID: subUserid, status: substatus, deletedAt: "", createdAt: subcreatedAt, updatedAt: subupdatedAt, user: PostCommentUser.init(id: sub1id, username: sub1username, displayPicture: sub1displayPicture))
                                 subcommenttemp = temp
                             }
-                                           
+                            
                             postLike.append(PostCommentElement.init(id: postLikeid, comment: "", subCommentID: "", postID: postLikepostId, userID: postLikeuserId, status: postLikeStatus, deletedAt: "", createdAt: postLikecreatedAt, updatedAt: postLikeUpdatedAt, user: postLikeUser, subcomment: subcommenttemp))
+                        }
+                        
+                        //MARK:- Comment
+                        var postComment = [PostCommentElement]()
+                        let postComments = i["postComments"] as! [[String:Any]]
+                        for k in postComments {
+                            let postLikeid = k["id"] as? String ?? ""
+                            let postLikepostId = k["postId"] as? String ?? ""
+                            let postLikeuserId = k["userId"] as? String ?? ""
+                            let postLikeStatus = k["status"] as? Bool ?? true
+                            let postLikeComment = k["comment"] as? String ?? ""
+                            let postLikecreatedAt = k["createdAt"] as? String ?? ""
+                            let postLikeUpdatedAt = k["updatedAt"] as? String ?? ""
+                            
+                            //Post Like USER
+                            let postLikeuser = k["user"] as! [String:Any]
+                            let postlikeUserID = postLikeuser["id"] as? String ?? ""
+                            let postlikeUserName = postLikeuser["username"] as? String ?? ""
+                            let postlikeUserDP = postLikeuser["displayPicture"] as? String ?? ""
+                            let postLikeUser = PostCommentUser.init(id: postlikeUserID, username: postlikeUserName, displayPicture: postlikeUserDP)
+                            
+                            var subcommenttemp:SubComment = SubComment.init(id: "", comment: "", subCommentID: "", postID: "", userID: "", status: false, deletedAt: "", createdAt: "", updatedAt: "", user:  PostCommentUser.init(id: "", username: "", displayPicture: ""))
+                            if let subcomment = k["subCommentData"] as? [String:Any] {
+                                
+                                let subid = subcomment["id"] as? String ?? ""
+                                let subcommentTxt = subcomment["comment"] as? String ?? ""
+                                let subPostid = subcomment["postId"] as? String ?? ""
+                                let subUserid = subcomment["userId"] as? String ?? ""
+                                let substatus = subcomment["status"] as? Bool ?? false
+                                let subcreatedAt = subcomment["createdAt"] as? String ?? ""
+                                let subupdatedAt = subcomment["updatedAt"] as? String ?? ""
+                                let subuser = subcomment["user"] as! [String:Any]
+                                let sub1displayPicture = subuser["displayPicture"] as? String ?? ""
+                                let sub1id = subuser["id"] as? String ?? ""
+                                let sub1username = subuser["username"] as? String ?? ""
+                                let temp = SubComment.init(id: subid, comment: subcommentTxt, subCommentID: "", postID: subPostid, userID: subUserid, status: substatus, deletedAt: "", createdAt: subcreatedAt, updatedAt: subupdatedAt, user: PostCommentUser.init(id: sub1id, username: sub1username, displayPicture: sub1displayPicture))
+                                subcommenttemp = temp
                             }
-                                       
-                                       //MARK:- Comment
-                                       var postComment = [PostCommentElement]()
-                                       let postComments = i["postComments"] as! [[String:Any]]
-                                       for k in postComments {
-                                           let postLikeid = k["id"] as? String ?? ""
-                                           let postLikepostId = k["postId"] as? String ?? ""
-                                           let postLikeuserId = k["userId"] as? String ?? ""
-                                           let postLikeStatus = k["status"] as? Bool ?? true
-                                           let postLikeComment = k["comment"] as? String ?? ""
-                                           let postLikecreatedAt = k["createdAt"] as? String ?? ""
-                                           let postLikeUpdatedAt = k["updatedAt"] as? String ?? ""
-                                           
-                                           //Post Like USER
-                                           let postLikeuser = k["user"] as! [String:Any]
-                                           let postlikeUserID = postLikeuser["id"] as? String ?? ""
-                                           let postlikeUserName = postLikeuser["username"] as? String ?? ""
-                                           let postlikeUserDP = postLikeuser["displayPicture"] as? String ?? ""
-                                           let postLikeUser = PostCommentUser.init(id: postlikeUserID, username: postlikeUserName, displayPicture: postlikeUserDP)
-                                           
-                                           var subcommenttemp:SubComment = SubComment.init(id: "", comment: "", subCommentID: "", postID: "", userID: "", status: false, deletedAt: "", createdAt: "", updatedAt: "", user:  PostCommentUser.init(id: "", username: "", displayPicture: ""))
-                                           if let subcomment = k["subCommentData"] as? [String:Any] {
-                                               
-                                               let subid = subcomment["id"] as? String ?? ""
-                                               let subcommentTxt = subcomment["comment"] as? String ?? ""
-                                               let subPostid = subcomment["postId"] as? String ?? ""
-                                               let subUserid = subcomment["userId"] as? String ?? ""
-                                               let substatus = subcomment["status"] as? Bool ?? false
-                                               let subcreatedAt = subcomment["createdAt"] as? String ?? ""
-                                               let subupdatedAt = subcomment["updatedAt"] as? String ?? ""
-                                               let subuser = subcomment["user"] as! [String:Any]
-                                               let sub1displayPicture = subuser["displayPicture"] as? String ?? ""
-                                               let sub1id = subuser["id"] as? String ?? ""
-                                               let sub1username = subuser["username"] as? String ?? ""
-                                               let temp = SubComment.init(id: subid, comment: subcommentTxt, subCommentID: "", postID: subPostid, userID: subUserid, status: substatus, deletedAt: "", createdAt: subcreatedAt, updatedAt: subupdatedAt, user: PostCommentUser.init(id: sub1id, username: sub1username, displayPicture: sub1displayPicture))
-                                               subcommenttemp = temp
-                                           }
-                                           
-                                           postComment.append(PostCommentElement.init(id: postLikeid, comment: postLikeComment, subCommentID: "", postID: postLikepostId, userID: postLikeuserId, status: postLikeStatus, deletedAt: "", createdAt: postLikecreatedAt, updatedAt: postLikeUpdatedAt, user: postLikeUser, subcomment: subcommenttemp))
-                                       }
-                                       
-                                       //MARK:- Post Topic
-                                       let postTopics = i["topic"] as? [String:Any] ?? [:]
-                                       let topicID = postTopics["id"] as? String ?? ""
-                                       let topicName = postTopics["topic"] as? String ?? ""
-                                       let topicStatus = postTopics["status"] as? Bool ?? true
-                                       
-                                       let postTopic = Topic.init(id: topicID, topic: topicName, status: topicStatus, deletedAt: "", createdAt: "", updatedAt: "")
-                                       
-                                       
-                                       //MARK:- Post User
-                                       let postUser = i["user"] as! [String:Any]
-                                       let userID = postUser["id"] as? String ?? ""
-                                       let fname = postUser["topic"] as? String ?? ""
-                                       let lname = postUser["status"] as? String ?? ""
-                                       let dob = postUser["dob"] as? String ?? ""
-                                       let email = postUser["email"] as? String ?? ""
-                                       let username = postUser["username"] as? String ?? ""
-                                       let displayPicture = postUser["displayPicture"] as? String ?? ""
-                                       let mobile = postUser["mobile"] as? Int ?? 0
-                                       let gender = postUser["gender"] as? String ?? ""
-                                       
-                                       let postUserObj = PostUser.init(id: userID, firstName: fname, dob: dob, lastName: lname, email: email, username: username, displayPicture: displayPicture, mobile: mobile, gender: gender, gToken: "", fcmToken: "", fbToken: "", likes: 0, status: true, deletedAt: "", createdAt: "", updatedAt: "")
-                                       
-                                       let location = Location.init(type: "", coordinates: [0.0,0.0])
-                                       let temp = Post.init(id: id, posts: postElement, caption: caption, hashTags: [""], location: location, topicID: topicid, userID: userId, postLikes: postLike, postComments: postComment, topic: postTopic, user: postUserObj, createdAt: createdAt,liked: liked,disliked: disliked,commentCounts:commentCounts)
-                                       
-                                       
-                    all.append(temp)
+                            
+                            postComment.append(PostCommentElement.init(id: postLikeid, comment: postLikeComment, subCommentID: "", postID: postLikepostId, userID: postLikeuserId, status: postLikeStatus, deletedAt: "", createdAt: postLikecreatedAt, updatedAt: postLikeUpdatedAt, user: postLikeUser, subcomment: subcommenttemp))
+                        }
+                        
+                        //MARK:- Post Topic
+                        let postTopics = i["topic"] as? [String:Any] ?? [:]
+                        let topicID = postTopics["id"] as? String ?? ""
+                        let topicName = postTopics["topic"] as? String ?? ""
+                        let topicStatus = postTopics["status"] as? Bool ?? true
+                        
+                        let postTopic = Topic.init(id: topicID, topic: topicName, status: topicStatus, deletedAt: "", createdAt: "", updatedAt: "")
+                        
+                        
+                        //MARK:- Post User
+                        let postUser = i["user"] as! [String:Any]
+                        let userID = postUser["id"] as? String ?? ""
+                        let fname = postUser["topic"] as? String ?? ""
+                        let lname = postUser["status"] as? String ?? ""
+                        let dob = postUser["dob"] as? String ?? ""
+                        let email = postUser["email"] as? String ?? ""
+                        let username = postUser["username"] as? String ?? ""
+                        let displayPicture = postUser["displayPicture"] as? String ?? ""
+                        let mobile = postUser["mobile"] as? Int ?? 0
+                        let gender = postUser["gender"] as? String ?? ""
+                        
+                        let postUserObj = PostUser.init(id: userID, firstName: fname, dob: dob, lastName: lname, email: email, username: username, displayPicture: displayPicture, mobile: mobile, gender: gender, gToken: "", fcmToken: "", fbToken: "", likes: 0, status: true, deletedAt: "", createdAt: "", updatedAt: "")
+                        
+                        let location = Location.init(type: "", coordinates: [0.0,0.0])
+                        let temp = Post.init(id: id, posts: postElement, caption: caption, hashTags: [""], location: location, topicID: topicid, userID: userId, postLikes: postLike, postComments: postComment, topic: postTopic, user: postUserObj, createdAt: createdAt,liked: liked,disliked: disliked,commentCounts:commentCounts)
+                        
+                        
+                        all.append(temp)
                     }
                     completion(all)
                 }
@@ -879,8 +894,8 @@ class APIManager {
                                 let image = j["image"] as? Int ?? 0
                                 postElement.append(.init(post: postt, image: image))
                             }
-                                               
-                                               
+                            
+                            
                             //MARK:- Likes
                             var postLike = [PostCommentElement]()
                             let postLikes = i["postLikes"] as! [[String:Any]]
@@ -902,8 +917,8 @@ class APIManager {
                                 
                                 var subcommenttemp:SubComment = SubComment.init(id: "", comment: "", subCommentID: "", postID: "", userID: "", status: false, deletedAt: "", createdAt: "", updatedAt: "", user:  PostCommentUser.init(id: "", username: "", displayPicture: ""))
                                 if let subcomment = k["subCommentData"] as? [String:Any] {
-                                                   
-                                let subid = subcomment["id"] as? String ?? ""
+                                    
+                                    let subid = subcomment["id"] as? String ?? ""
                                     let subcommentTxt = subcomment["comment"] as? String ?? ""
                                     let subPostid = subcomment["postId"] as? String ?? ""
                                     let subUserid = subcomment["userId"] as? String ?? ""
@@ -917,52 +932,52 @@ class APIManager {
                                     let temp = SubComment.init(id: subid, comment: subcommentTxt, subCommentID: "", postID: subPostid, userID: subUserid, status: substatus, deletedAt: "", createdAt: subcreatedAt, updatedAt: subupdatedAt, user: PostCommentUser.init(id: sub1id, username: sub1username, displayPicture: sub1displayPicture))
                                     subcommenttemp = temp
                                 }
-                                               
+                                
                                 postLike.append(PostCommentElement.init(id: postLikeid, comment: "", subCommentID: "", postID: postLikepostId, userID: postLikeuserId, status: postLikeStatus, deletedAt: "", createdAt: postLikecreatedAt, updatedAt: postLikeUpdatedAt, user: postLikeUser, subcomment: subcommenttemp))
-                                }
-                                               
+                            }
+                            
                             //MARK:- Comment
                             var postComment = [PostCommentElement]()
                             let postComments = i["postComments"] as! [[String:Any]]
                             
                             for k in postComments {
-                            let postLikeid = k["id"] as? String ?? ""
-                            let postLikepostId = k["postId"] as? String ?? ""
-                            let postLikeuserId = k["userId"] as? String ?? ""
-                            let postLikeStatus = k["status"] as? Bool ?? true
-                            let postLikeComment = k["comment"] as? String ?? ""
-                            let postLikecreatedAt = k["createdAt"] as? String ?? ""
-                            let postLikeUpdatedAt = k["updatedAt"] as? String ?? ""
-                            
-                            //Post Like USER
-                            let postLikeuser = k["user"] as! [String:Any]
-                            let postlikeUserID = postLikeuser["id"] as? String ?? ""
-                            let postlikeUserName = postLikeuser["username"] as? String ?? ""
-                            let postlikeUserDP = postLikeuser["displayPicture"] as? String ?? ""
-                            let postLikeUser = PostCommentUser.init(id: postlikeUserID, username: postlikeUserName, displayPicture: postlikeUserDP)
-                                    
-                            var subcommenttemp:SubComment = SubComment.init(id: "", comment: "", subCommentID: "", postID: "", userID: "", status: false, deletedAt: "", createdAt: "", updatedAt: "", user:  PostCommentUser.init(id: "", username: "", displayPicture: ""))
-                                    
-                            if let subcomment = k["subCommentData"] as? [String:Any] {
+                                let postLikeid = k["id"] as? String ?? ""
+                                let postLikepostId = k["postId"] as? String ?? ""
+                                let postLikeuserId = k["userId"] as? String ?? ""
+                                let postLikeStatus = k["status"] as? Bool ?? true
+                                let postLikeComment = k["comment"] as? String ?? ""
+                                let postLikecreatedAt = k["createdAt"] as? String ?? ""
+                                let postLikeUpdatedAt = k["updatedAt"] as? String ?? ""
                                 
-                                let subid = subcomment["id"] as? String ?? ""
-                                let subcommentTxt = subcomment["comment"] as? String ?? ""
-                                let subPostid = subcomment["postId"] as? String ?? ""
-                                let subUserid = subcomment["userId"] as? String ?? ""
-                                let substatus = subcomment["status"] as? Bool ?? false
-                                let subcreatedAt = subcomment["createdAt"] as? String ?? ""
-                                let subupdatedAt = subcomment["updatedAt"] as? String ?? ""
-                                let subuser = subcomment["user"] as! [String:Any]
-                                let sub1displayPicture = subuser["displayPicture"] as? String ?? ""
-                                let sub1id = subuser["id"] as? String ?? ""
-                                let sub1username = subuser["username"] as? String ?? ""
-                                let temp = SubComment.init(id: subid, comment: subcommentTxt, subCommentID: "", postID: subPostid, userID: subUserid, status: substatus, deletedAt: "", createdAt: subcreatedAt, updatedAt: subupdatedAt, user: PostCommentUser.init(id: sub1id, username: sub1username, displayPicture: sub1displayPicture))
-                                subcommenttemp = temp
+                                //Post Like USER
+                                let postLikeuser = k["user"] as! [String:Any]
+                                let postlikeUserID = postLikeuser["id"] as? String ?? ""
+                                let postlikeUserName = postLikeuser["username"] as? String ?? ""
+                                let postlikeUserDP = postLikeuser["displayPicture"] as? String ?? ""
+                                let postLikeUser = PostCommentUser.init(id: postlikeUserID, username: postlikeUserName, displayPicture: postlikeUserDP)
+                                
+                                var subcommenttemp:SubComment = SubComment.init(id: "", comment: "", subCommentID: "", postID: "", userID: "", status: false, deletedAt: "", createdAt: "", updatedAt: "", user:  PostCommentUser.init(id: "", username: "", displayPicture: ""))
+                                
+                                if let subcomment = k["subCommentData"] as? [String:Any] {
+                                    
+                                    let subid = subcomment["id"] as? String ?? ""
+                                    let subcommentTxt = subcomment["comment"] as? String ?? ""
+                                    let subPostid = subcomment["postId"] as? String ?? ""
+                                    let subUserid = subcomment["userId"] as? String ?? ""
+                                    let substatus = subcomment["status"] as? Bool ?? false
+                                    let subcreatedAt = subcomment["createdAt"] as? String ?? ""
+                                    let subupdatedAt = subcomment["updatedAt"] as? String ?? ""
+                                    let subuser = subcomment["user"] as! [String:Any]
+                                    let sub1displayPicture = subuser["displayPicture"] as? String ?? ""
+                                    let sub1id = subuser["id"] as? String ?? ""
+                                    let sub1username = subuser["username"] as? String ?? ""
+                                    let temp = SubComment.init(id: subid, comment: subcommentTxt, subCommentID: "", postID: subPostid, userID: subUserid, status: substatus, deletedAt: "", createdAt: subcreatedAt, updatedAt: subupdatedAt, user: PostCommentUser.init(id: sub1id, username: sub1username, displayPicture: sub1displayPicture))
+                                    subcommenttemp = temp
+                                }
+                                
+                                postComment.append(PostCommentElement.init(id: postLikeid, comment: postLikeComment, subCommentID: "", postID: postLikepostId, userID: postLikeuserId, status: postLikeStatus, deletedAt: "", createdAt: postLikecreatedAt, updatedAt: postLikeUpdatedAt, user: postLikeUser, subcomment: subcommenttemp))
                             }
-                                                   
-                            postComment.append(PostCommentElement.init(id: postLikeid, comment: postLikeComment, subCommentID: "", postID: postLikepostId, userID: postLikeuserId, status: postLikeStatus, deletedAt: "", createdAt: postLikecreatedAt, updatedAt: postLikeUpdatedAt, user: postLikeUser, subcomment: subcommenttemp))
-                            }
-                                       
+                            
                             var topicPost:Topic = Topic.init(id: "", topic: "", status: false, deletedAt: "", createdAt: "", updatedAt: "")
                             //MARK:- Post Topic
                             if let postTopics = i["topic"] as? [String:Any] {
@@ -974,22 +989,22 @@ class APIManager {
                                 topicPost = postTopic
                             }
                             
-                                    
-                                    
+                            
+                            
                             //MARK:- Post User
                             var postUserr:PostUser = PostUser.init(id: "", firstName: "", dob: "", lastName: "", email: "", username: "", displayPicture: "", mobile: 1, gender: "", gToken: "", fcmToken: "", fbToken: "", likes: 1, status: false, deletedAt: "", createdAt: "", updatedAt: "")
                             if let postUser = i["user"] as? [String:Any] {
-                                 let userID = postUser["id"] as? String ?? ""
-                                 let fname = postUser["topic"] as? String ?? ""
-                                 let lname = postUser["status"] as? String ?? ""
-                                 let dob = postUser["dob"] as? String ?? ""
-                                 let email = postUser["email"] as? String ?? ""
-                                 let username = postUser["username"] as? String ?? ""
-                                 let displayPicture = postUser["displayPicture"] as? String ?? ""
-                                 let mobile = postUser["mobile"] as? Int ?? 0
-                                 let gender = postUser["gender"] as? String ?? ""
+                                let userID = postUser["id"] as? String ?? ""
+                                let fname = postUser["topic"] as? String ?? ""
+                                let lname = postUser["status"] as? String ?? ""
+                                let dob = postUser["dob"] as? String ?? ""
+                                let email = postUser["email"] as? String ?? ""
+                                let username = postUser["username"] as? String ?? ""
+                                let displayPicture = postUser["displayPicture"] as? String ?? ""
+                                let mobile = postUser["mobile"] as? Int ?? 0
+                                let gender = postUser["gender"] as? String ?? ""
                                 
-                                 let postUserObj = PostUser.init(id: userID, firstName: fname, dob: dob, lastName: lname, email: email, username: username, displayPicture: displayPicture, mobile: mobile, gender: gender, gToken: "", fcmToken: "", fbToken: "", likes: 0, status: true, deletedAt: "", createdAt: "", updatedAt: "")
+                                let postUserObj = PostUser.init(id: userID, firstName: fname, dob: dob, lastName: lname, email: email, username: username, displayPicture: displayPicture, mobile: mobile, gender: gender, gToken: "", fcmToken: "", fbToken: "", likes: 0, status: true, deletedAt: "", createdAt: "", updatedAt: "")
                                 
                                 postUserr = postUserObj
                             }
@@ -1000,8 +1015,8 @@ class APIManager {
                             let location = Location.init(type: "", coordinates: [0.0,0.0])
                             let temp = Post.init(id: id, posts: postElement, caption: caption, hashTags: [""], location: location, topicID: topicid, userID: userId, postLikes: postLike, postComments: postComment, topic: topicPost, user: postUserr, createdAt: createdAt,liked: liked,disliked: disliked,commentCounts:commentCounts)
                             
-                                               
-                                               
+                            
+                            
                             allPost.append(temp)
                         }
                     }
@@ -1189,12 +1204,12 @@ class APIManager {
 //vc:RootBaseVC,
 /*
  if sc == 200 {
-     let data = res.value as! [String:Any]
-     let code = data["code"] as! Int
-     if code == 1 {
-         
-     } else {
-         
-     }
+ let data = res.value as! [String:Any]
+ let code = data["code"] as! Int
+ if code == 1 {
+ 
+ } else {
+ 
+ }
  }
  */
