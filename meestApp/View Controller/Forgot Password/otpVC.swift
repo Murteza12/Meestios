@@ -26,8 +26,6 @@ class otpVC: RootBaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
-        self.continueBtn.applyGradient(with:  [UIColor(red: 0.498, green: 0.106, blue: 0.725, alpha: 1),UIColor(red: 0.976, green: 0.247, blue: 0.31, alpha: 1),UIColor(red: 0.976, green: 0.471, blue: 0.153, alpha: 1)], gradient: .horizontal)
         self.continueBtn.cornerRadius(radius: 10)
         
         self.sendBtn.cornerRadius(radius: 10)
@@ -69,6 +67,11 @@ class otpVC: RootBaseVC {
         self.errorLbl.isHidden = true
         self.errorLbl.textColor = UIColor(red: 0.954, green: 0.086, blue: 0.16, alpha: 1)
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.continueBtn.applyGradient(with:  [UIColor(red: 0.498, green: 0.106, blue: 0.725, alpha: 1),UIColor(red: 0.976, green: 0.247, blue: 0.31, alpha: 1),UIColor(red: 0.976, green: 0.471, blue: 0.153, alpha: 1)], gradient: .horizontal)
+    }
     @IBAction func submitBtn(_ sender:UIButton) {
         guard let mobile = UserDefaults.standard.string(forKey: "mobile") else { return }
         self.loadAnimation()
@@ -103,7 +106,7 @@ class otpVC: RootBaseVC {
 
     @IBAction func resentBtn(_ sender:UIButton) {
         guard let mobile = UserDefaults.standard.string(forKey: "mobile") else { return }
-        APIManager.sharedInstance.verifyEmail(vc: self, email: "+91" + mobile) { (str) in
+        /*APIManager.sharedInstance.verifyEmail(vc: self, email: "+91" + mobile) { (str) in
             if str == "Otp sent" {
                 self.countdownLabel.font = UIFont.systemFont(ofSize: 11)
                 self.countdownLabel.setCountDownTime(minutes: 59)
@@ -115,7 +118,21 @@ class otpVC: RootBaseVC {
             } else if str == "Mobile does not exist" {
                 
             }
-        }
+        }*/
+        
+        APIManager.sharedInstance.forgotpassword(vc: self, email: "+91" + mobile) { (str) in
+            if str == "Otp sent" {
+                self.countdownLabel.font = UIFont.systemFont(ofSize: 11)
+                self.countdownLabel.setCountDownTime(minutes: 59)
+                self.countdownLabel.timeFormat = "ss"
+                self.countdownLabel.countdownAttributedText = CountdownAttributedText(text: "code expires in HERE Seconds", replacement: "HERE")
+                self.countdownLabel.start()
+                self.countdownLabel.textAlignment = .center
+                self.countdownLabel.delegate = self
+                self.errorLbl.isHidden = true
+            } else if str == "Mobile does not exist" {
+                
+            }        }
     }
 }
 extension otpVC:LTMorphingLabelDelegate {

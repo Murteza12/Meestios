@@ -71,6 +71,8 @@ class APIManager {
                 let innerData = data["data"] as! [String:Any]
                 let message = innerData["message"] as? String ?? ""
                 completion(message)
+            }else if statusCode == 400 {
+                
             }
         }
     }
@@ -147,10 +149,25 @@ class APIManager {
         APICall.sharedInstance.alamofireCall(url: APIS.verifyOTP, method: .post, para: para, header: [:], vc: vc) { (url, responseData, statusCode) in
             if statusCode == 200 {
                 let data = responseData.value as! [String:Any]
-                let innerData = data["data"] as! [String:Any]
-                let message = innerData["message"] as? String ?? ""
-                completion(message)
+                let code = data["code"] as! Int
+                if code == 1 {
+                    let innerData = data["data"] as! [String:Any]
+                    let message = innerData["message"] as? String ?? ""
+                    completion(message)
+                }else {
+                    if let errormsg = data["errorMessage"] as? [String:Any] {
+                        if let message = errormsg["message"] as? String {
+                            completion(message)
+                        }
+                    }
+                }
+                
+            } else if statusCode == 0 {
+                let data = responseData.value as! [String:Any]
+                let errormsg = data["errorMessage"] as? String ?? ""
+                completion(errormsg)
             }
+
         }
     }
     func login(vc:RootBaseVC,username:String,password:String,completion:@escaping(String) -> Void) {
@@ -411,9 +428,9 @@ class APIManager {
         APICall.sharedInstance.alamofireCall(url: APIS.landing, method: .post, para: "", header: header, vc: vc) { (url, responseData, statusCode) in
             var landing = [Landing]()
             if statusCode == 200 {
-                let data = responseData.value as! [String:Any]
-                let innerData = data["data"] as! [String:Any]
-                let rows = innerData["rows"] as! [[String:Any]]
+                guard let data = responseData.value as? [String:Any] else { return }
+                guard let innerData = data["data"] as? [String:Any] else {return}
+                if let rows = innerData["rows"] as? [[String:Any]]{
                 for i in rows {
                     let id = i["id"] as? String ?? ""
                     let url = i["url"] as? String ?? ""
@@ -426,6 +443,7 @@ class APIManager {
                         landing.append(temp)
                     }
                 }
+            }
                 completion(landing)
             }
         }
