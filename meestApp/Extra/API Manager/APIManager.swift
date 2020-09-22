@@ -440,7 +440,7 @@ class APIManager {
                         //MARK:- Media
                         
                         var postElement = [PostElement]()
-                        let posts = i["posts"] as! [[String:Any]]
+                        let posts = i["posts"] as? [[String:Any]] ?? [[:]]
                         for j in posts {
                             let postt = j["post"] as? String ?? ""
                             let image = j["image"] as? Int ?? 0
@@ -529,7 +529,7 @@ class APIManager {
                                        }
                                        
                                        //MARK:- Post Topic
-                                       let postTopics = i["topic"] as! [String:Any]
+                                       let postTopics = i["topic"] as? [String:Any] ?? [:]
                                        let topicID = postTopics["id"] as? String ?? ""
                                        let topicName = postTopics["topic"] as? String ?? ""
                                        let topicStatus = postTopics["status"] as? Bool ?? true

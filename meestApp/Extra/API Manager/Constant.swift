@@ -64,3 +64,5 @@ struct APPFont {
     static let extralight = "NunitoSans-ExtraLight"
     static let semibold = "NunitoSans-SemiBold"
 }
+
+var isSender: Bool = false

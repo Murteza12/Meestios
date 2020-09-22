@@ -22,12 +22,14 @@ class mainChatVC: RootBaseVC {
     @IBOutlet weak var img:UIImageView!
     @IBOutlet weak var msgTxtView:UITextView!
     @IBOutlet weak var tableView:chatTblView!
+    @IBOutlet var typingLabel: UILabel!
     
     var userid = ""
     var count = 0
     var toUser:ChatHeads?
     var messages = [MockMessage]()
     var socket:SocketIOClient!
+//    var attachmentButtonClicked : (()->())!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,11 +39,9 @@ class mainChatVC: RootBaseVC {
      //   self.sendBtn.cornerRadius(radius: self.sendBtn.frame.height / 2)
         self.img.cornerRadius(radius: self.img.frame.height / 2)
         
-        
      //   self.msgTxtView.textColor = UIColor.gray
      //   self.msgTxtView.text = "Type your message"
     //    self.msgTxtView.delegate = self
-        
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -50,9 +50,15 @@ class mainChatVC: RootBaseVC {
         self.socket = APIManager.sharedInstance.getSocket()
         self.addHandler()
         self.tableView.becomeFirstResponder()
+//        tableView.attachmentButtonClicked = {
+//            print("Attachment Button clicked")
+//        }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(attachmentButtonClicked), name: Notification.Name.init(rawValue: "attachmentButtonClicked"), object: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.typingLabel.text = ""
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             self.userid = user.id
             let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
@@ -84,8 +90,30 @@ class mainChatVC: RootBaseVC {
         self.view.endEditing(true)
         
     }
+    
     func addHandler() {
         
+        self.socket.on("friend_typing") { data, ack in
+            print(data)
+            let chatHeadID = data[0] as! [String:Any]
+            let chatID = chatHeadID["chatHeadId"] as? String ?? ""
+            let userID = chatHeadID["userId"] as? String ?? ""
+            if self.toUser?.chatHeadId == chatID && self.userid != userID{
+                self.typingLabel.text = "typing..."
+            }else{
+                self.typingLabel.text = ""
+            }
+        }
+        
+        self.socket.on("sent") { data, ack in
+            print(data)
+            APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
+                self.userid = user.id
+                let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
+                self.socket.emit("get_history", neww)
+            }
+            
+        }
         self.socket.on("message") { (dataa, ack) in
             print(dataa)
             var ChatUserID = ""
@@ -119,9 +147,6 @@ class mainChatVC: RootBaseVC {
         self.socket.on("chat_history") { (dataa, ack) in
             self.messages.removeAll()
             print(dataa)
-//            let data = dataa as! [[String:Any]]
-//            let count = data[0]["count"] as? Int ?? 0
-//            self.count = count
             let rows = dataa[0] as! [[String:Any]]
             for ii in rows {
                 var ChatUserID = ""
@@ -159,15 +184,16 @@ class mainChatVC: RootBaseVC {
         return String(data: data, encoding: .nonLossyASCII)
     }
     @IBAction func sendMsg(_ sender:UIButton) {
-        let new = ["msg":self.msgTxtView.text ?? "","toUserId":self.toUser?.id ?? "","type":0,"userId":self.userid] as [String : Any]
+        
+        let new = ["msg" : self.msgTxtView.text ?? "",
+                   "chatHeadId" : self.toUser?.chatHeadId ?? "",
+                   "userId": self.userid ,
+                   "attachment":false] as [String : Any]
         
         self.messages.append(MockMessage.init(text: self.msgTxtView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.msgTxtView.text ?? "", status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true,senderData: [:]))
         self.msgTxtView.text = ""
         
-        self.socket.emitWithAck("send", new).timingOut(after: 20) {data in
-            print(data)
-            return
-        }
+        self.socket.emit("send", new)
         
     }
 }
@@ -193,7 +219,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         return self.messages.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if self.messages[indexPath.row].sent == false {
+        if self.messages[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
@@ -202,6 +228,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.view1.backgroundColor = UIColor.init(hex: 0x3B5998)
             cell.txt1.textColor = UIColor.white
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
+            cell.timelbl.text = ind.createdAt
 //            cell.img.kf.indicatorType = .activity
 //            cell.img.kf.setImage(with: URL(string: ind.senderData["displayPicture"] as? String),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
 //                switch result {
@@ -220,10 +247,10 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
-//            cell.sentimg.image = UIImage.init(named: "sent")
             cell.view1.backgroundColor = UIColor.init(hex: 0x3B5998)
             cell.txt1.textColor = UIColor.init(hex: 0x354052)
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
+            cell.timelbl.text = ind.createdAt
 //            cell.img.kf.indicatorType = .activity
 //            let url = ind.senderData["displayPicture"] as? String
 //            cell.img.kf.setImage(with: URL(string: url ?? ""),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
@@ -262,4 +289,54 @@ class msgReceiverCell:UITableViewCell {
     @IBOutlet weak var timelbl:UILabel!
     @IBOutlet weak var proImg:UIImageView!
 }
+
+extension mainChatVC{
+    
+    @objc func attachmentButtonClicked(){
+        openGallery()
+    }
+    
+    func openGallery() {
+        let img = UIImagePickerController()
+        img.delegate = self
+        img.allowsEditing = true
+        img.sourceType = .photoLibrary
+        
+        self.present(img, animated: true, completion: nil)
+    }
+    func openCamera() {
+        let img = UIImagePickerController()
+        img.delegate = self
+        img.allowsEditing = true
+        img.sourceType = .camera
+        
+        self.present(img, animated: true, completion: nil)
+    }
+     func uploadImg() {
+        self.loadAnimation()
+        APIManager.sharedInstance.uploadImage(vc: self, img: self.img.image!) { (str) in
+            if str == "success" {
+                self.removeAnimation()
+                
+//                self.performSegue(withIdentifier: "proceed", sender: self)
+            }
+        }
+    }
+}
+extension mainChatVC:UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let img = info[.editedImage] as! UIImage
+//        self.img.image = img
+//        picker.dismiss(animated: true, completion: nil)
+        picker.dismiss(animated: true) {
+            self.uploadImg()
+        }
+    }
+}
+
 

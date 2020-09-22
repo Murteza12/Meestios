@@ -6611,10 +6611,16 @@
                                             <constraint firstAttribute="width" constant="30" id="I58-dE-hcf"/>
                                         </constraints>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zTI-Ji-KQk">
-                                        <rect key="frame" x="84" y="22" width="283" height="30"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rahul" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zTI-Ji-KQk">
+                                        <rect key="frame" x="84" y="20" width="169" height="21"/>
                                         <fontDescription key="fontDescription" name="NunitoSans-Bold" family="Nunito Sans" pointSize="18"/>
                                         <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="typing.." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="amZ-uB-ppC">
+                                        <rect key="frame" x="84" y="44" width="169" height="14"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                        <color key="textColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -6623,17 +6629,19 @@
                                     <constraint firstAttribute="trailing" secondItem="IMv-zY-0HI" secondAttribute="trailing" constant="8" id="3QE-nR-F96"/>
                                     <constraint firstAttribute="bottom" secondItem="IMv-zY-0HI" secondAttribute="bottom" constant="8" id="3a4-4W-Udd"/>
                                     <constraint firstAttribute="bottom" secondItem="XGY-bD-jrY" secondAttribute="bottom" constant="8" id="5u2-5E-3Pu"/>
+                                    <constraint firstItem="mPI-pF-LmL" firstAttribute="leading" secondItem="zTI-Ji-KQk" secondAttribute="trailing" constant="8" id="8g4-Wp-e7M"/>
                                     <constraint firstItem="vZc-jZ-6On" firstAttribute="leading" secondItem="mPI-pF-LmL" secondAttribute="trailing" constant="8" id="8ik-NV-Qic"/>
+                                    <constraint firstItem="amZ-uB-ppC" firstAttribute="leading" secondItem="N7c-oD-t2G" secondAttribute="trailing" constant="8" id="97s-tY-kCd"/>
                                     <constraint firstItem="IMv-zY-0HI" firstAttribute="leading" secondItem="vZc-jZ-6On" secondAttribute="trailing" constant="8" id="AZF-6m-ho0"/>
                                     <constraint firstItem="XGY-bD-jrY" firstAttribute="leading" secondItem="suI-Gd-1gC" secondAttribute="leading" constant="8" id="FNs-Jd-gBo"/>
-                                    <constraint firstAttribute="trailing" secondItem="zTI-Ji-KQk" secondAttribute="trailing" constant="8" id="RnU-1Z-zfz"/>
+                                    <constraint firstItem="mPI-pF-LmL" firstAttribute="leading" secondItem="amZ-uB-ppC" secondAttribute="trailing" constant="8" id="SbF-hd-zuH"/>
+                                    <constraint firstAttribute="bottom" secondItem="amZ-uB-ppC" secondAttribute="bottom" constant="2" id="Sl0-do-4fD"/>
                                     <constraint firstItem="IMv-zY-0HI" firstAttribute="top" secondItem="suI-Gd-1gC" secondAttribute="top" constant="22" id="UFT-Ga-SU9"/>
                                     <constraint firstItem="N7c-oD-t2G" firstAttribute="top" secondItem="suI-Gd-1gC" secondAttribute="top" constant="22" id="WkL-Hw-skQ"/>
                                     <constraint firstItem="XGY-bD-jrY" firstAttribute="top" secondItem="suI-Gd-1gC" secondAttribute="top" constant="22" id="aPj-ro-WIM"/>
                                     <constraint firstAttribute="bottom" secondItem="N7c-oD-t2G" secondAttribute="bottom" constant="8" id="d9j-Gj-2ij"/>
                                     <constraint firstItem="mPI-pF-LmL" firstAttribute="top" secondItem="suI-Gd-1gC" secondAttribute="top" constant="22" id="gNe-O7-3m0"/>
-                                    <constraint firstItem="zTI-Ji-KQk" firstAttribute="top" secondItem="suI-Gd-1gC" secondAttribute="top" constant="22" id="m8A-Gp-PNF"/>
-                                    <constraint firstAttribute="bottom" secondItem="zTI-Ji-KQk" secondAttribute="bottom" constant="8" id="myJ-iG-pJQ"/>
+                                    <constraint firstItem="zTI-Ji-KQk" firstAttribute="top" secondItem="suI-Gd-1gC" secondAttribute="top" constant="20" id="m8A-Gp-PNF"/>
                                     <constraint firstAttribute="height" constant="60" id="n5O-dM-MDs"/>
                                     <constraint firstAttribute="bottom" secondItem="mPI-pF-LmL" secondAttribute="bottom" constant="8" id="ozT-4l-GcR"/>
                                     <constraint firstItem="vZc-jZ-6On" firstAttribute="top" secondItem="suI-Gd-1gC" secondAttribute="top" constant="22" id="p20-0v-kCb"/>
@@ -6821,6 +6829,7 @@
                         <outlet property="sendBtn" destination="gpc-UB-2Ay" id="79m-d4-Fnz"/>
                         <outlet property="tableView" destination="bGt-BH-Rzs" id="0r9-v3-V9g"/>
                         <outlet property="txtView" destination="8r4-IA-OrG" id="6VR-Ru-riW"/>
+                        <outlet property="typingLabel" destination="amZ-uB-ppC" id="xXe-Zh-oW9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z56-fJ-36m" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -14240,6 +14249,13 @@ Nam a nisi eu arcu dictum mattis. Aenean varius justo a sollicitudin tincidunt. 
     <designables>
         <designable name="0mI-Es-372">
             <size key="intrinsicContentSize" width="-1" height="65"/>
+        </designable>
+        <designable name="D17-18-Mw4"/>
+        <designable name="K1b-d5-DW6">
+            <size key="intrinsicContentSize" width="39.5" height="19"/>
+        </designable>
+        <designable name="a76-ys-BHi">
+            <size key="intrinsicContentSize" width="39.5" height="19"/>
         </designable>
         <designable name="w5q-bQ-5vo">
             <size key="intrinsicContentSize" width="-1" height="65"/>

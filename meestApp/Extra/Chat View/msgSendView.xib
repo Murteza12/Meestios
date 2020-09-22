@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -41,7 +42,7 @@
                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="KxM-5P-Lc5" customClass="GrowingTextView" customModule="GrowingTextView">
                                     <rect key="frame" x="12" y="4" width="234" height="37"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    <color key="textColor" systemColor="labelColor"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                 </textView>
@@ -51,6 +52,9 @@
                                         <constraint firstAttribute="width" constant="28" id="52W-CB-Kxr"/>
                                     </constraints>
                                     <state key="normal" image="smiley"/>
+                                    <connections>
+                                        <action selector="btnSmileyAction:" destination="-1" eventType="touchUpInside" id="HAc-Rz-tIR"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5vs-1z-Tus">
                                     <rect key="frame" x="250" y="8" width="28" height="29"/>
@@ -58,6 +62,9 @@
                                         <constraint firstAttribute="width" constant="28" id="8Ii-7Q-FNd"/>
                                     </constraints>
                                     <state key="normal" image="Vectorx"/>
+                                    <connections>
+                                        <action selector="btnAttachmentAction:" destination="-1" eventType="touchUpInside" id="NSj-7M-Rru"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <color key="backgroundColor" red="0.93725490199999995" green="0.94509803920000002" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
@@ -86,7 +93,8 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <viewLayoutGuide key="safeArea" id="A7f-EU-lh7"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="dzu-lu-HTJ" firstAttribute="bottom" secondItem="A7f-EU-lh7" secondAttribute="bottom" id="SmW-yL-6HF"/>
                 <constraint firstItem="dzu-lu-HTJ" firstAttribute="top" secondItem="fp8-bt-mQP" secondAttribute="top" id="Z47-8c-Gus"/>
@@ -94,13 +102,23 @@
                 <constraint firstItem="dzu-lu-HTJ" firstAttribute="leading" secondItem="A7f-EU-lh7" secondAttribute="leading" id="qC8-uy-ATd"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="A7f-EU-lh7"/>
             <point key="canvasLocation" x="-94.20289855072464" y="-280.91517857142856"/>
         </view>
     </objects>
+    <designables>
+        <designable name="KxM-5P-Lc5">
+            <size key="intrinsicContentSize" width="-1" height="30"/>
+        </designable>
+    </designables>
     <resources>
         <image name="Vectorx" width="22" height="24"/>
         <image name="microphone" width="23" height="23"/>
         <image name="smiley" width="24" height="23"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

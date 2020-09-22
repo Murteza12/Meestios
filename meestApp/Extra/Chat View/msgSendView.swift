@@ -14,7 +14,7 @@ class msgSendView: UIView {
     
     var toUser:ChatHeads?
     var userid = ""
-    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
+//    var attachmentButtonClicked : (()->())?
     var socket:SocketIOClient!
     
     @IBOutlet weak var textView: GrowingTextView!  {
@@ -46,16 +46,26 @@ class msgSendView: UIView {
     }
     
     @IBAction func btnSendActino(_ sender: Any) {
-      let new = ["msg":self.textView.text ?? "","toUserId":self.toUser?.id ?? "","type":0,"userId":self.userid] as [String : Any]
-      
-      //self.messages.append(MockMessage.init(text: self.msgTxtView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.msgTxtView.text ?? "", status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: "TRUE"))
-      self.textView.text = ""
-      print(new)
-      self.socket.emitWithAck("send", new).timingOut(after: 20) {data in
-          print(data)
-          return
-      }
-      
+        let new = ["msg" : self.textView.text ?? "",
+                   "chatHeadId" : self.toUser?.chatHeadId ?? "",
+                   "userId": self.userid ,
+                   "attachment":true,"attachmentType":"video","fileURL":"https://www.youtube.com/watch?v=Ot_XnQjhgj8"] as [String : Any]
+        self.textView.text = ""
+        print(new)
+        self.socket.emit("send", new)
+        let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
+        self.socket.emit("get_history", neww)
+    }
+    
+    @IBAction func btnAttachmentAction(_ sender: Any) {
+//        if let attachmentButtonClicked = attachmentButtonClicked {
+//                attachmentButtonClicked()
+//        }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "attachmentButtonClicked"), object: nil)
+        
+    }
+    
+    @IBAction func btnSmileyAction(_ sender: Any) {
     }
     //MARK:- for iPhoneX Spacing bottom
     override func didMoveToWindow() {
@@ -71,15 +81,11 @@ class msgSendView: UIView {
 extension msgSendView {
   // Performs the initial setup.
     private func setupView() {
-        self.socket = self.manager.defaultSocket
-        
+        self.socket = APIManager.sharedInstance.getSocket()
         APIManager.sharedInstance.getCurrentUser(vc: UIViewController()) { (user) in
             self.userid = user.id
-            
-            
         }
         
-//        self.socket.connect()
         let view = viewFromNibForClass()
         view.frame = bounds
         view.autoresizingMask = [
@@ -114,8 +120,16 @@ extension msgSendView: GrowingTextViewDelegate {
         } else {
             self.sendBtn.setImage(UIImage.init(named: "navigation"), for: .normal)
             textView.textColor = UIColor.black
+            textView.text = ""
         }
+        self.sendTypingEmit()
         
-        
+    }
+    
+    func sendTypingEmit(){
+        let new = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
+        self.socket.emit("typing", new)
+        isSender = true
+
     }
 }
