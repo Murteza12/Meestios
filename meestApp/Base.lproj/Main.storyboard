@@ -6857,7 +6857,7 @@
                                                         <constraint firstAttribute="bottom" secondItem="qkd-Fn-nLW" secondAttribute="bottom" constant="-2" id="zs4-xq-BrS"/>
                                                     </constraints>
                                                 </view>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nX4-Av-ZAl">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nX4-Av-ZAl">
                                                     <rect key="frame" x="16" y="11" width="35" height="35"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="35" id="hYS-Gj-j8C"/>
@@ -9516,12 +9516,13 @@ to your mobile number.</string>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ed-uj-V4H">
                                         <rect key="frame" x="40" y="69" width="120.5" height="104"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y5T-iY-EGO">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y5T-iY-EGO">
                                                 <rect key="frame" x="37.5" y="31.5" width="45" height="40.5"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="44.880000000000003" id="Fkv-X7-BIv"/>
                                                     <constraint firstAttribute="height" constant="40.390000000000001" id="k8e-VL-QJT"/>
                                                 </constraints>
+                                                <state key="normal" image="Attachment"/>
                                                 <connections>
                                                     <action selector="attachmentButtonAction:" destination="xhv-7h-lOT" eventType="touchUpInside" id="mvc-GP-L98"/>
                                                 </connections>
@@ -9544,6 +9545,7 @@ to your mobile number.</string>
                                                     <constraint firstAttribute="height" constant="34.93" id="P4m-eg-9gt"/>
                                                     <constraint firstAttribute="width" constant="39.859999999999999" id="X3g-tT-qhH"/>
                                                 </constraints>
+                                                <state key="normal" image="Gallery"/>
                                                 <connections>
                                                     <action selector="galleryButtonAction:" destination="xhv-7h-lOT" eventType="touchUpInside" id="jsZ-x6-CeU"/>
                                                 </connections>
@@ -14601,6 +14603,7 @@ Nam a nisi eu arcu dictum mattis. Aenean varius justo a sollicitudin tincidunt. 
         <image name="-custom (34)" width="2308" height="1676"/>
         <image name="Aa" width="112" height="115"/>
         <image name="Arrow" width="128" height="128"/>
+        <image name="Attachment" width="42" height="46"/>
         <image name="Avatar" width="128" height="128"/>
         <image name="Back" width="128" height="128"/>
         <image name="Cancel" width="128" height="128"/>
@@ -14609,6 +14612,7 @@ Nam a nisi eu arcu dictum mattis. Aenean varius justo a sollicitudin tincidunt. 
         <image name="Down_arrow" width="128" height="128"/>
         <image name="Ellipse 11" width="375" height="270"/>
         <image name="Emoji" width="32" height="32"/>
+        <image name="Gallery" width="41" height="36"/>
         <image name="Icon-3" width="4" height="16"/>
         <image name="Line chart" width="685" height="431"/>
         <image name="Mask" width="375" height="264"/>

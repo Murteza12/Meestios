@@ -111,7 +111,7 @@ extension peoplesVC:UITableViewDelegate, UITableViewDataSource {
         cell.usernameLbl.text = ind.firstName + " " + ind.lastName
         cell.timeLbl.text = ind.chat[0]["createdAt"] as? String
         cell.lastMsg.text = ind.chat[0]["last_msg"] as? String
-        
+        cell.img.applyRoundedView()
         cell.img.kf.indicatorType = .activity
         cell.img.kf.setImage(with: URL(string: ind.dp),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
             switch result {

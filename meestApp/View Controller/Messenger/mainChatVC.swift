@@ -89,12 +89,13 @@ class mainChatVC: RootBaseVC {
             }
         }
         self.nameLbl.text = (self.toUser?.firstName ?? "") + " " + (self.toUser?.lastName ?? "")
+        self.img.applyRoundedView()
         self.img.kf.indicatorType = .activity
         self.img.kf.setImage(with: URL(string: self.toUser?.dp),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
             switch result {
             case .success(let value):
                 print("Task done for: \(value.source.url?.absoluteString ?? "")")
-                
+
             case .failure(let error):
                 print(self.toUser?.dp)
                 print("Job failed: \(error.localizedDescription)")
@@ -166,6 +167,7 @@ class mainChatVC: RootBaseVC {
             self.messages.append(temp)
             
             self.tableView.reloadData()
+            self.scrollToBottom()
         }
         
         self.socket.on("chat_history") { (dataa, ack) in
@@ -199,6 +201,7 @@ class mainChatVC: RootBaseVC {
                 self.messages.append(temp)
             }
             self.tableView.reloadData()
+            self.scrollToBottom()
         }
     }
     func encode(_ s: String) -> String {
@@ -289,6 +292,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
 //            if ind.attachment == 1{
+//                cell.txt1.text = ""
 //                if ind.attachmentType == "video"{
 //                    if !ind.fileURL.isEmpty{
 //                        cell.img.kf.indicatorType = .activity
@@ -311,6 +315,8 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
 //                }
 //            }
             if let url = ind.senderData["displayPicture"] as? String{
+                cell.proImg.applyRoundedView()
+            cell.proImg.image = UIImage(named: "img")
             cell.proImg.kf.indicatorType = .activity
             cell.proImg.kf.setImage(with: URL(string: url))
             }else{
@@ -321,6 +327,13 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
+    }
+    
+    func scrollToBottom(){
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: self.messages.count-1, section: 0)
+            self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
     }
     
     func videoPreviewImage(url: URL) -> UIImage? {
@@ -504,6 +517,13 @@ extension mainChatVC{
     
     func removeBlurEffect(imageView: UIImageView){
         self.blurView?.removeFromSuperview()
+    }
+}
+
+extension UIImageView{
+    func applyRoundedView(){
+        self.layer.cornerRadius = self.frame.size.width / 2
+        self.clipsToBounds = true
     }
 }
 
