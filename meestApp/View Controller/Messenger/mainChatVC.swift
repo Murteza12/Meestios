@@ -256,28 +256,28 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.txt1.textColor = UIColor.white
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
-            if ind.attachment == 1{
-                if ind.attachmentType == "video"{
-                    if !ind.fileURL.isEmpty{
-                        cell.img.kf.indicatorType = .activity
-                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
-                        addBlurEffectToImageView(imageView: cell.img)
-                        cell.img.tag = indexPath.row
-                        cell.img.isUserInteractionEnabled = true
-                        cell.img.addGestureRecognizer(recognizer)
-                    }
-                }else if ind.attachmentType == "Image"{
-                    if !ind.fileURL.isEmpty{
-                        cell.img.kf.indicatorType = .activity
-                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
-                        cell.img.tag = indexPath.row
-                        cell.img.isUserInteractionEnabled = true
-                        cell.img.addGestureRecognizer(recognizer)
-                    }else{
-                        cell.img.image = nil
-                    }
-                }
-            }
+//            if ind.attachment == 1{
+//                if ind.attachmentType == "video"{
+//                    if !ind.fileURL.isEmpty{
+//                        cell.img.kf.indicatorType = .activity
+//                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+//                        addBlurEffectToImageView(imageView: cell.img)
+//                        cell.img.tag = indexPath.row
+//                        cell.img.isUserInteractionEnabled = true
+//                        cell.img.addGestureRecognizer(recognizer)
+//                    }
+//                }else if ind.attachmentType == "Image"{
+//                    if !ind.fileURL.isEmpty{
+//                        cell.img.kf.indicatorType = .activity
+//                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+//                        cell.img.tag = indexPath.row
+//                        cell.img.isUserInteractionEnabled = true
+//                        cell.img.addGestureRecognizer(recognizer)
+//                    }else{
+//                        cell.img.image = nil
+//                    }
+//                }
+//            }
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell2") as! msgReceiverCell
@@ -288,28 +288,28 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.txt1.textColor = UIColor.init(hex: 0x354052)
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
-            if ind.attachment == 1{
-                if ind.attachmentType == "video"{
-                    if !ind.fileURL.isEmpty{
-                        cell.img.kf.indicatorType = .activity
-                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
-                        addBlurEffectToImageView(imageView: cell.img)
-                        cell.img.tag = indexPath.row
-                        cell.img.isUserInteractionEnabled = true
-                        cell.img.addGestureRecognizer(recognizer)
-                    }
-                }else if ind.attachmentType == "Image"{
-                    if !ind.fileURL.isEmpty{
-                        cell.img.kf.indicatorType = .activity
-                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
-                        cell.img.tag = indexPath.row
-                        cell.img.isUserInteractionEnabled = true
-                        cell.img.addGestureRecognizer(recognizer)
-                    }else{
-                        cell.img.image = nil
-                    }
-                }
-            }
+//            if ind.attachment == 1{
+//                if ind.attachmentType == "video"{
+//                    if !ind.fileURL.isEmpty{
+//                        cell.img.kf.indicatorType = .activity
+//                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+//                        addBlurEffectToImageView(imageView: cell.img)
+//                        cell.img.tag = indexPath.row
+//                        cell.img.isUserInteractionEnabled = true
+//                        cell.img.addGestureRecognizer(recognizer)
+//                    }
+//                }else if ind.attachmentType == "Image"{
+//                    if !ind.fileURL.isEmpty{
+//                        cell.img.kf.indicatorType = .activity
+//                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+//                        cell.img.tag = indexPath.row
+//                        cell.img.isUserInteractionEnabled = true
+//                        cell.img.addGestureRecognizer(recognizer)
+//                    }else{
+//                        cell.img.image = nil
+//                    }
+//                }
+//            }
             if let url = ind.senderData["displayPicture"] as? String{
             cell.proImg.kf.indicatorType = .activity
             cell.proImg.kf.setImage(with: URL(string: url))
@@ -469,8 +469,8 @@ extension mainChatVC{
                            "attachment":true,"attachmentType":"Image","fileURL":imgURL ?? ""] as [String : Any]
                 print(new)
                 self.socket.emit("send", new)
-                let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
-                self.socket.emit("get_history", neww)
+//                let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
+//                self.socket.emit("get_history", neww)
             }
         }
     }

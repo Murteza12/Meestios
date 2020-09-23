@@ -61,8 +61,8 @@ class msgSendView: UIView {
                 self.textView.text = ""
                 print(new)
                 self.socket.emit("send", new)
-                let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
-                self.socket.emit("get_history", neww)
+//                let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
+//                self.socket.emit("get_history", neww)
             }
         }else{
             self.enableZoom()

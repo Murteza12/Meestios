@@ -141,31 +141,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
     }
     func addHandlers(userid:String,username:String) {
         
-        self.socket.emit("connection") //{ data, ack in
-            self.socket.on("connected") { data, ack in
-                print(data)
-                let data = data as! [[String:Any]]
-                let msg = data[0]["msg"] as? String ?? ""
-                print(msg)
-            }
-            
-            let payload = ["userId":userid,"name":username]
-//            self.socket.emit("createSession", payload)
-//            self.socket.on("session") { (dataa, ack) in
-//                print(dataa)
-//            }
+        self.socket.emit("connection")
+        self.socket.on("connected") { data, ack in
+            print(data)
+            let data = data as! [[String:Any]]
+            let msg = data[0]["msg"] as? String ?? ""
+            print(msg)
+        }
+        
+        let payload = ["userId":userid,"name":username]
         socket.once(clientEvent: .connect) {data, ack in
-            self.socket.emit("createSession", payload)//.timingOut(after: 20) {data in
-//                print(data)
-                self.socket.on("session") { (dataa, ack) in
-                    print(dataa)
-                }
-//                return
-//            }
-
-              }
-            //            return
-//        }
+            self.socket.emit("createSession", payload)
+            self.socket.on("session") { (dataa, ack) in
+                print(dataa)
+            }
+        }
     }
     
     // MARK: - UISceneSession Lifecycle
