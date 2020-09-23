@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4D7A875E372CB9F0E230C83C /* Pods_meestApp_meestAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8032127A2C34F134B094C29 /* Pods_meestApp_meestAppUITests.framework */; };
+		5A44AB27251B774000D4570A /* AttachmentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A44AB26251B774000D4570A /* AttachmentVC.swift */; };
 		6BA2BD269A267466758E6D11 /* Pods_meestAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D113DE30FAF3B5EC0C7686 /* Pods_meestAppTests.framework */; };
 		A2F8F131F4B94188CEC6AE3E /* Pods_meestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7827A8AA99F95EF411D4EC04 /* Pods_meestApp.framework */; };
 		D308E7F524D9D7850061B793 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D308E7F424D9D7850061B793 /* AppDelegate.swift */; };
@@ -177,6 +178,7 @@
 
 /* Begin PBXFileReference section */
 		558EB1D3B39902B8AFCAB39F /* Pods-meestApp-meestAppUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp-meestAppUITests.release.xcconfig"; path = "Target Support Files/Pods-meestApp-meestAppUITests/Pods-meestApp-meestAppUITests.release.xcconfig"; sourceTree = "<group>"; };
+		5A44AB26251B774000D4570A /* AttachmentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentVC.swift; sourceTree = "<group>"; };
 		5FDBB0CB3EA696D754184352 /* Pods-meestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp.debug.xcconfig"; path = "Target Support Files/Pods-meestApp/Pods-meestApp.debug.xcconfig"; sourceTree = "<group>"; };
 		7827A8AA99F95EF411D4EC04 /* Pods_meestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_meestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F7119B3E85EFEECA0A54E7C /* Pods-meestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp.release.xcconfig"; path = "Target Support Files/Pods-meestApp/Pods-meestApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -874,6 +876,7 @@
 				D3DB8D7D24DDDCE900865971 /* callsVC.swift */,
 				D3838F0B24EC886500E87442 /* singleChatVC.swift */,
 				D344FEE924FBD94E00CF50E5 /* mainChatVC.swift */,
+				5A44AB26251B774000D4570A /* AttachmentVC.swift */,
 			);
 			path = Messenger;
 			sourceTree = "<group>";
@@ -1307,6 +1310,7 @@
 				D336CA3B2506D4DE0097FB1C /* settingVC.swift in Sources */,
 				D3A72BAC24FEF2A2002082CB /* otherProfileVC.swift in Sources */,
 				D3DB8D7C24DDDC9900865971 /* groupsVC.swift in Sources */,
+				5A44AB27251B774000D4570A /* AttachmentVC.swift in Sources */,
 				D31308222503B4F4006E486E /* VideoView.swift in Sources */,
 				D3DE9D2E24DB462100CFB3BF /* Reachability.swift in Sources */,
 				D356ADBF24E1DB1E0096E74E /* nameVC.swift in Sources */,

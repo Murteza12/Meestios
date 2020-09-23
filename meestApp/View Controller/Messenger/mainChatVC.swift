@@ -13,6 +13,12 @@ import MessageKit
 import IHKeyboardAvoiding
 import AVKit
 import AVFoundation
+import MMPlayerView
+
+enum AttachmentType:String {
+    case Image = "Image"
+    case Video = "Video"
+}
 
 class mainChatVC: RootBaseVC {
 
@@ -26,13 +32,27 @@ class mainChatVC: RootBaseVC {
     @IBOutlet weak var tableView:chatTblView!
     @IBOutlet var typingLabel: UILabel!
     
+    var blurView: UIView?
+    var selectedCell: Int?
+    var uploadImageView: UIImageView?
     var userid = ""
     var count = 0
     var toUser:ChatHeads?
     var messages = [MockMessage]()
     var socket:SocketIOClient!
-//    var attachmentButtonClicked : (()->())!
     var playerController : AVPlayerViewController!
+    
+    var offsetObservation: NSKeyValueObservation?
+        lazy var mmPlayerLayer: MMPlayerLayer = {
+            let l = MMPlayerLayer()
+            l.cacheType = .memory(count: 5)
+            l.coverFitType = .fitToPlayerView
+            l.videoGravity = AVLayerVideoGravity.resizeAspect
+//            l.replace(cover: CoverA.instantiateFromNib())
+//            l.repeatWhenEnd = true
+            return l
+        }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -225,6 +245,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         return self.messages.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapBtnAction(_:)))
         if self.messages[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
             let ind = self.messages[indexPath.row]
@@ -238,24 +259,25 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             if ind.attachment == 1{
                 if ind.attachmentType == "video"{
                     if !ind.fileURL.isEmpty{
-                        if let url = URL(string: ind.fileURL) {
-                        cell.img.image = videoPreviewImage(url: url)
-                        }
+                        cell.img.kf.indicatorType = .activity
+                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        addBlurEffectToImageView(imageView: cell.img)
+                        cell.img.tag = indexPath.row
+                        cell.img.isUserInteractionEnabled = true
+                        cell.img.addGestureRecognizer(recognizer)
+                    }
+                }else if ind.attachmentType == "Image"{
+                    if !ind.fileURL.isEmpty{
+                        cell.img.kf.indicatorType = .activity
+                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        cell.img.tag = indexPath.row
+                        cell.img.isUserInteractionEnabled = true
+                        cell.img.addGestureRecognizer(recognizer)
+                    }else{
+                        cell.img.image = nil
                     }
                 }
             }
-//            cell.img.kf.indicatorType = .activity
-//            cell.img.kf.setImage(with: URL(string: ind.senderData["displayPicture"] as? String),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
-//                switch result {
-//                case .success(let value):
-//                    print("Task done for: \(value.source.url?.absoluteString ?? "")")
-//
-//                case .failure(let error):
-////                    print(ind.dp)
-//                    print("Job failed: \(error.localizedDescription)")
-//
-//                }
-//            }
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell2") as! msgReceiverCell
@@ -269,26 +291,31 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             if ind.attachment == 1{
                 if ind.attachmentType == "video"{
                     if !ind.fileURL.isEmpty{
-                        if let url = URL(string: ind.fileURL) {
-                        cell.img.image = videoPreviewImage(url: url)
-                            //cell.img
-                        }
+                        cell.img.kf.indicatorType = .activity
+                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        addBlurEffectToImageView(imageView: cell.img)
+                        cell.img.tag = indexPath.row
+                        cell.img.isUserInteractionEnabled = true
+                        cell.img.addGestureRecognizer(recognizer)
+                    }
+                }else if ind.attachmentType == "Image"{
+                    if !ind.fileURL.isEmpty{
+                        cell.img.kf.indicatorType = .activity
+                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        cell.img.tag = indexPath.row
+                        cell.img.isUserInteractionEnabled = true
+                        cell.img.addGestureRecognizer(recognizer)
+                    }else{
+                        cell.img.image = nil
                     }
                 }
             }
-//            cell.img.kf.indicatorType = .activity
-//            let url = ind.senderData["displayPicture"] as? String
-//            cell.img.kf.setImage(with: URL(string: url ?? ""),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
-//                switch result {
-//                case .success(let value):
-//                    print("Task done for: \(value.source.url?.absoluteString ?? "")")
-//
-//                case .failure(let error):
-//                    print(ind.senderData["displayPicture"])
-//                    print("Job failed: \(error.localizedDescription)")
-//
-//                }
-//            }
+            if let url = ind.senderData["displayPicture"] as? String{
+            cell.proImg.kf.indicatorType = .activity
+            cell.proImg.kf.setImage(with: URL(string: url))
+            }else{
+                cell.proImg.image = nil
+            }
             return cell
         }
     }
@@ -334,11 +361,25 @@ class msgReceiverCell:UITableViewCell {
 }
 
 extension mainChatVC : AVPlayerViewControllerDelegate {
+    
+    @objc func tapBtnAction(_ sender: UITapGestureRecognizer) {
+        print("\(String(describing: sender.view?.tag)) Tapped")
+        self.selectedCell = sender.view?.tag
+        let data = self.messages[selectedCell!]
+            if data.attachment == 1{
+                if data.attachmentType == "video"{
+                    if !data.fileURL.isEmpty{
+                        play(url1: data.fileURL)
+                    }
+                }else if data.attachmentType == "Image"{
+                    if !data.fileURL.isEmpty{
+                        
+                    }
+                }
+            }
+        }
+    
     func play(url1: String) {
-        
-//        let path = Bundle.main.path(forResource: "video", ofType: "mp4")!
-//
-//        let url = NSURL(fileURLWithPath: path)
         guard let urlFromString = URL(string: url1) else { return }
 
         let player = AVPlayer(url: urlFromString as URL)
@@ -363,9 +404,6 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
     @objc func didfinishPlaying(note : NSNotification)  {
         
         playerController.dismiss(animated: true, completion: nil)
-//        let alertView = UIAlertController(title: "Finished", message: "Video finished", preferredStyle: .alert)
-//        alertView.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-//        self.present(alertView, animated: true, completion: nil)
     }
     
     
@@ -385,9 +423,23 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
 extension mainChatVC{
     
     @objc func attachmentButtonClicked(){
-//        openGallery()
-        play(url1: "https://www.youtube.com/watch?v=Ot_XnQjhgj8")
-    }
+        let stoaryboard = UIStoryboard(name: "Main", bundle: nil)
+        let attachmentVC = stoaryboard.instantiateViewController(withIdentifier: "AttachmentVC") as? AttachmentVC
+        attachmentVC?.modalPresentationStyle = .overCurrentContext
+        attachmentVC?.modalTransitionStyle = .crossDissolve
+        self.present(attachmentVC!, animated: true) {
+            
+        }
+        
+        attachmentVC?.openGalleryCompletion = { [weak self] in
+            
+            self?.openGallery()
+        }
+        
+        attachmentVC?.openAttachmnetCompletion = { [weak self] in
+            self?.openCamera()
+        }
+}
     
     func openGallery() {
         let img = UIImagePickerController()
@@ -407,11 +459,18 @@ extension mainChatVC{
     }
      func uploadImg() {
         self.loadAnimation()
-        APIManager.sharedInstance.uploadImage(vc: self, img: self.img.image!) { (str) in
+        APIManager.sharedInstance.uploadImage(vc: self, img: (self.uploadImageView?.image)!) { (str) in
             if str == "success" {
                 self.removeAnimation()
-                
-//                self.performSegue(withIdentifier: "proceed", sender: self)
+                let imgURL = UserDefaults.standard.string(forKey: "IMG")
+                let new = ["msg" : "",
+                           "chatHeadId" : self.toUser?.chatHeadId ?? "",
+                           "userId": self.userid ,
+                           "attachment":true,"attachmentType":"Image","fileURL":imgURL ?? ""] as [String : Any]
+                print(new)
+                self.socket.emit("send", new)
+                let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
+                self.socket.emit("get_history", neww)
             }
         }
     }
@@ -424,12 +483,27 @@ extension mainChatVC:UINavigationControllerDelegate, UIImagePickerControllerDele
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let img = info[.editedImage] as! UIImage
-//        self.img.image = img
-//        picker.dismiss(animated: true, completion: nil)
+        self.uploadImageView?.image = img
         picker.dismiss(animated: true) {
             self.uploadImg()
         }
     }
 }
 
+extension mainChatVC{
+    
+    func addBlurEffectToImageView(imageView: UIImageView){
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = imageView.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        imageView.addSubview(blurEffectView)
+        imageView.insertSubview(blurEffectView, at: 0)
+//        self.blurView = blurEffectView
+    }
+    
+    func removeBlurEffect(imageView: UIImageView){
+        self.blurView?.removeFromSuperview()
+    }
+}
 

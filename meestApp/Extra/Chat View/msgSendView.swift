@@ -46,26 +46,26 @@ class msgSendView: UIView {
     }
     
     @IBAction func btnSendActino(_ sender: Any) {
+        if self.textView.text != ""{
         let new = ["msg" : self.textView.text ?? "",
                    "chatHeadId" : self.toUser?.chatHeadId ?? "",
                    "userId": self.userid ,
-                   "attachment":true,"attachmentType":"video","fileURL":"https://www.youtube.com/watch?v=Ot_XnQjhgj8"] as [String : Any]
+                   "attachment":false,"attachmentType":"","fileURL":""] as [String : Any]
         self.textView.text = ""
         print(new)
         self.socket.emit("send", new)
         let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
         self.socket.emit("get_history", neww)
+        }
     }
     
     @IBAction func btnAttachmentAction(_ sender: Any) {
-//        if let attachmentButtonClicked = attachmentButtonClicked {
-//                attachmentButtonClicked()
-//        }
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "attachmentButtonClicked"), object: nil)
         
     }
     
     @IBAction func btnSmileyAction(_ sender: Any) {
+        textView.becomeFirstResponder()
     }
     //MARK:- for iPhoneX Spacing bottom
     override func didMoveToWindow() {
@@ -131,5 +131,20 @@ extension msgSendView: GrowingTextViewDelegate {
         self.socket.emit("typing", new)
         isSender = true
 
+    }
+}
+
+class EmojiTextField: UITextView {
+
+   // required for iOS 13
+   override var textInputContextIdentifier: String? { "" } // return non-nil to show the Emoji keyboard ¯\_(ツ)_/¯
+
+    override var textInputMode: UITextInputMode? {
+        for mode in UITextInputMode.activeInputModes {
+            if mode.primaryLanguage == "emoji" {
+                return mode
+            }
+        }
+        return nil
     }
 }
