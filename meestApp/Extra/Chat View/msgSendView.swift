@@ -9,8 +9,14 @@
 import UIKit
 import GrowingTextView
 import SocketIO
+import AVKit
 
 class msgSendView: UIView {
+    
+    var audioRecorder: AVAudioRecorder!
+    var audioFilename: URL!
+    var meterTimer:Timer!
+    var isAudioRecordingGranted: Bool!
     
     var toUser:ChatHeads?
     var userid = ""
@@ -46,16 +52,20 @@ class msgSendView: UIView {
     }
     
     @IBAction func btnSendActino(_ sender: Any) {
-        if self.textView.text != ""{
-        let new = ["msg" : self.textView.text ?? "",
-                   "chatHeadId" : self.toUser?.chatHeadId ?? "",
-                   "userId": self.userid ,
-                   "attachment":false,"attachmentType":"","fileURL":""] as [String : Any]
-        self.textView.text = ""
-        print(new)
-        self.socket.emit("send", new)
-        let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
-        self.socket.emit("get_history", neww)
+        if sendBtn.currentImage == UIImage(named: "navigation"){
+            if self.textView.text != ""{
+                let new = ["msg" : self.textView.text ?? "",
+                           "chatHeadId" : self.toUser?.chatHeadId ?? "",
+                           "userId": self.userid ,
+                           "attachment":false,"attachmentType":"","fileURL":""] as [String : Any]
+                self.textView.text = ""
+                print(new)
+                self.socket.emit("send", new)
+                let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
+                self.socket.emit("get_history", neww)
+            }
+        }else{
+            self.enableZoom()
         }
     }
     
@@ -95,6 +105,28 @@ extension msgSendView {
         addSubview(view)
     
         textView.translatesAutoresizingMaskIntoConstraints = false
+        
+        switch AVAudioSession.sharedInstance().recordPermission {
+               case AVAudioSessionRecordPermission.granted:
+                   isAudioRecordingGranted = true
+                   break
+               case AVAudioSessionRecordPermission.denied:
+                   isAudioRecordingGranted = false
+                   break
+               case AVAudioSessionRecordPermission.undetermined:
+                   AVAudioSession.sharedInstance().requestRecordPermission() { [unowned self] allowed in
+                       DispatchQueue.main.async {
+                           if allowed {
+                               self.isAudioRecordingGranted = true
+                           } else {
+                               self.isAudioRecordingGranted = false
+                           }
+                       }
+                   }
+                   break
+               default:
+                   break
+               }
     }
   
     // Loads a XIB file into a view and returns this view.
@@ -147,4 +179,120 @@ class EmojiTextField: UITextView {
         }
         return nil
     }
+}
+
+extension msgSendView {
+  func enableZoom() {
+    let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
+    self.sendBtn.addGestureRecognizer(longGesture)
+
+  }
+    @objc func longTap(_ sender: UIGestureRecognizer){
+        print("Long tap")
+        if sender.state == .ended {
+            print("UIGestureRecognizerStateEnded")
+            UIView.animate(withDuration: 0.5, animations: {() -> Void in
+                self.sendBtn.transform = CGAffineTransform(scaleX: 1, y: 1)
+                if self.isAudioRecordingGranted{
+                    self.finishAudioRecording(success: true)
+                }
+
+                    }, completion: {(_ finished: Bool) -> Void in
+                    })
+            
+        }
+        else if sender.state == .began {
+            print("UIGestureRecognizerStateBegan.")
+            UIView.animate(withDuration: 0.5, animations: {() -> Void in
+                self.sendBtn.transform = CGAffineTransform(scaleX: 1.7, y: 1.7)
+                if self.isAudioRecordingGranted{
+                    self.audioRecorderAction()
+                }
+                    }, completion: {(_ finished: Bool) -> Void in
+                        
+                    })
+        }
+    }
+}
+
+extension msgSendView : AVAudioRecorderDelegate{
+    
+    func audioRecorderAction(){
+            if isAudioRecordingGranted {
+
+                //Create the session.
+                let session = AVAudioSession.sharedInstance()
+
+                do {
+                    //Configure the session for recording and playback.
+                    try session.setCategory(.playAndRecord, mode: .default, options: [])
+                    try session.setActive(true)
+
+                    //Set up a session
+                    let settings = [
+                        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                        AVSampleRateKey: 44100,
+                        AVNumberOfChannelsKey: 2,
+                        AVEncoderAudioQualityKey: AVAudioQuality.medium.rawValue
+                    ]
+
+                    //file name URL
+                    audioFilename = getDocumentsDirectory().appendingPathComponent("audio.m4a")
+
+                    //Create the audio recording, and assign ourselves as the delegate
+                    audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
+                    audioRecorder.delegate = self
+                    audioRecorder.isMeteringEnabled = true
+                    audioRecorder.record()
+                    meterTimer = Timer.scheduledTimer(timeInterval: 1.0, target:self, selector:#selector(self.updateAudioTimer(timer:)), userInfo: nil, repeats: true)
+                }
+                catch let error {
+                    print("Error for audio record: \(error.localizedDescription)")
+                }
+            }
+        }
+
+
+        func finishAudioRecording(success: Bool) {
+
+            audioRecorder.stop()
+            audioRecorder = nil
+            meterTimer.invalidate()
+
+            if success {
+                textView.text = ""
+                print("Finished.")
+            } else {
+                print("Failed :(")
+            }
+        }
+
+        @objc func updateAudioTimer(timer: Timer) {
+
+            if audioRecorder.isRecording {
+                let min = Int(audioRecorder.currentTime / 60)
+                let sec = Int(audioRecorder.currentTime.truncatingRemainder(dividingBy: 60))
+                let totalTimeString = String(format: "%02d:%02d", min, sec)
+                textView.text = totalTimeString
+                audioRecorder.updateMeters()
+
+                if (sec == 10) {
+
+                    //finishAudioRecording(success: true)
+                }
+            }
+        }
+
+        func getDocumentsDirectory() -> URL {
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            let documentsDirectory = paths[0]
+            return documentsDirectory
+        }
+    
+    //MARK:- Audio recoder delegate methods
+        func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+            if !flag {
+                finishAudioRecording(success: false)
+            }
+        }
 }
