@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		4D7A875E372CB9F0E230C83C /* Pods_meestApp_meestAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8032127A2C34F134B094C29 /* Pods_meestApp_meestAppUITests.framework */; };
 		5A44AB27251B774000D4570A /* AttachmentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A44AB26251B774000D4570A /* AttachmentVC.swift */; };
+		5A9E553F251CDE7200A30EA8 /* Messenger.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */; };
+		5A9E5544251CE43400A30EA8 /* DeleteOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */; };
+		5A9E554C251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */; };
 		6BA2BD269A267466758E6D11 /* Pods_meestAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D113DE30FAF3B5EC0C7686 /* Pods_meestAppTests.framework */; };
 		A2F8F131F4B94188CEC6AE3E /* Pods_meestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7827A8AA99F95EF411D4EC04 /* Pods_meestApp.framework */; };
 		D308E7F524D9D7850061B793 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D308E7F424D9D7850061B793 /* AppDelegate.swift */; };
@@ -179,6 +182,9 @@
 /* Begin PBXFileReference section */
 		558EB1D3B39902B8AFCAB39F /* Pods-meestApp-meestAppUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp-meestAppUITests.release.xcconfig"; path = "Target Support Files/Pods-meestApp-meestAppUITests/Pods-meestApp-meestAppUITests.release.xcconfig"; sourceTree = "<group>"; };
 		5A44AB26251B774000D4570A /* AttachmentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentVC.swift; sourceTree = "<group>"; };
+		5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Messenger.storyboard; sourceTree = "<group>"; };
+		5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteOptionVC.swift; sourceTree = "<group>"; };
+		5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteChatHeadOptionVC.swift; sourceTree = "<group>"; };
 		5FDBB0CB3EA696D754184352 /* Pods-meestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp.debug.xcconfig"; path = "Target Support Files/Pods-meestApp/Pods-meestApp.debug.xcconfig"; sourceTree = "<group>"; };
 		7827A8AA99F95EF411D4EC04 /* Pods_meestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_meestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F7119B3E85EFEECA0A54E7C /* Pods-meestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp.release.xcconfig"; path = "Target Support Files/Pods-meestApp/Pods-meestApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -877,6 +883,9 @@
 				D3838F0B24EC886500E87442 /* singleChatVC.swift */,
 				D344FEE924FBD94E00CF50E5 /* mainChatVC.swift */,
 				5A44AB26251B774000D4570A /* AttachmentVC.swift */,
+				5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */,
+				5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */,
+				5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */,
 			);
 			path = Messenger;
 			sourceTree = "<group>";
@@ -1025,6 +1034,7 @@
 				D308E7FE24D9D7850061B793 /* Assets.xcassets in Resources */,
 				D3C74D7224F15F0000A82CBE /* chatView.xib in Resources */,
 				D3B3F47D2505614900D9D59C /* video.mp4 in Resources */,
+				5A9E553F251CDE7200A30EA8 /* Messenger.storyboard in Resources */,
 				D308E84424DAEC6E0061B793 /* NunitoSans-ExtraLight.ttf in Resources */,
 				D308E84324DAEC6E0061B793 /* NunitoSans-SemiBold.ttf in Resources */,
 				D380CC192500FA6100D852B9 /* fa-regular-400.ttf in Resources */,
@@ -1212,6 +1222,7 @@
 			files = (
 				D308E82F24DAD4910061B793 /* GradientButton.swift in Sources */,
 				D356ADCD24E2AD710096E74E /* phoneotpVC.swift in Sources */,
+				5A9E5544251CE43400A30EA8 /* DeleteOptionVC.swift in Sources */,
 				D308E82524D9D8500061B793 /* Extension.swift in Sources */,
 				D3DE9D3824DB638100CFB3BF /* enableLocationVC.swift in Sources */,
 				D324FEF524EC9B0700ABAE9F /* commentVC.swift in Sources */,
@@ -1280,6 +1291,7 @@
 				D3E24DD624F706060011FE0A /* videoHomeVC.swift in Sources */,
 				D3DE9D3A24DB667C00CFB3BF /* createAccountVC.swift in Sources */,
 				D3853155250ACBC3002B6C58 /* boostPostDetailVC.swift in Sources */,
+				5A9E554C251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift in Sources */,
 				D3AEA983250F538C007FDFA5 /* createPhotoPostVC.swift in Sources */,
 				D324FEFB24ECA43300ABAE9F /* addPostVC.swift in Sources */,
 				D3FC4840250BCEAD00BA14EA /* OthereUser.swift in Sources */,

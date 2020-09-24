@@ -31,7 +31,10 @@ class mainChatVC: RootBaseVC {
     @IBOutlet weak var msgTxtView:UITextView!
     @IBOutlet weak var tableView:chatTblView!
     @IBOutlet var typingLabel: UILabel!
-    
+
+    var isSent:Bool = false
+    var numberOfRecords = 0
+    var pageNumberToBeLoad = 1
     var blurView: UIView?
     var selectedCell: Int?
     var uploadImage: UIImage?
@@ -39,9 +42,10 @@ class mainChatVC: RootBaseVC {
     var count = 0
     var toUser:ChatHeads?
     var messages = [MockMessage]()
+    var lastData = [MockMessage]()
     var socket:SocketIOClient!
     var playerController : AVPlayerViewController!
-    
+    var isScrollToTop: Bool = false
     var offsetObservation: NSKeyValueObservation?
         lazy var mmPlayerLayer: MMPlayerLayer = {
             let l = MMPlayerLayer()
@@ -56,25 +60,13 @@ class mainChatVC: RootBaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
-     //   self.txtView.cornerRadius(radius: self.txtView.frame.height / 2)
-     //   self.sendBtn.cornerRadius(radius: self.sendBtn.frame.height / 2)
+   
         self.img.cornerRadius(radius: self.img.frame.height / 2)
-        
-     //   self.msgTxtView.textColor = UIColor.gray
-     //   self.msgTxtView.text = "Type your message"
-    //    self.msgTxtView.delegate = self
-        
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        
-        
         self.socket = APIManager.sharedInstance.getSocket()
         self.addHandler()
         self.tableView.becomeFirstResponder()
-//        tableView.attachmentButtonClicked = {
-//            print("Attachment Button clicked")
-//        }
         
         NotificationCenter.default.addObserver(self, selector: #selector(attachmentButtonClicked), name: Notification.Name.init(rawValue: "attachmentButtonClicked"), object: nil)
     }
@@ -101,13 +93,33 @@ class mainChatVC: RootBaseVC {
                 print("Job failed: \(error.localizedDescription)")
             }
         }
+        self.messages.removeAll()
         self.tableView.toUser = self.toUser
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         tableView.becomeFirstResponder()
+        self.longPressGesture()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.messages.removeAll()
+        self.lastData.removeAll()
+    }
+    @IBAction func callButtonAction(_ sender:UIButton) {
+       
+        
+        
+    }
+    @IBAction func videoCallButtonAction(_ sender:UIButton) {
+       
+        
+        
+    }
+    @IBAction func informationButtonAction(_ sender:UIButton) {
+        
+    }
     @IBAction func sendmsg(_ sender:UIButton) {
        
         self.msgTxtView.text = ""
@@ -131,6 +143,8 @@ class mainChatVC: RootBaseVC {
         
         self.socket.on("sent") { data, ack in
             print(data)
+            self.isSent = true
+            self.scrollToBottom()
             APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
                 self.userid = user.id
                 let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
@@ -156,6 +170,7 @@ class mainChatVC: RootBaseVC {
             let updatedAt = data["updatedAt"] as? String ?? ""
             let userId = data["userId"] as? String ?? ""
             let sent = data["sender"] as? Bool ?? false
+            let videothumbnail = data["thumbnail"] as? String ?? ""
             if sent {
                 
                 ChatUserID = self.toUser?.id ?? ""
@@ -163,7 +178,7 @@ class mainChatVC: RootBaseVC {
                 ChatUserID = self.userid
                 
             }
-            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: [:], fileURL:fileURL, attachmentType: attachmentType)
+            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: [:], fileURL:fileURL, attachmentType: attachmentType, videothumbnail: videothumbnail)
             
             self.messages.append(temp)
             
@@ -172,7 +187,7 @@ class mainChatVC: RootBaseVC {
         }
         
         self.socket.on("chat_history") { (dataa, ack) in
-            self.messages.removeAll()
+            self.lastData.removeAll()
             print(dataa)
             let rows = dataa[0] as! [[String:Any]]
             for ii in rows {
@@ -191,18 +206,57 @@ class mainChatVC: RootBaseVC {
                 let userId = ii["userId"] as? String ?? ""
                 let sent = ii["sender"] as? Bool ?? false
                 let senderData = ii["senderData"] as? [String: Any] ?? [:]
+                let videothumbnail = ii["thumbnail"] as? String ?? ""
                 if sent {
                     ChatUserID = self.userid
                     
                 } else {
                     ChatUserID = self.toUser?.id ?? ""
                 }
-                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: senderData, fileURL:fileURL, attachmentType: attachmentType )
+                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: senderData, fileURL:fileURL, attachmentType: attachmentType, videothumbnail: videothumbnail )
                 
-                self.messages.append(temp)
+                self.lastData.append(temp)
+               
             }
+            if self.isSent  {
+                for _ in 0...9 {
+                    self.messages.removeLast()
+                }
+                self.messages.append(contentsOf: self.lastData)
+                self.isSent = false
+            }else{
+                self.messages.insert(contentsOf: self.lastData, at: 0)
+            }
+            self.numberOfRecords = self.messages.count
             self.tableView.reloadData()
+            if !self.isScrollToTop{
             self.scrollToBottom()
+            }
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if (scrollView.contentOffset.y <= 0){
+            self.loadMore()
+            self.isScrollToTop = true
+        }
+        
+        if (scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) {
+            self.isScrollToTop = false
+        }
+    }
+  
+    func loadMore(){
+        if messages.count != 0{
+            if numberOfRecords / messages.count >= 1 {
+                pageNumberToBeLoad += 1
+                APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
+                    self.userid = user.id
+                    let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? "","page":self.pageNumberToBeLoad] as [String : Any]
+                    self.isSent = false
+                    self.socket.emit("get_history", neww)
+                }
+            }
         }
     }
     func encode(_ s: String) -> String {
@@ -220,7 +274,7 @@ class mainChatVC: RootBaseVC {
                    "userId": self.userid ,
                    "attachment":false] as [String : Any]
         
-        self.messages.append(MockMessage.init(text: self.msgTxtView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.msgTxtView.text ?? "", status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true,senderData: [:], fileURL:"", attachmentType: ""))
+        self.messages.append(MockMessage.init(text: self.msgTxtView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.msgTxtView.text ?? "", status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true,senderData: [:], fileURL:"", attachmentType: "",videothumbnail:""))
         self.msgTxtView.text = ""
         
         self.socket.emit("send", new)
@@ -252,6 +306,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapBtnAction(_:)))
         if self.messages[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
+            cell.selectionStyle = .none
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
@@ -261,24 +316,24 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
             cell.img.image = nil
+            cell.playImageView.image = nil
             if ind.attachment == 1{
                 cell.txt1.text = ""
                 if ind.attachmentType == "video"{
-//                    if !ind.fileURL.isEmpty{
-//                        cell.img.kf.indicatorType = .activity
-//                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                    if !ind.videothumbnail.isEmpty{
+                        cell.img.kf.indicatorType = .activity
+                        cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
+                        cell.playImageView.image = UIImage(named: "Play")
 //                        addBlurEffectToImageView(imageView: cell.img)
-//                        cell.img.tag = indexPath.row
-//                        cell.img.isUserInteractionEnabled = true
-//                        cell.img.addGestureRecognizer(recognizer)
-//                    }
+                        cell.img.tag = indexPath.row
+                        cell.img.isUserInteractionEnabled = true
+                        cell.img.addGestureRecognizer(recognizer)
+                    }
                 }else if ind.attachmentType == "Image"{
                     if !ind.fileURL.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.fileURL))
                         cell.img.tag = indexPath.row
-                        cell.img.isUserInteractionEnabled = true
-                        cell.img.addGestureRecognizer(recognizer)
                     }else{
                         cell.img.image = nil
                     }
@@ -287,6 +342,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell2") as! msgReceiverCell
+            cell.selectionStyle = .none
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
@@ -295,24 +351,24 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
             cell.img.image = nil
+            cell.playImageView.image = nil
             if ind.attachment == 1{
                 cell.txt1.text = ""
                 if ind.attachmentType == "video"{
-//                    if !ind.fileURL.isEmpty{
-//                        cell.img.kf.indicatorType = .activity
-//                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                    if !ind.videothumbnail.isEmpty{
+                        cell.img.kf.indicatorType = .activity
+                        cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
+                        cell.playImageView.image = UIImage(named: "Play")
 //                        addBlurEffectToImageView(imageView: cell.img)
-//                        cell.img.tag = indexPath.row
-//                        cell.img.isUserInteractionEnabled = true
-//                        cell.img.addGestureRecognizer(recognizer)
-//                    }
+                        cell.img.tag = indexPath.row
+                        cell.img.isUserInteractionEnabled = true
+                        cell.img.addGestureRecognizer(recognizer)
+                    }
                 }else if ind.attachmentType == "Image"{
                     if !ind.fileURL.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.fileURL))
                         cell.img.tag = indexPath.row
-                        cell.img.isUserInteractionEnabled = true
-                        cell.img.addGestureRecognizer(recognizer)
                     }else{
                         cell.img.image = nil
                     }
@@ -330,11 +386,16 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if self.messages[indexPath.row].attachment == 1{
+            return 250
+        }
         return UITableView.automaticDimension
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
+        self.videoPlaySelect(indexPath: indexPath)
+        self.selectedCell = indexPath.row
         tableView.becomeFirstResponder()
     }
     func scrollToBottom(){
@@ -370,6 +431,7 @@ class msgSenderCell:UITableViewCell {
     @IBOutlet weak var sentimg:UIImageView!
     @IBOutlet weak var timelbl:UILabel!
     
+    @IBOutlet var playImageView: UIImageView!
 }
 class msgReceiverCell:UITableViewCell {
     
@@ -379,14 +441,30 @@ class msgReceiverCell:UITableViewCell {
     @IBOutlet weak var sentimg:UIImageView!
     @IBOutlet weak var timelbl:UILabel!
     @IBOutlet weak var proImg:UIImageView!
+    @IBOutlet var playImageView: UIImageView!
 }
 
 extension mainChatVC : AVPlayerViewControllerDelegate {
     
     @objc func tapBtnAction(_ sender: UITapGestureRecognizer) {
-        print("\(String(describing: sender.view?.tag)) Tapped")
-        self.selectedCell = sender.view?.tag
-        let data = self.messages[selectedCell!]
+//        print("\(String(describing: sender.view?.tag)) Tapped")
+//        let data = self.messages[selectedCell!]
+//            if data.attachment == 1{
+//                if data.attachmentType == "video"{
+//                    if !data.fileURL.isEmpty{
+//                        play(url1: data.fileURL)
+//                    }
+//                }else if data.attachmentType == "Image"{
+//                    if !data.fileURL.isEmpty{
+//
+//                    }
+//                }
+//            }
+        }
+    
+    func videoPlaySelect(indexPath: IndexPath ) {
+        print("\(String(describing: indexPath.row)) Tapped")
+        let data = self.messages[indexPath.row]
             if data.attachment == 1{
                 if data.attachmentType == "video"{
                     if !data.fileURL.isEmpty{
@@ -442,6 +520,30 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
 }
 
 extension mainChatVC{
+    
+    func messageLongPressAction(){
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let deleteOptionVC = stoaryboard.instantiateViewController(withIdentifier: "DeleteOptionVC") as? DeleteOptionVC
+        deleteOptionVC?.modalPresentationStyle = .overCurrentContext
+        deleteOptionVC?.modalTransitionStyle = .crossDissolve
+        self.present(deleteOptionVC!, animated: true) {
+            
+        }
+        
+        deleteOptionVC?.deleteCompletion = { [weak self] in
+            print("Delete Called")
+            
+        }
+        
+        deleteOptionVC?.replyCompletion = { [weak self] in
+            print("Reply Called")
+        }
+        
+        deleteOptionVC?.copyCompletion = { [weak self] in
+            print("Copy Called")
+                        
+        }
+    }
     
     @objc func attachmentButtonClicked(){
         let stoaryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -544,3 +646,25 @@ extension String {
     }
 }
 
+extension mainChatVC{
+    
+    func longPressGesture() {
+//        let cell = tableView.cellForRow(at: indexPath)
+//        self.selectedCell = cell
+        let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
+        tableView.addGestureRecognizer(longGesture)
+    }
+    @objc func longTap(_ sender: UIGestureRecognizer){
+        print("Long tap")
+        if sender.state == .ended {
+            print("UIGestureRecognizerStateEnded")
+        }
+        else if sender.state == .began {
+            print("UIGestureRecognizerStateBegan.")
+                let seconds = 1.0
+                DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+                    self.messageLongPressAction()
+                }
+        }
+    }
+}

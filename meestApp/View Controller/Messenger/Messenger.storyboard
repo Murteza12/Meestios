@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Delete OptionVC-->
+        <scene sceneID="l1o-R0-Fae">
+            <objects>
+                <viewController storyboardIdentifier="DeleteOptionVC" id="IH5-Im-wbO" customClass="DeleteOptionVC" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ol7-QQ-mpH">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OVa-x1-5jK">
+                                <rect key="frame" x="10" y="807" width="394" height="55"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qwV-q9-q0P">
+                                        <rect key="frame" x="40" y="16.5" width="56" height="22"/>
+                                        <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="Copy" image="Copy">
+                                            <color key="titleColor" red="0.08235294118" green="0.086274509799999996" blue="0.14117647059999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="copyButtonAction:" destination="IH5-Im-wbO" eventType="touchUpInside" id="m6X-b9-VXo"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3lE-oF-ui7">
+                                        <rect key="frame" x="164" y="16.5" width="66" height="22"/>
+                                        <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="Reply" image="Reply">
+                                            <color key="titleColor" red="0.08235294118" green="0.086274509799999996" blue="0.14117647059999999" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="replyButtonAction:" destination="IH5-Im-wbO" eventType="touchUpInside" id="rgW-zc-zjW"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Da1-9m-up2">
+                                        <rect key="frame" x="283" y="16.5" width="71" height="22"/>
+                                        <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="Delete" image="Dustbin">
+                                            <color key="titleColor" red="0.082352941176470587" green="0.086274509803921567" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="DeleteButtonAction:" destination="IH5-Im-wbO" eventType="touchUpInside" id="8gk-9d-nG4"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="55" id="2qG-dn-Nf4"/>
+                                    <constraint firstItem="qwV-q9-q0P" firstAttribute="centerY" secondItem="OVa-x1-5jK" secondAttribute="centerY" id="BMx-hf-IcR"/>
+                                    <constraint firstItem="Da1-9m-up2" firstAttribute="centerY" secondItem="OVa-x1-5jK" secondAttribute="centerY" id="I8u-lU-VdL"/>
+                                    <constraint firstAttribute="trailing" secondItem="Da1-9m-up2" secondAttribute="trailing" constant="40" id="bkR-HF-Ea6"/>
+                                    <constraint firstItem="3lE-oF-ui7" firstAttribute="centerX" secondItem="OVa-x1-5jK" secondAttribute="centerX" id="cSm-XJ-7gw"/>
+                                    <constraint firstItem="3lE-oF-ui7" firstAttribute="centerY" secondItem="OVa-x1-5jK" secondAttribute="centerY" id="kgb-WA-JbC"/>
+                                    <constraint firstItem="qwV-q9-q0P" firstAttribute="leading" secondItem="OVa-x1-5jK" secondAttribute="leading" constant="40" id="xzr-Ao-t4f"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="GlX-Vk-fVh"/>
+                        <color key="backgroundColor" red="0.2196078431372549" green="0.2196078431372549" blue="0.2196078431372549" alpha="0.40000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="OVa-x1-5jK" firstAttribute="leading" secondItem="GlX-Vk-fVh" secondAttribute="leading" constant="10" id="Haq-1s-d08"/>
+                            <constraint firstItem="GlX-Vk-fVh" firstAttribute="trailing" secondItem="OVa-x1-5jK" secondAttribute="trailing" constant="10" id="UTg-IW-RiN"/>
+                            <constraint firstItem="OVa-x1-5jK" firstAttribute="bottom" secondItem="GlX-Vk-fVh" secondAttribute="bottom" id="o6b-nc-SmE"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="backGroundView" destination="Ol7-QQ-mpH" id="bSB-lr-8DQ"/>
+                        <outlet property="copyReplyDeleteView" destination="OVa-x1-5jK" id="Nd9-Fk-hDn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vuS-5r-JVY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-297" y="-49"/>
+        </scene>
+        <!--Delete Chat Head OptionVC-->
+        <scene sceneID="6fc-zb-rTx">
+            <objects>
+                <viewController storyboardIdentifier="DeleteChatHeadOptionVC" id="cqt-gH-Gle" customClass="DeleteChatHeadOptionVC" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="7ut-QD-EWv">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lBo-A0-ach">
+                                <rect key="frame" x="30" y="338.5" width="354" height="219"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You really want to delete this chat ?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MCX-vv-GaQ">
+                                        <rect key="frame" x="33" y="34" width="286" height="53"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                                        <color key="textColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ttd-GU-xBb">
+                                        <rect key="frame" x="32" y="137" width="118" height="41"/>
+                                        <color key="backgroundColor" red="0.43529411764705883" green="0.73333333333333328" blue="0.33333333333333331" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="41" id="Ftf-yq-qjN"/>
+                                            <constraint firstAttribute="width" constant="118" id="mBa-KE-Kmo"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Confirm">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="confirmButtonAction:" destination="cqt-gH-Gle" eventType="touchUpInside" id="K1x-hS-46o"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G3a-RG-Xke">
+                                        <rect key="frame" x="207" y="137" width="118" height="41"/>
+                                        <color key="backgroundColor" red="0.97647058823529409" green="0.24705882352941178" blue="0.30980392156862746" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="41" id="9KO-jo-mEj"/>
+                                            <constraint firstAttribute="width" constant="118" id="Lin-VZ-aiC"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Cancel">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancelButtonAction:" destination="cqt-gH-Gle" eventType="touchUpInside" id="KS2-Lw-IqV"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="MCX-vv-GaQ" secondAttribute="trailing" constant="35" id="0ku-ge-Lqs"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ttd-GU-xBb" secondAttribute="bottom" constant="41" id="3Cb-YT-Jv7"/>
+                                    <constraint firstAttribute="bottom" secondItem="G3a-RG-Xke" secondAttribute="bottom" constant="41" id="5wH-bO-Xpg"/>
+                                    <constraint firstItem="Ttd-GU-xBb" firstAttribute="leading" secondItem="lBo-A0-ach" secondAttribute="leading" constant="32" id="9Qu-mj-mmH"/>
+                                    <constraint firstItem="MCX-vv-GaQ" firstAttribute="leading" secondItem="lBo-A0-ach" secondAttribute="leading" constant="33" id="ajJ-QW-kYh"/>
+                                    <constraint firstItem="MCX-vv-GaQ" firstAttribute="top" secondItem="lBo-A0-ach" secondAttribute="top" constant="34" id="fcl-q4-BS9"/>
+                                    <constraint firstAttribute="trailing" secondItem="G3a-RG-Xke" secondAttribute="trailing" constant="29" id="kwA-Ao-Cqm"/>
+                                    <constraint firstAttribute="height" constant="219" id="uIT-yS-hRm"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="dU6-8j-O7t"/>
+                        <color key="backgroundColor" red="0.2196078431372549" green="0.2196078431372549" blue="0.2196078431372549" alpha="0.40000000000000002" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="lBo-A0-ach" firstAttribute="centerY" secondItem="7ut-QD-EWv" secondAttribute="centerY" id="KIN-VS-qoi"/>
+                            <constraint firstItem="lBo-A0-ach" firstAttribute="leading" secondItem="dU6-8j-O7t" secondAttribute="leading" constant="30" id="TYw-4U-scu"/>
+                            <constraint firstItem="lBo-A0-ach" firstAttribute="centerX" secondItem="7ut-QD-EWv" secondAttribute="centerX" id="YxO-qn-qiz"/>
+                            <constraint firstItem="dU6-8j-O7t" firstAttribute="trailing" secondItem="lBo-A0-ach" secondAttribute="trailing" constant="30" id="bv0-0w-PFz"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="backgroundView" destination="7ut-QD-EWv" id="Fhq-gt-RUm"/>
+                        <outlet property="cancelButton" destination="G3a-RG-Xke" id="YCe-Yt-xIq"/>
+                        <outlet property="confrimButton" destination="Ttd-GU-xBb" id="nfF-Y5-zXO"/>
+                        <outlet property="descriptionLabel" destination="MCX-vv-GaQ" id="pJb-5c-OkI"/>
+                        <outlet property="optionView" destination="lBo-A0-ach" id="PRL-SA-r8c"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="82a-k0-oiV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-941" y="492"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Copy" width="14" height="15"/>
+        <image name="Dustbin" width="19" height="21"/>
+        <image name="Reply" width="21" height="17"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

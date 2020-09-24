@@ -146,6 +146,21 @@ extension msgSendView: GrowingTextViewDelegate {
         // to reflect height changes
         textView.invalidateIntrinsicContentSize()
     }
+    
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        self.sendTypingEmit()
+        return true
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        if textView.text == "" {
+            self.sendBtn.setImage(UIImage.init(named: "microphone"), for: .normal)
+        } else {
+            self.sendBtn.setImage(UIImage.init(named: "navigation"), for: .normal)
+        }
+
+    }
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.text == "" {
             textView.text = "Type your message"
@@ -155,8 +170,6 @@ extension msgSendView: GrowingTextViewDelegate {
             textView.textColor = UIColor.black
             textView.text = ""
         }
-        self.sendTypingEmit()
-        
     }
     
     func sendTypingEmit(){

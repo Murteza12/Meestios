@@ -83,14 +83,14 @@ internal struct MockMessage: MessageType {
     
     var attachment: Int
     var attachmentType: String
-    var fileURL: String
+    var fileURL,videothumbnail: String
     var createdAt, deletedAt, id, msg: String
     var status: Int
     var toUserID, updatedAt, userID: String
     var sent:Bool
     var senderData:[String:Any]
 
-    private init(kind: MessageKind, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent:Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
+    private init(kind: MessageKind, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent:Bool,senderData:[String:Any], fileURL: String, attachmentType: String,videothumbnail: String) {
         self.kind = kind
         self.user = user
         self.messageId = messageId
@@ -108,46 +108,47 @@ internal struct MockMessage: MessageType {
         self.senderData=senderData
         self.attachmentType = attachmentType
         self.fileURL = fileURL
+        self.videothumbnail = videothumbnail
     }
     
-    init(custom: Any?, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
-        self.init(kind: .custom(custom), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType)
+    init(custom: Any?, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String, videothumbnail:String) {
+        self.init(kind: .custom(custom), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType,videothumbnail:videothumbnail)
     }
 
-    init(text: String, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
-        self.init(kind: .text(text), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID, sent: sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType)
+    init(text: String, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String, videothumbnail:String) {
+        self.init(kind: .text(text), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID, sent: sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType, videothumbnail: videothumbnail)
     }
 
-    init(attributedText: NSAttributedString, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
-    self.init(kind: .attributedText(attributedText), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType)
+    init(attributedText: NSAttributedString, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String, videothumbnail:String) {
+    self.init(kind: .attributedText(attributedText), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType, videothumbnail:videothumbnail)
     }
 
-    init(image: UIImage, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
+    init(image: UIImage, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String, videothumbnail:String) {
         let mediaItem = ImageMediaItem(image: image)
-        self.init(kind: .photo(mediaItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType)
+        self.init(kind: .photo(mediaItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType, videothumbnail:videothumbnail)
     }
 
-    init(thumbnail: UIImage, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
+    init(thumbnail: UIImage, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String, videothumbnail: String) {
         let mediaItem = ImageMediaItem(image: thumbnail)
-        self.init(kind: .video(mediaItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType)
+        self.init(kind: .video(mediaItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType, videothumbnail:videothumbnail)
     }
 
-    init(location: CLLocation, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
+    init(location: CLLocation, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String, videothumbnail:String) {
         let locationItem = CoordinateItem(location: location)
-        self.init(kind: .location(locationItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: toUserID,sent: sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType)
+        self.init(kind: .location(locationItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: toUserID,sent: sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType, videothumbnail:videothumbnail)
     }
 
-    init(emoji: String, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
-        self.init(kind: .emoji(emoji), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent,senderData:senderData, fileURL:fileURL,attachmentType:attachmentType)
+    init(emoji: String, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String, videothumbnail:String) {
+        self.init(kind: .emoji(emoji), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent: sent,senderData:senderData, fileURL:fileURL,attachmentType:attachmentType, videothumbnail:videothumbnail)
     }
 
-    init(audioURL: URL, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
+    init(audioURL: URL, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String, videothumbnail:String) {
         let audioItem = MockAudiotem(url: audioURL)
-        self.init(kind: .audio(audioItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID, sent:sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType)
+        self.init(kind: .audio(audioItem), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID, sent:sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType, videothumbnail:videothumbnail)
     }
 
-    init(contact: MockContactItem, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String) {
-        self.init(kind: .contact(contact), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType)
+    init(contact: MockContactItem, user: MockUser, messageId: String, date: Date,attachment: Int, createdAt: String, deletedAt: String, id: String, msg: String, status: Int, toUserID: String, updatedAt: String, userID: String,sent: Bool,senderData:[String:Any], fileURL: String, attachmentType: String, videothumbnail:String) {
+        self.init(kind: .contact(contact), user: user, messageId: messageId, date: date,attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: msg, status: status, toUserID: toUserID, updatedAt: updatedAt, userID: userID,sent:sent,senderData:senderData,fileURL:fileURL,attachmentType:attachmentType, videothumbnail:videothumbnail)
     }
 }
 
