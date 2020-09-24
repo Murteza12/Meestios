@@ -67,7 +67,8 @@ class mainChatVC: RootBaseVC {
         self.socket = APIManager.sharedInstance.getSocket()
         self.addHandler()
         self.tableView.becomeFirstResponder()
-        
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapBtnAction(_:)))
+        self.view.addGestureRecognizer(recognizer)
         NotificationCenter.default.addObserver(self, selector: #selector(attachmentButtonClicked), name: Notification.Name.init(rawValue: "attachmentButtonClicked"), object: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -109,16 +110,16 @@ class mainChatVC: RootBaseVC {
     }
     @IBAction func callButtonAction(_ sender:UIButton) {
        
-        
+        self.tableView.becomeFirstResponder()
         
     }
     @IBAction func videoCallButtonAction(_ sender:UIButton) {
        
-        
+        self.tableView.becomeFirstResponder()
         
     }
     @IBAction func informationButtonAction(_ sender:UIButton) {
-        
+        self.tableView.becomeFirstResponder()
     }
     @IBAction func sendmsg(_ sender:UIButton) {
        
@@ -303,7 +304,6 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         return self.messages.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapBtnAction(_:)))
         if self.messages[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
             cell.selectionStyle = .none
@@ -327,7 +327,6 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
 //                        addBlurEffectToImageView(imageView: cell.img)
                         cell.img.tag = indexPath.row
                         cell.img.isUserInteractionEnabled = true
-                        cell.img.addGestureRecognizer(recognizer)
                     }
                 }else if ind.attachmentType == "Image"{
                     if !ind.fileURL.isEmpty{
@@ -362,7 +361,6 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
 //                        addBlurEffectToImageView(imageView: cell.img)
                         cell.img.tag = indexPath.row
                         cell.img.isUserInteractionEnabled = true
-                        cell.img.addGestureRecognizer(recognizer)
                     }
                 }else if ind.attachmentType == "Image"{
                     if !ind.fileURL.isEmpty{
@@ -395,6 +393,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         self.videoPlaySelect(indexPath: indexPath)
+        
         self.selectedCell = indexPath.row
         tableView.becomeFirstResponder()
     }
@@ -447,19 +446,7 @@ class msgReceiverCell:UITableViewCell {
 extension mainChatVC : AVPlayerViewControllerDelegate {
     
     @objc func tapBtnAction(_ sender: UITapGestureRecognizer) {
-//        print("\(String(describing: sender.view?.tag)) Tapped")
-//        let data = self.messages[selectedCell!]
-//            if data.attachment == 1{
-//                if data.attachmentType == "video"{
-//                    if !data.fileURL.isEmpty{
-//                        play(url1: data.fileURL)
-//                    }
-//                }else if data.attachmentType == "Image"{
-//                    if !data.fileURL.isEmpty{
-//
-//                    }
-//                }
-//            }
+        self.tableView.becomeFirstResponder()
         }
     
     func videoPlaySelect(indexPath: IndexPath ) {
@@ -540,8 +527,10 @@ extension mainChatVC{
         }
         
         deleteOptionVC?.copyCompletion = { [weak self] in
-            print("Copy Called")
-                        
+           
+//            let data = self?.messages[(self?.selectedCell!)!]
+//            UIPasteboard.general.string = data?.msg
+//            print("Copy Called \(data?.msg)")
         }
     }
     
@@ -652,6 +641,7 @@ extension mainChatVC{
 //        let cell = tableView.cellForRow(at: indexPath)
 //        self.selectedCell = cell
         let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
+        longGesture.minimumPressDuration = 1.0
         tableView.addGestureRecognizer(longGesture)
     }
     @objc func longTap(_ sender: UIGestureRecognizer){
@@ -661,10 +651,7 @@ extension mainChatVC{
         }
         else if sender.state == .began {
             print("UIGestureRecognizerStateBegan.")
-                let seconds = 1.0
-                DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                    self.messageLongPressAction()
-                }
+            self.messageLongPressAction()
         }
     }
 }

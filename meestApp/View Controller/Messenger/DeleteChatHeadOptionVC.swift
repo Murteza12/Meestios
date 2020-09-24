@@ -17,8 +17,13 @@ class DeleteChatHeadOptionVC: UIViewController {
     @IBOutlet weak var cancelButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        optionView.cornerRadius(radius: 15)
+        confrimButton.cornerRadius(radius: 8)
+        cancelButton.cornerRadius(radius: 8)
     }
     
     @IBAction func confirmButtonAction(_ sender: Any) {
