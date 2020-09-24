@@ -34,7 +34,7 @@ class mainChatVC: RootBaseVC {
     
     var blurView: UIView?
     var selectedCell: Int?
-    var uploadImageView: UIImageView?
+    var uploadImage: UIImage?
     var userid = ""
     var count = 0
     var toUser:ChatHeads?
@@ -105,8 +105,9 @@ class mainChatVC: RootBaseVC {
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+        tableView.becomeFirstResponder()
     }
+    
     @IBAction func sendmsg(_ sender:UIButton) {
        
         self.msgTxtView.text = ""
@@ -259,8 +260,10 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.txt1.textColor = UIColor.white
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
-//            if ind.attachment == 1{
-//                if ind.attachmentType == "video"{
+            cell.img.image = nil
+            if ind.attachment == 1{
+                cell.txt1.text = ""
+                if ind.attachmentType == "video"{
 //                    if !ind.fileURL.isEmpty{
 //                        cell.img.kf.indicatorType = .activity
 //                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
@@ -269,18 +272,18 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
 //                        cell.img.isUserInteractionEnabled = true
 //                        cell.img.addGestureRecognizer(recognizer)
 //                    }
-//                }else if ind.attachmentType == "Image"{
-//                    if !ind.fileURL.isEmpty{
-//                        cell.img.kf.indicatorType = .activity
-//                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
-//                        cell.img.tag = indexPath.row
-//                        cell.img.isUserInteractionEnabled = true
-//                        cell.img.addGestureRecognizer(recognizer)
-//                    }else{
-//                        cell.img.image = nil
-//                    }
-//                }
-//            }
+                }else if ind.attachmentType == "Image"{
+                    if !ind.fileURL.isEmpty{
+                        cell.img.kf.indicatorType = .activity
+                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        cell.img.tag = indexPath.row
+                        cell.img.isUserInteractionEnabled = true
+                        cell.img.addGestureRecognizer(recognizer)
+                    }else{
+                        cell.img.image = nil
+                    }
+                }
+            }
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell2") as! msgReceiverCell
@@ -291,9 +294,10 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.txt1.textColor = UIColor.init(hex: 0x354052)
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
-//            if ind.attachment == 1{
-//                cell.txt1.text = ""
-//                if ind.attachmentType == "video"{
+            cell.img.image = nil
+            if ind.attachment == 1{
+                cell.txt1.text = ""
+                if ind.attachmentType == "video"{
 //                    if !ind.fileURL.isEmpty{
 //                        cell.img.kf.indicatorType = .activity
 //                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
@@ -302,18 +306,18 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
 //                        cell.img.isUserInteractionEnabled = true
 //                        cell.img.addGestureRecognizer(recognizer)
 //                    }
-//                }else if ind.attachmentType == "Image"{
-//                    if !ind.fileURL.isEmpty{
-//                        cell.img.kf.indicatorType = .activity
-//                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
-//                        cell.img.tag = indexPath.row
-//                        cell.img.isUserInteractionEnabled = true
-//                        cell.img.addGestureRecognizer(recognizer)
-//                    }else{
-//                        cell.img.image = nil
-//                    }
-//                }
-//            }
+                }else if ind.attachmentType == "Image"{
+                    if !ind.fileURL.isEmpty{
+                        cell.img.kf.indicatorType = .activity
+                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        cell.img.tag = indexPath.row
+                        cell.img.isUserInteractionEnabled = true
+                        cell.img.addGestureRecognizer(recognizer)
+                    }else{
+                        cell.img.image = nil
+                    }
+                }
+            }
             if let url = ind.senderData["displayPicture"] as? String{
                 cell.proImg.applyRoundedView()
             cell.proImg.image = UIImage(named: "img")
@@ -329,6 +333,10 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         return UITableView.automaticDimension
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        tableView.becomeFirstResponder()
+    }
     func scrollToBottom(){
         DispatchQueue.main.async {
             let indexPath = IndexPath(row: self.messages.count-1, section: 0)
@@ -472,7 +480,7 @@ extension mainChatVC{
     }
      func uploadImg() {
         self.loadAnimation()
-        APIManager.sharedInstance.uploadImage(vc: self, img: (self.uploadImageView?.image)!) { (str) in
+        APIManager.sharedInstance.uploadImage(vc: self, img: (self.uploadImage)!) { (str) in
             if str == "success" {
                 self.removeAnimation()
                 let imgURL = UserDefaults.standard.string(forKey: "IMG")
@@ -482,8 +490,6 @@ extension mainChatVC{
                            "attachment":true,"attachmentType":"Image","fileURL":imgURL ?? ""] as [String : Any]
                 print(new)
                 self.socket.emit("send", new)
-//                let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
-//                self.socket.emit("get_history", neww)
             }
         }
     }
@@ -496,7 +502,7 @@ extension mainChatVC:UINavigationControllerDelegate, UIImagePickerControllerDele
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let img = info[.editedImage] as! UIImage
-        self.uploadImageView?.image = img
+        self.uploadImage = img
         picker.dismiss(animated: true) {
             self.uploadImg()
         }
@@ -524,6 +530,17 @@ extension UIImageView{
     func applyRoundedView(){
         self.layer.cornerRadius = self.frame.size.width / 2
         self.clipsToBounds = true
+    }
+}
+
+extension String {
+    func encode() -> String {
+        let data = self.data(using: .nonLossyASCII, allowLossyConversion: true)!
+        return String(data: data, encoding: .utf8)!
+    }
+    func decode() -> String? {
+        let data = self.data(using: .utf8)!
+        return String(data: data, encoding: .nonLossyASCII)
     }
 }
 

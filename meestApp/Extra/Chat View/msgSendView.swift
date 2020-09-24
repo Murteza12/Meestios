@@ -54,7 +54,7 @@ class msgSendView: UIView {
     @IBAction func btnSendActino(_ sender: Any) {
         if sendBtn.currentImage == UIImage(named: "navigation"){
             if self.textView.text != ""{
-                let new = ["msg" : self.textView.text ?? "",
+                let new = ["msg" : (self.textView.text ?? "").encode(),
                            "chatHeadId" : self.toUser?.chatHeadId ?? "",
                            "userId": self.userid ,
                            "attachment":false,"attachmentType":"","fileURL":""] as [String : Any]
@@ -91,10 +91,6 @@ class msgSendView: UIView {
 extension msgSendView {
   // Performs the initial setup.
     private func setupView() {
-        self.socket = APIManager.sharedInstance.getSocket()
-        APIManager.sharedInstance.getCurrentUser(vc: UIViewController()) { (user) in
-            self.userid = user.id
-        }
         
         let view = viewFromNibForClass()
         view.frame = bounds
@@ -105,6 +101,11 @@ extension msgSendView {
         addSubview(view)
     
         textView.translatesAutoresizingMaskIntoConstraints = false
+        
+            self.socket = APIManager.sharedInstance.getSocket()
+            APIManager.sharedInstance.getCurrentUser(vc: UIViewController()) { (user) in
+                self.userid = user.id
+            }
         
         switch AVAudioSession.sharedInstance().recordPermission {
                case AVAudioSessionRecordPermission.granted:
