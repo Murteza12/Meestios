@@ -31,7 +31,11 @@ class mainChatVC: RootBaseVC {
     @IBOutlet weak var msgTxtView:UITextView!
     @IBOutlet weak var tableView:chatTblView!
     @IBOutlet var typingLabel: UILabel!
-
+    @IBOutlet weak var audioPlayer:UIView!
+    @IBOutlet weak var audiaPlayButton:UIButton!
+    @IBOutlet weak var audioTimerLabel:UILabel!
+    @IBOutlet weak var progressBar: UIProgressView!
+    
     var isSent:Bool = false
     var numberOfRecords = 0
     var pageNumberToBeLoad = 1
@@ -108,6 +112,12 @@ class mainChatVC: RootBaseVC {
         self.messages.removeAll()
         self.lastData.removeAll()
     }
+    
+    @IBAction func playAudioButtonAction(_ sender:UIButton) {
+       
+        self.tableView.becomeFirstResponder()
+        
+    }
     @IBAction func callButtonAction(_ sender:UIButton) {
        
         self.tableView.becomeFirstResponder()
@@ -146,12 +156,7 @@ class mainChatVC: RootBaseVC {
             print(data)
             self.isSent = true
             self.scrollToBottom()
-            APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
-                self.userid = user.id
-                let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
-                self.socket.emit("get_history", neww)
-            }
-            
+            self.getHistorySocketCall()
         }
         self.socket.on("message") { (dataa, ack) in
             print(dataa)
@@ -202,7 +207,7 @@ class mainChatVC: RootBaseVC {
                 let id = ii["id"] as? String ?? ""
                 let msg = ii["msg"] as? String ?? ""
                 let status = ii["status"] as? Int ?? 0
-                let toUserId = ii["toUserId"] as? String ?? ""
+                let toUserId = ii["chatHeadId"] as? String ?? ""
                 let updatedAt = ii["updatedAt"] as? String ?? ""
                 let userId = ii["userId"] as? String ?? ""
                 let sent = ii["sender"] as? Bool ?? false
@@ -245,6 +250,15 @@ class mainChatVC: RootBaseVC {
         if (scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) {
             self.isScrollToTop = false
         }
+    }
+    
+    func getHistorySocketCall(){
+        APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
+            self.userid = user.id
+            let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? "","page":self.pageNumberToBeLoad] as [String : Any]
+            self.socket.emit("get_history", neww)
+        }
+
     }
   
     func loadMore(){
@@ -323,7 +337,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
-                        cell.playImageView.image = UIImage(named: "Play")
+                        cell.playImageView.image = UIImage(named: "play")
 //                        addBlurEffectToImageView(imageView: cell.img)
                         cell.img.tag = indexPath.row
                         cell.img.isUserInteractionEnabled = true
@@ -357,7 +371,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
-                        cell.playImageView.image = UIImage(named: "Play")
+                        cell.playImageView.image = UIImage(named: "play")
 //                        addBlurEffectToImageView(imageView: cell.img)
                         cell.img.tag = indexPath.row
                         cell.img.isUserInteractionEnabled = true
@@ -519,6 +533,10 @@ extension mainChatVC{
         
         deleteOptionVC?.deleteCompletion = { [weak self] in
             print("Delete Called")
+            let data = self?.messages[(self?.selectedCell!)!]
+            let payload = ["messageId": data?.id, "userId": data?.userID]
+            self?.socket.emit("deletedMessage", payload)
+            self?.getHistorySocketCall()
             
         }
         
@@ -528,9 +546,9 @@ extension mainChatVC{
         
         deleteOptionVC?.copyCompletion = { [weak self] in
            
-//            let data = self?.messages[(self?.selectedCell!)!]
-//            UIPasteboard.general.string = data?.msg
-//            print("Copy Called \(data?.msg)")
+            let data = self?.messages[(self?.selectedCell!)!]
+            UIPasteboard.general.string = data?.msg
+            print("Copy Called \(String(describing: data?.msg))")
         }
     }
     
@@ -642,6 +660,7 @@ extension mainChatVC{
 //        self.selectedCell = cell
         let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
         longGesture.minimumPressDuration = 1.0
+        
         tableView.addGestureRecognizer(longGesture)
     }
     @objc func longTap(_ sender: UIGestureRecognizer){
@@ -651,7 +670,11 @@ extension mainChatVC{
         }
         else if sender.state == .began {
             print("UIGestureRecognizerStateBegan.")
-            self.messageLongPressAction()
+            let touchPoint = sender.location(in: self.tableView)
+                    if let indexPath = tableView.indexPathForRow(at: touchPoint) {
+                        self.selectedCell = indexPath.row
+                        self.messageLongPressAction()
+                    }
         }
     }
 }

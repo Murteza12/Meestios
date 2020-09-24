@@ -166,7 +166,7 @@ extension msgSendView: GrowingTextViewDelegate {
             textView.text = "Type your message"
             textView.textColor = UIColor.gray
         } else {
-            self.sendBtn.setImage(UIImage.init(named: "navigation"), for: .normal)
+//            self.sendBtn.setImage(UIImage.init(named: "navigation"), for: .normal)
             textView.textColor = UIColor.black
             textView.text = ""
         }

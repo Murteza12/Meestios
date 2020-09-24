@@ -39,10 +39,6 @@ class peoplesVC: RootBaseVC {
     }
     
     func getAll() {
-//        APIManager.sharedInstance.getAllConversation(vc: self) { (all) in
-//            self.allUser = all
-//            self.tableView.reloadData()
-//        }
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             let payload = ["userId":user.id]
             self.socket.emit("getChatHeads", payload)
