@@ -21,7 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
     var window: UIWindow?
 //    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
     let gcmMessageIDKey = "gcm.message_id"
-    var socket:SocketIOClient!
     var myViewController: RootBaseVC?
     
     var isUserHasLoggedInWithApp: Bool = true
@@ -38,15 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
         }
         let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
         let vc = storyboard.instantiateInitialViewController()
-        APIManager.sharedInstance.getCurrentUser(vc: vc!) { (user) in
-            if Token.sharedInstance.getToken() != "" {
-                self.socket = APIManager.sharedInstance.getSocket()
-                self.addHandlers(userid: user.id, username: user.username)
-                self.socket.connect()
-            }
-        }
-        
-        
         
         print(try! Realm().configuration.fileURL?.absoluteString ?? "")
         UNUserNotificationCenter.current().delegate = self
@@ -135,26 +125,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
 
         } else {
         // Fallback on earlier versions
-        }
-
-
-    }
-    func addHandlers(userid:String,username:String) {
-        
-        self.socket.emit("connection")
-        self.socket.on("connected") { data, ack in
-            print(data)
-            let data = data as! [[String:Any]]
-            let msg = data[0]["msg"] as? String ?? ""
-            print(msg)
-        }
-        
-        let payload = ["userId":userid,"name":username]
-        socket.once(clientEvent: .connect) {data, ack in
-            self.socket.emit("createSession", payload)
-            self.socket.on("session") { (dataa, ack) in
-                print(dataa)
-            }
         }
     }
     

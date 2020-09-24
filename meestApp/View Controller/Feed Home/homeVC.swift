@@ -12,13 +12,14 @@ import SwiftRichString
 import SimpleAnimation
 import Lottie
 import Hero
+import SocketIO
 
 class homeVC: RootBaseVC, UIViewControllerTransitioningDelegate {
 
     @IBOutlet weak var tableView:subTblView!
     @IBOutlet weak var storyCollection:UICollectionView!
     @IBOutlet weak var menuButton: UIButton!
-    
+    var socket:SocketIOClient!
     let transition = CircularTransition()
     
     var allPost = [Post]()
@@ -41,6 +42,14 @@ class homeVC: RootBaseVC, UIViewControllerTransitioningDelegate {
         
         self.storyCollection.delegate = self
         self.storyCollection.dataSource = self
+        
+        APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
+            if Token.sharedInstance.getToken() != "" {
+                self.socket = APIManager.sharedInstance.getSocket()
+                self.addHandlers(userid: user.id, username: user.username)
+                self.socket.connect()
+            }
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -74,6 +83,25 @@ class homeVC: RootBaseVC, UIViewControllerTransitioningDelegate {
 //        let secondVC = segue.destination as! videoHomeVC
 //        secondVC.transitioningDelegate = self
 //        secondVC.modalPresentationStyle = .custom
+    }
+    
+    func addHandlers(userid:String,username:String) {
+        
+        self.socket.emit("connection")
+        self.socket.on("connected") { data, ack in
+            print(data)
+            let data = data as! [[String:Any]]
+            let msg = data[0]["msg"] as? String ?? ""
+            print(msg)
+        }
+        
+        let payload = ["userId":userid,"name":username]
+        socket.once(clientEvent: .connect) {data, ack in
+            self.socket.emit("createSession", payload)
+            self.socket.on("session") { (dataa, ack) in
+                print(dataa)
+            }
+        }
     }
     @IBAction func videoView(_ sender:UIButton) {
         
