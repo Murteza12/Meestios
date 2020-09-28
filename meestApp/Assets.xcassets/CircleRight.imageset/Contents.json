@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "imgonline-com-ua-Piconpic-QnRcK91mpW3FID.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

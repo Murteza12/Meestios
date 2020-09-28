@@ -40,7 +40,7 @@ class mainChatVC: RootBaseVC {
     var numberOfRecords = 0
     var pageNumberToBeLoad = 1
     var blurView: UIView?
-    var selectedCell: Int?
+    var selectedCell: IndexPath?
     var uploadImage: UIImage?
     var userid = ""
     var count = 0
@@ -51,16 +51,7 @@ class mainChatVC: RootBaseVC {
     var playerController : AVPlayerViewController!
     var isScrollToTop: Bool = false
     var offsetObservation: NSKeyValueObservation?
-        lazy var mmPlayerLayer: MMPlayerLayer = {
-            let l = MMPlayerLayer()
-            l.cacheType = .memory(count: 5)
-            l.coverFitType = .fitToPlayerView
-            l.videoGravity = AVLayerVideoGravity.resizeAspect
-//            l.replace(cover: CoverA.instantiateFromNib())
-//            l.repeatWhenEnd = true
-            return l
-        }()
-    
+            
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -68,7 +59,8 @@ class mainChatVC: RootBaseVC {
         self.img.cornerRadius(radius: self.img.frame.height / 2)
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        self.socket = APIManager.sharedInstance.getSocket()
+//        self.socket =  SocketSessionHandler.sharedInstance.getSocket()
+
         self.addHandler()
         self.tableView.becomeFirstResponder()
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapBtnAction(_:)))
@@ -130,6 +122,13 @@ class mainChatVC: RootBaseVC {
     }
     @IBAction func informationButtonAction(_ sender:UIButton) {
         self.tableView.becomeFirstResponder()
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let multiOptionVC = stoaryboard.instantiateViewController(withIdentifier: "MultiOptionVC") as? MultiOptionVC
+        multiOptionVC?.modalPresentationStyle = .overCurrentContext
+        multiOptionVC?.modalTransitionStyle = .crossDissolve
+        self.present(multiOptionVC!, animated: true) {
+            
+        }
     }
     @IBAction func sendmsg(_ sender:UIButton) {
        
@@ -139,6 +138,26 @@ class mainChatVC: RootBaseVC {
     }
     
     func addHandler() {
+        
+        self.socket.on("deletedMessage") { data, ack in
+            print(data)
+            if let val = self.selectedCell?.row{
+                let data = self.messages[val]
+                if data.status == 0 {
+                    let cell = self.tableView.cellForRow(at: self.selectedCell!)
+                    if let cell = cell as? msgSenderCell{
+                        cell.txt1.text = "@This message is deleted."
+                        cell.txt1.textColor = UIColor.lightGray
+                        cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
+                    }else if let cell = cell as? msgReceiverCell{
+                        cell.txt1.text = "@This message is deleted."
+                        cell.txt1.textColor = UIColor.lightGray
+                        cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
+                    }
+                }
+            }
+        }
+
         
         self.socket.on("friend_typing") { data, ack in
             print(data)
@@ -156,7 +175,7 @@ class mainChatVC: RootBaseVC {
             print(data)
             self.isSent = true
             self.scrollToBottom()
-            self.getHistorySocketCall()
+            self.getHistorySocketCall(pageNumber: 1)
         }
         self.socket.on("message") { (dataa, ack) in
             print(dataa)
@@ -252,10 +271,10 @@ class mainChatVC: RootBaseVC {
         }
     }
     
-    func getHistorySocketCall(){
+    func getHistorySocketCall(pageNumber: Int){
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             self.userid = user.id
-            let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? "","page":self.pageNumberToBeLoad] as [String : Any]
+            let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? "","page":pageNumber] as [String : Any]
             self.socket.emit("get_history", neww)
         }
 
@@ -296,6 +315,23 @@ class mainChatVC: RootBaseVC {
         
     }
 }
+
+extension mainChatVC{
+    func playAudio(url: String, cell: UITableViewCell) {
+        let player = AVPlayer(url: URL(string: url)!)
+        player.play()
+        player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: .main) { time in
+
+            let fraction = CMTimeGetSeconds(time) / CMTimeGetSeconds(player.currentItem!.duration)
+            if let cell = cell as? msgSenderCell{
+                cell.progressBar.progress = Float(fraction)
+            }
+            if let cell = cell as? msgSenderCell{
+                cell.progressBar.progress = Float(fraction)
+            }
+        }
+    }
+}
 extension mainChatVC: UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -320,7 +356,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if self.messages[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
-            cell.selectionStyle = .none
+//            cell.selectionStyle = .none
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
@@ -331,9 +367,15 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.timelbl.text = ind.createdAt
             cell.img.image = nil
             cell.playImageView.image = nil
+            cell.audioPlayer.isHidden = true
+            if ind.status == 0{
+                cell.txt1.text = "@This message is deleted."
+                cell.txt1.textColor = UIColor.lightGray
+                cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
+            }
             if ind.attachment == 1{
                 cell.txt1.text = ""
-                if ind.attachmentType == "video"{
+                if ind.attachmentType == "Video"{
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
@@ -350,7 +392,13 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     }else{
                         cell.img.image = nil
                     }
+                }else if ind.attachmentType == "Audio"{
+                    if !ind.fileURL.isEmpty{
+                        cell.audioPlayer.isHidden = false
+                        cell.progressBar.progress = 0.0
+                    }
                 }
+
             }
             return cell
         } else {
@@ -365,9 +413,15 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.timelbl.text = ind.createdAt
             cell.img.image = nil
             cell.playImageView.image = nil
+            cell.audioPlayer.isHidden = true
+            if ind.status == 0{
+                cell.txt1.text = "@This message is deleted."
+                cell.txt1.textColor = UIColor.lightGray
+                cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
+            }
             if ind.attachment == 1{
                 cell.txt1.text = ""
-                if ind.attachmentType == "video"{
+                if ind.attachmentType == "Video"{
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
@@ -383,6 +437,12 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                         cell.img.tag = indexPath.row
                     }else{
                         cell.img.image = nil
+                    }
+                }else if ind.attachmentType == "Audio"{
+                    if !ind.fileURL.isEmpty{
+                        cell.audioPlayer.isHidden = false
+                        cell.txt1.text = "                           "
+                        cell.progressBar.progress = 0.0
                     }
                 }
             }
@@ -398,8 +458,10 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if self.messages[indexPath.row].attachment == 1{
+        if self.messages.count > 0, self.messages[indexPath.row].attachment == 1{
+            if self.messages[indexPath.row].attachmentType != "Audio"{
             return 250
+            }
         }
         return UITableView.automaticDimension
     }
@@ -408,7 +470,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: false)
         self.videoPlaySelect(indexPath: indexPath)
         
-        self.selectedCell = indexPath.row
+        self.selectedCell = indexPath
         tableView.becomeFirstResponder()
     }
     func scrollToBottom(){
@@ -443,8 +505,18 @@ class msgSenderCell:UITableViewCell {
     @IBOutlet weak var img:UIImageView!
     @IBOutlet weak var sentimg:UIImageView!
     @IBOutlet weak var timelbl:UILabel!
-    
     @IBOutlet var playImageView: UIImageView!
+    @IBOutlet weak var audioPlayer:UIView!
+    @IBOutlet weak var audiaPlayButton:UIButton!
+    @IBOutlet weak var audioTimerLabel:UILabel!
+    @IBOutlet var audiaPlayButtonImageView: UIImageView!
+    @IBOutlet weak var progressBar: UIProgressView!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.audioPlayer.cornerRadius(radius: 13)
+        self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
+    }
 }
 class msgReceiverCell:UITableViewCell {
     
@@ -455,25 +527,53 @@ class msgReceiverCell:UITableViewCell {
     @IBOutlet weak var timelbl:UILabel!
     @IBOutlet weak var proImg:UIImageView!
     @IBOutlet var playImageView: UIImageView!
+    @IBOutlet weak var audioPlayer:UIView!
+    @IBOutlet weak var audiaPlayButton:UIButton!
+    @IBOutlet weak var audioTimerLabel:UILabel!
+    @IBOutlet var audiaPlayButtonImageView: UIImageView!
+    @IBOutlet weak var progressBar: UIProgressView!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.audioPlayer.cornerRadius(radius: 13)
+        self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
+    }
+}
+
+extension mainChatVC: UIGestureRecognizerDelegate{
+    @objc func tapBtnAction(_ sender: UITapGestureRecognizer) {
+        self.tableView.becomeFirstResponder()
+        }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view?.isDescendant(of: self.tableView) == true{
+            return false
+        }else{
+            return true
+        }
+    }
 }
 
 extension mainChatVC : AVPlayerViewControllerDelegate {
     
-    @objc func tapBtnAction(_ sender: UITapGestureRecognizer) {
-        self.tableView.becomeFirstResponder()
-        }
+    
     
     func videoPlaySelect(indexPath: IndexPath ) {
         print("\(String(describing: indexPath.row)) Tapped")
         let data = self.messages[indexPath.row]
             if data.attachment == 1{
-                if data.attachmentType == "video"{
+                if data.attachmentType == "Video"{
                     if !data.fileURL.isEmpty{
                         play(url1: data.fileURL)
                     }
                 }else if data.attachmentType == "Image"{
                     if !data.fileURL.isEmpty{
                         
+                    }
+                }else if data.attachmentType == "Audio"{
+                    if !data.fileURL.isEmpty{
+                        let cell = self.tableView.cellForRow(at: indexPath)
+                        playAudio(url: data.fileURL, cell: cell!)
                     }
                 }
             }
@@ -533,11 +633,10 @@ extension mainChatVC{
         
         deleteOptionVC?.deleteCompletion = { [weak self] in
             print("Delete Called")
-            let data = self?.messages[(self?.selectedCell!)!]
+            let data = self?.messages[(self?.selectedCell!.row)!]
             let payload = ["messageId": data?.id, "userId": data?.userID]
-            self?.socket.emit("deletedMessage", payload)
-            self?.getHistorySocketCall()
-            
+            self?.socket.emit("deleteChat", payload)
+            //self?.getHistorySocketCall(pageNumber:self!.pageNumberToBeLoad)
         }
         
         deleteOptionVC?.replyCompletion = { [weak self] in
@@ -546,7 +645,7 @@ extension mainChatVC{
         
         deleteOptionVC?.copyCompletion = { [weak self] in
            
-            let data = self?.messages[(self?.selectedCell!)!]
+            let data = self?.messages[(self?.selectedCell!.row)!]
             UIPasteboard.general.string = data?.msg
             print("Copy Called \(String(describing: data?.msg))")
         }
@@ -656,8 +755,6 @@ extension String {
 extension mainChatVC{
     
     func longPressGesture() {
-//        let cell = tableView.cellForRow(at: indexPath)
-//        self.selectedCell = cell
         let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
         longGesture.minimumPressDuration = 1.0
         
@@ -672,7 +769,7 @@ extension mainChatVC{
             print("UIGestureRecognizerStateBegan.")
             let touchPoint = sender.location(in: self.tableView)
                     if let indexPath = tableView.indexPathForRow(at: touchPoint) {
-                        self.selectedCell = indexPath.row
+                        self.selectedCell = indexPath
                         self.messageLongPressAction()
                     }
         }

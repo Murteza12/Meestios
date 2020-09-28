@@ -45,9 +45,13 @@ class homeVC: RootBaseVC, UIViewControllerTransitioningDelegate {
         
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             if Token.sharedInstance.getToken() != "" {
-                self.socket = APIManager.sharedInstance.getSocket()
+                self.socket = SocketSessionHandler.manager.defaultSocket
                 self.addHandlers(userid: user.id, username: user.username)
-                self.socket.connect()
+                if self.socket.status != .connected{
+                    self.socket.connect(timeoutAfter: 30) {
+                        self.socket.emit("connection")
+                    }
+                }
             }
         }
     }
@@ -87,20 +91,20 @@ class homeVC: RootBaseVC, UIViewControllerTransitioningDelegate {
     
     func addHandlers(userid:String,username:String) {
         
-        self.socket.emit("connection")
         self.socket.on("connected") { data, ack in
             print(data)
             let data = data as! [[String:Any]]
             let msg = data[0]["msg"] as? String ?? ""
             print(msg)
+            let payload = ["userId":userid,"name":username]
+            self.socket.once(clientEvent: .connect) {data, ack in
+                self.socket.emit("createSession", payload)
+            }
+
         }
-        
-        let payload = ["userId":userid,"name":username]
-        socket.once(clientEvent: .connect) {data, ack in
-            self.socket.emit("createSession", payload)
             self.socket.on("session") { (dataa, ack) in
                 print(dataa)
-            }
+            
         }
     }
     @IBAction func videoView(_ sender:UIButton) {
@@ -325,10 +329,10 @@ extension homeVC:UITableViewDelegate, UITableViewDataSource {
         }
         
         let stylesl = StyleXML.init(base: l1, ["l2" : l2])
-        if ind.postLikes.count > 0 {
-            let strr = "Liked By <l2>\(ind.postLikes[0].user.username)</l2> and <l2>\(ind.postLikes.count) Others</l2>"
-            cell.likeLbl.attributedText = strr.set(style: stylesl)
-        }
+//        if ind.postLikes.count > 0 {
+//            let strr = "Liked By <l2>\(ind.postLikes[0].user.username)</l2> and <l2>\(ind.postLikes.count) Others</l2>"
+//            cell.likeLblCount.attributedText = strr.set(style: stylesl)
+//        }
         
         cell.likeLblCount.text = ind.liked.toString()
       //  cell.likeBtn.cornerRadius(radius: cell.likeBtn.frame.height / 2)
@@ -358,7 +362,9 @@ extension homeVC:UITableViewDelegate, UITableViewDataSource {
         }
         let animation = Animation.named(Themes.save)
         cell.saveBtn1.animation = animation
-        cell.commentCount.text = ind.commentCounts.toString()
+//        let string = ind.commentCounts.toString() + " Comment"
+        cell.commentshareLbl.font = UIFont.init(name: APPFont.regular, size: 12)
+        cell.commentshareLbl.text = ind.commentCounts.toString() + " Comment " + "● " + ind.commentCounts.toString() + " Share"
         cell.commentBtn.tag = indexPath.row
         cell.commentBtn.addTarget(self, action: #selector(postComment(_:)), for: .touchUpInside)
         return cell
@@ -595,3 +601,21 @@ extension CircularTransition:UIViewControllerAnimatedTransitioning {
     
     }
 }
+
+//extension homeVC: URLSessionDelegate{
+//    
+//    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+//        
+//        if challenge.protectionSpace.host == "socket.dbmdemo.com" {
+//                completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
+//            } else {
+//                completionHandler(.performDefaultHandling, nil)
+//            }
+////        if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust) {
+////            if let serverTrust = challenge.protectionSpace.serverTrust {
+////                completionHandler(.useCredential, URLCredential(trust:serverTrust))
+////                return
+////            }
+////        }
+//    }
+//}

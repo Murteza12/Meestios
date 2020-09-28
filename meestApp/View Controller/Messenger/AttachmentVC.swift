@@ -10,6 +10,7 @@ import UIKit
 
 class AttachmentVC: UIViewController {
     
+    @IBOutlet var backgroundView: UIView!
     @IBOutlet var attachementButton: UIButton!
     @IBOutlet var galleryButton: UIButton!
     @IBOutlet var popUpView: UIView!
@@ -21,8 +22,13 @@ class AttachmentVC: UIViewController {
         super.viewDidLoad()
         galleryView.cornerRadius(radius: 9.0)
         attacementView.cornerRadius(radius: 9.0)
-        
+        let tapOnScreen: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissView))
+        self.backgroundView.addGestureRecognizer(tapOnScreen)
         // Do any additional setup after loading the view.
+    }
+    
+    @objc func dismissView(){
+        self.dismiss(animated: true, completion: nil)
     }
     
     override func viewDidLayoutSubviews() {

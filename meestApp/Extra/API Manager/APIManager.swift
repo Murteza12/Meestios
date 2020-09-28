@@ -15,8 +15,8 @@ class APIManager {
     
     static let sharedInstance = APIManager()
     let realm = try! Realm()
-    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
-    var socket:SocketIOClient!
+//    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
+//    var socket:SocketIOClient!
     
     func addToken(token:String,completion:@escaping () -> Void) {
         let realm = try! Realm()
@@ -304,6 +304,31 @@ class APIManager {
                         completion("success")
                     }
                 }
+            } else if response.response?.statusCode == 503 {
+                
+            } else {
+                completion("failure")
+            }
+        }
+    }
+    
+    func uploadAudio(vc:UIViewController, url:URL, fileName: String,completion:@escaping(String) -> Void) {
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        
+        AF.upload(multipartFormData: { multipartFormData in
+            
+            multipartFormData.append(url, withName: fileName)
+            
+            print(multipartFormData.contentType)
+        }, to: APIS.profilePic,method: .post,headers: header).responseJSON { response in
+            print(response)
+            if response.response?.statusCode == 200 {
+                let data = response.value as? [String:Any] ?? [:]
+                let innerData = data["data"] as? [String:Any] ?? [:]
+                let url = innerData["url"] as? String ?? ""
+                UserDefaults.standard.set(url, forKey: "Audio")
+                completion("success")
+        
             } else if response.response?.statusCode == 503 {
                 
             } else {
@@ -1207,6 +1232,77 @@ class APIManager {
         }
     }
     
+    func followGetFriends(vc:RootBaseVC,completion:@escaping ([SuggestedUser]) -> Void) {
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        //let parameter = ["userId":userId, "toUserId": toUserId]
+        APICall.sharedInstance.alamofireCall(url: APIS.followGetFriends, method: .post, para: "", header: header, vc: vc) { (url, res, sc) in
+            if sc == 200 {
+                var all = [SuggestedUser]()
+                let data = res.value as! [String:Any]
+                let code = data["code"] as! Int
+                if code == 1 {
+                    let innerData = data["data"] as! [[String:Any]]
+                    for i in innerData {
+                        let id = i["id"] as? String ?? ""
+                        let firstName = i["firstName"] as? String ?? ""
+                        let lastName = i["lastName"] as? String ?? ""
+                        let displayPicture = i["displayPicture"] as? String ?? ""
+                        let email = i["email"] as? String ?? ""
+                        let username = i["username"] as? String ?? ""
+                        let mobile = i["mobile"] as? Int ?? 0
+                        let password = i["password"] as? String ?? ""
+                        let gender = i["gender"] as? String ?? ""
+                        let gTOken = i["gTOken"] as? String ?? ""
+                        let fbToken = i["fbToken"] as? String ?? ""
+                        let likes = i["likes"] as? Int ?? 0
+                        let status = i["status"] as? Int ?? 0
+                        let deletedAt = i["deletedAt"] as? String ?? ""
+                        let createdAt = i["createdAt"] as? String ?? ""
+                        let updatedAt = i["updatedAt"] as? String ?? ""
+                        let otp = i["otp"] as? String ?? ""
+                        let otpExpires = i["otpExpires"] as? String ?? ""
+                        let fcmToken = i["fcmToken"] as? String ?? ""
+                        let dob = i["dob"] as? String ?? ""
+                        let isOnline = i["isOnline"] as? Bool ?? false
+                        let lastLoggedIn = i["lastLoggedIn"] as? String ?? ""
+                        let ip = i["ip"] as? String ?? ""
+                        let ios = i["ios"] as? String ?? ""
+                        let about = i["about"] as? String ?? ""
+                        let accountType = i["accountType"] as? String ?? ""
+                        let deviceVoipToken = i["deviceVoipToken"] as? String ?? ""
+                        let adharFront = i["adharFront"] as? String ?? ""
+                        let adharBack = i["adharBack"] as? String ?? ""
+                        let adharNumber = i["adharNumber"] as? String ?? ""
+                        let isAdharVerified = i["isAdharVerified"] as? Int ?? 0
+                        let lat = i["lat"] as? String ?? ""
+                        let lag = i["lag"] as? String ?? ""
+                        
+                        all.append(SuggestedUser.init(id: id, firstName: firstName, lastName: lastName, displayPicture: displayPicture, email: email, username: username, mobile: mobile, password: password, gender: gender, gTOken: gTOken, fbToken: fbToken, likes: likes, status: status, deletedAt: deletedAt, createdAt: createdAt, updatedAt: updatedAt, otp: otp, otpExpires: otpExpires, fcmToken: fcmToken, dob: dob, isOnline: isOnline, lastLoggedIn: lastLoggedIn, ip: ip, ios: ios, about: about, accountType: accountType, deviceVoipToken: deviceVoipToken, adharFront: adharFront, adharBack: adharBack, adharNumber: adharNumber, isAdharVerified: isAdharVerified, lat: lat, lag: lag))
+                    }
+                    completion(all)
+                } else {
+                    
+                }
+            }
+        }
+    }
+    
+    func getGroupChatHeads(vc:RootBaseVC,para: [String: Any],completion:@escaping (String) -> Void) {
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        //let parameter = ["userId":userId, "toUserId": toUserId]
+        APICall.sharedInstance.alamofireCall(url: APIS.getGroupChatHeads, method: .post, para: para, header: header, vc: vc) { (url, res, sc) in
+            if sc == 200 {
+                let data = res.value as? [String:Any] ?? [:]
+                let code = data["code"] as? Int ?? 0
+                if code == 1  {
+                    completion("success")
+                }else{
+                    completion("failure")
+                }
+            }
+        }
+    }
+    
     func postPhoto(postData:[PostData]) {
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
         var postPara = [""]
@@ -1215,10 +1311,6 @@ class APIManager {
         }
     }
     
-    func getSocket() -> SocketIOClient{
-        self.socket = self.manager.defaultSocket
-        return self.socket
-    }
 }
 //vc:RootBaseVC,
 /*
@@ -1232,3 +1324,24 @@ class APIManager {
  }
  }
  */
+
+open class SocketSessionHandler: NSObject, URLSessionDelegate {
+    
+    static var manager = SocketManager(socketURL: URL(string:"https://socket.dbmdemo.com")!, config:  [.compress,.log(true), .reconnects(true), .selfSigned(true)])
+
+        override init() {
+            super.init()
+            SocketSessionHandler.manager.config.insert(.sessionDelegate(self))
+        }
+    
+    public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        
+        if challenge.protectionSpace.host == "socket.dbmdemo.com" {
+                completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
+            } else {
+                completionHandler(.performDefaultHandling, nil)
+            }
+    }
+}
+
+

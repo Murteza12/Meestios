@@ -23,6 +23,7 @@ class postCell:UITableViewCell {
     @IBOutlet weak var likeImg3:UIImageView!
     @IBOutlet weak var likeImg4:UIImageView!
     @IBOutlet weak var likeLbl:UILabel!
+    @IBOutlet weak var commentshareLbl:UILabel!
     @IBOutlet weak var likeLblCount:UILabel!
     @IBOutlet weak var likeBtn:UIButton!
    // @IBOutlet weak var dislikeBtn:UIButton!

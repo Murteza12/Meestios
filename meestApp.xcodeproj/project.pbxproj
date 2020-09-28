@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		4D7A875E372CB9F0E230C83C /* Pods_meestApp_meestAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8032127A2C34F134B094C29 /* Pods_meestApp_meestAppUITests.framework */; };
 		5A44AB27251B774000D4570A /* AttachmentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A44AB26251B774000D4570A /* AttachmentVC.swift */; };
+		5A5C443D251F58FA00C01782 /* CertificatePinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C443C251F58FA00C01782 /* CertificatePinner.swift */; };
+		5A5C444C2520887C00C01782 /* AddPeopleGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */; };
+		5A5C448A2520889F00C01782 /* AddPeopleCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */; };
+		5A5C448F252091C600C01782 /* CreateGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C448E252091C600C01782 /* CreateGroupVC.swift */; };
+		5A82D46C251E70DA007E402A /* DeleteOptionForEveryOneVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */; };
+		5A82D471251E7BFF007E402A /* MultiOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A82D470251E7BFF007E402A /* MultiOptionVC.swift */; };
 		5A9E553F251CDE7200A30EA8 /* Messenger.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */; };
 		5A9E5544251CE43400A30EA8 /* DeleteOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */; };
 		5A9E554C251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */; };
@@ -182,6 +188,12 @@
 /* Begin PBXFileReference section */
 		558EB1D3B39902B8AFCAB39F /* Pods-meestApp-meestAppUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp-meestAppUITests.release.xcconfig"; path = "Target Support Files/Pods-meestApp-meestAppUITests/Pods-meestApp-meestAppUITests.release.xcconfig"; sourceTree = "<group>"; };
 		5A44AB26251B774000D4570A /* AttachmentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentVC.swift; sourceTree = "<group>"; };
+		5A5C443C251F58FA00C01782 /* CertificatePinner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CertificatePinner.swift; sourceTree = "<group>"; };
+		5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPeopleGroupVC.swift; sourceTree = "<group>"; };
+		5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPeopleCellTableViewCell.swift; sourceTree = "<group>"; };
+		5A5C448E252091C600C01782 /* CreateGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupVC.swift; sourceTree = "<group>"; };
+		5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteOptionForEveryOneVC.swift; sourceTree = "<group>"; };
+		5A82D470251E7BFF007E402A /* MultiOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiOptionVC.swift; sourceTree = "<group>"; };
 		5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Messenger.storyboard; sourceTree = "<group>"; };
 		5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteOptionVC.swift; sourceTree = "<group>"; };
 		5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteChatHeadOptionVC.swift; sourceTree = "<group>"; };
@@ -505,6 +517,7 @@
 		D308E82B24DAB6CF0061B793 /* View Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5A5C443C251F58FA00C01782 /* CertificatePinner.swift */,
 				D393365724F841380040A8F9 /* Splash Screen Pre Login */,
 				D356ADC524E28F900096E74E /* Signup flow */,
 				D393365A24F841F90040A8F9 /* Forgot Password */,
@@ -876,6 +889,7 @@
 		D3DB8D7A24DDDAD400865971 /* Messenger */ = {
 			isa = PBXGroup;
 			children = (
+				5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */,
 				D3DB8D7624DDDA3000865971 /* mssengerHomeVC.swift */,
 				D3DB8D7824DDDACF00865971 /* peoplesVC.swift */,
 				D3DB8D7B24DDDC9900865971 /* groupsVC.swift */,
@@ -886,6 +900,10 @@
 				5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */,
 				5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */,
 				5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */,
+				5A82D470251E7BFF007E402A /* MultiOptionVC.swift */,
+				5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */,
+				5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */,
+				5A5C448E252091C600C01782 /* CreateGroupVC.swift */,
 			);
 			path = Messenger;
 			sourceTree = "<group>";
@@ -1269,6 +1287,7 @@
 				D308E82824DAB6A70061B793 /* splashVC.swift in Sources */,
 				D360142225080D4600391004 /* aboutUsVC.swift in Sources */,
 				D31BEC4324FF051C0074110A /* videoViewerVC.swift in Sources */,
+				5A82D471251E7BFF007E402A /* MultiOptionVC.swift in Sources */,
 				D308E7F524D9D7850061B793 /* AppDelegate.swift in Sources */,
 				D37AA1A92502DCD000E574D2 /* profileViewerVC.swift in Sources */,
 				D3DB8D7E24DDDCE900865971 /* callsVC.swift in Sources */,
@@ -1276,6 +1295,7 @@
 				D3DE9D3624DB61E700CFB3BF /* resetPasswordVC.swift in Sources */,
 				D37AA1B72503064500E574D2 /* adPaymentVC.swift in Sources */,
 				D3A13B5424E8563F000A2262 /* Post.swift in Sources */,
+				5A5C444C2520887C00C01782 /* AddPeopleGroupVC.swift in Sources */,
 				D3C741372502CA10004D9E6A /* addPostPopupVC.swift in Sources */,
 				D3A800DF250CDB6100E22848 /* SuggestedUser.swift in Sources */,
 				D336CA362506CD3D0097FB1C /* createTxtPostVC.swift in Sources */,
@@ -1291,6 +1311,7 @@
 				D3E24DD624F706060011FE0A /* videoHomeVC.swift in Sources */,
 				D3DE9D3A24DB667C00CFB3BF /* createAccountVC.swift in Sources */,
 				D3853155250ACBC3002B6C58 /* boostPostDetailVC.swift in Sources */,
+				5A5C448F252091C600C01782 /* CreateGroupVC.swift in Sources */,
 				5A9E554C251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift in Sources */,
 				D3AEA983250F538C007FDFA5 /* createPhotoPostVC.swift in Sources */,
 				D324FEFB24ECA43300ABAE9F /* addPostVC.swift in Sources */,
@@ -1314,8 +1335,10 @@
 				D3A13B5624E890D2000A2262 /* subTblView.swift in Sources */,
 				D3C7413C2502D345004D9E6A /* allLikesVC.swift in Sources */,
 				D3C703E824DCACC00001E220 /* Topic.swift in Sources */,
+				5A5C448A2520889F00C01782 /* AddPeopleCellTableViewCell.swift in Sources */,
 				D308E82D24DABA260061B793 /* preLoginVC.swift in Sources */,
 				D31BEC4824FF16F80074110A /* searchVC.swift in Sources */,
+				5A5C443D251F58FA00C01782 /* CertificatePinner.swift in Sources */,
 				D308E7F724D9D7850061B793 /* SceneDelegate.swift in Sources */,
 				D3DE9F692506549E00377AD9 /* createTxtVC.swift in Sources */,
 				D3DE9D3C24DB6AE600CFB3BF /* chooseGenderVC.swift in Sources */,
@@ -1329,6 +1352,7 @@
 				D3A800E1250CEB9600E22848 /* previewVC.swift in Sources */,
 				D31D0EEB2508F54B00803F04 /* campaignPreviewVC.swift in Sources */,
 				D34DC9CA24ED5E2E00BAD566 /* Story.swift in Sources */,
+				5A82D46C251E70DA007E402A /* DeleteOptionForEveryOneVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

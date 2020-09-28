@@ -20,7 +20,6 @@ class msgSendView: UIView {
     
     var toUser:ChatHeads?
     var userid = ""
-//    var attachmentButtonClicked : (()->())?
     var socket:SocketIOClient!
     
     @IBOutlet weak var textView: GrowingTextView!  {
@@ -102,7 +101,9 @@ extension msgSendView {
     
         textView.translatesAutoresizingMaskIntoConstraints = false
         
-            self.socket = APIManager.sharedInstance.getSocket()
+//            self.socket = APIManager.sharedInstance.getSocket()
+//        self.socket =  SocketSessionHandler.sharedInstance.getSocket()
+
             APIManager.sharedInstance.getCurrentUser(vc: UIViewController()) { (user) in
                 self.userid = user.id
             }
@@ -166,7 +167,6 @@ extension msgSendView: GrowingTextViewDelegate {
             textView.text = "Type your message"
             textView.textColor = UIColor.gray
         } else {
-//            self.sendBtn.setImage(UIImage.init(named: "navigation"), for: .normal)
             textView.textColor = UIColor.black
             textView.text = ""
         }
@@ -251,7 +251,7 @@ extension msgSendView : AVAudioRecorderDelegate{
                     ]
 
                     //file name URL
-                    audioFilename = getDocumentsDirectory().appendingPathComponent("audio.m4a")
+                    audioFilename = getDocumentsDirectory().appendingPathComponent("audio.mp3")
 
                     //Create the audio recording, and assign ourselves as the delegate
                     audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
@@ -309,4 +309,29 @@ extension msgSendView : AVAudioRecorderDelegate{
                 finishAudioRecording(success: false)
             }
         }
+    
+    func uploadAudio() {
+        if var topController = UIApplication.shared.keyWindow?.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            APIManager.sharedInstance.uploadAudio(vc: topController, url: audioFilename, fileName: "audio.mp3") { (str) in
+                if str == "success"{
+                    let audioUrl = UserDefaults.standard.string(forKey: "Audio")
+                    let new = ["msg" : "",
+                               "chatHeadId" : self.toUser?.chatHeadId ?? "",
+                               "userId": self.userid ,
+                               "attachment":true,"attachmentType":"Audio","fileURL":audioUrl ?? ""] as [String : Any]
+                    print(new)
+                    self.socket.emit("send", new)
+                }
+                
+            }
+        }
+
+        
+        
+       
+   }
+
 }

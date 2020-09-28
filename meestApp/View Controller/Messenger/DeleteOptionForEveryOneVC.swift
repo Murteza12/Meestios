@@ -8,44 +8,39 @@
 
 import UIKit
 
-class DeleteOptionVC: UIViewController {
+class DeleteOptionForEveryOneVC: UIViewController {
 
-    @IBOutlet var backGroundView: UIView!
-    @IBOutlet var copyReplyDeleteView: UIView!
-    var deleteCompletion: (()->())?
-    var replyCompletion: (()->())?
-    var copyCompletion: (()->())?
+    @IBOutlet var backgroundView: UIView!
+    @IBOutlet var deleteForEveryone: UIView!
+    var deleteForEveryOneCompletion: (()->())?
+    var deletedCompletion: (()->())?
+    var cancelCompletion: (()->())?
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let tapOnScreen: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissView))
-        self.backGroundView.addGestureRecognizer(tapOnScreen)
-        
-    }
-    @objc func dismissView(){
-        self.dismiss(animated: true, completion: nil)
+        // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        copyReplyDeleteView.cornerRadius(radius: 15)
+        self.deleteForEveryone.cornerRadius(radius: 15)
     }
     
-    @IBAction func copyButtonAction(_ sender: Any) {
+    @IBAction func deleteForEveryOneButtonAction(_ sender: Any) {
         dismiss(animated: true) {
-            self.copyCompletion?()
+            self.deleteForEveryOneCompletion?()
         }
     }
     
-    @IBAction func replyButtonAction(_ sender: Any) {
+    @IBAction func cancelButtonAction(_ sender: Any) {
         dismiss(animated: true) {
-            self.replyCompletion?()
+            self.cancelCompletion?()
         }
     }
     
-    @IBAction func DeleteButtonAction(_ sender: Any) {
+    @IBAction func DeleteChatMeButtonAction(_ sender: Any) {
         dismiss(animated: true) {
-            self.deleteCompletion?()
+            self.deletedCompletion?()
         }
     }
     

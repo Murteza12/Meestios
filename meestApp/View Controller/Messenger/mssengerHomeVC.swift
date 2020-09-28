@@ -22,13 +22,15 @@ class mssengerHomeVC: RootBaseVC {
         super.viewDidLoad()
        // self.topCollection.delegate = self
       //  self.topCollection.dataSource = self
+        UserDefaults.standard.setValue(0, forKey: "SelectedIndex")
         
         
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = true
-        self.setSelected(index: 0)
+        let index = UserDefaults.standard.integer(forKey: "SelectedIndex")
+        self.setSelected(index: index)
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -125,6 +127,7 @@ extension mssengerHomeVC:UICollectionViewDelegate, UICollectionViewDataSource,UI
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.setSelected(index: indexPath.row)
+        UserDefaults.standard.setValue(indexPath.row, forKey: "SelectedIndex")
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

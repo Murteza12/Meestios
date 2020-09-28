@@ -50,6 +50,13 @@ struct APIS {
     static let suggestionUser = BASEURL.baseurl + "/follows/suggestUser"
     static let getFollowData = BASEURL.baseurl + "/follows/followsData"
     static let postInsert = BASEURL.baseurl + "/post/insert"
+    static let getGroupsFrom =  BASEURL.baseurl + "/chat/getGroupsFrom"
+    static let deleteChat =  BASEURL.baseurl + "/chat/deleteChat"
+    static let softDelete =  BASEURL.baseurl + "/chat/softDelete/group"
+    static let hardDelete =  BASEURL.baseurl + "/chat/hardDelete/group"
+    static let getGroupChatHeads = BASEURL.baseurl + "/chat/chatHeads"
+    static let followGetFriends = BASEURL.baseurl + "/follows/get/friends"
+    
 }
 struct Themes {
     static let animationName = "lf30_editor_9mg9X1"

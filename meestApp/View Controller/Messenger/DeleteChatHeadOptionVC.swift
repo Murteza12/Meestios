@@ -17,6 +17,12 @@ class DeleteChatHeadOptionVC: UIViewController {
     @IBOutlet weak var cancelButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
+        let tapOnScreen: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissView))
+        self.backgroundView.addGestureRecognizer(tapOnScreen)
+    }
+    
+    @objc func dismissView(){
+        self.dismiss(animated: true, completion: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {

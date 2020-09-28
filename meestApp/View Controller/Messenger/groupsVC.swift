@@ -20,11 +20,18 @@ class groupsVC: RootBaseVC {
         // Do any additional setup after loading the view.
         self.tableVIew.delegate = self
         self.tableVIew.dataSource = self
-        self.socket = APIManager.sharedInstance.getSocket()
+//        self.socket = APIManager.sharedInstance.getSocket()
+        self.socket =  SocketSessionHandler.manager.defaultSocket
         self.addHandler()
         self.getAllGroupHeads()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "addPeopleGroup" {
+            let peopleGroup = segue.destination as! AddPeopleGroupVC
+//            dvc.toUser = self.senduser
+        }
+    }
     func getAllGroupHeads(){
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             let payload = ["userId":user.id]
@@ -113,6 +120,12 @@ extension groupsVC:UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1.0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row == 0{
+            self.performSegue(withIdentifier: "addPeopleGroup", sender: self)
+        }
     }
 }
 

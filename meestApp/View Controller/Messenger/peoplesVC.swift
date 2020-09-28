@@ -24,7 +24,8 @@ class peoplesVC: RootBaseVC {
         // Do any additional setup after loading the view.
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        self.socket = APIManager.sharedInstance.getSocket()
+//        self.socket = APIManager.sharedInstance.getSocket()
+        self.socket = SocketSessionHandler.manager.defaultSocket
         self.addHandler()
 //        self.socket.connect()
         self.getAll()
