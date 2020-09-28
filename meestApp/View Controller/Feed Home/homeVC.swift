@@ -333,7 +333,7 @@ extension homeVC:UITableViewDelegate, UITableViewDataSource {
 //            let strr = "Liked By <l2>\(ind.postLikes[0].user.username)</l2> and <l2>\(ind.postLikes.count) Others</l2>"
 //            cell.likeLblCount.attributedText = strr.set(style: stylesl)
 //        }
-        
+        cell.likeLblCount.font = UIFont.init(name: APPFont.regular, size: 12)
         cell.likeLblCount.text = ind.liked.toString()
       //  cell.likeBtn.cornerRadius(radius: cell.likeBtn.frame.height / 2)
       //  cell.commentBtn.cornerRadius(radius: cell.commentBtn.frame.height / 2)

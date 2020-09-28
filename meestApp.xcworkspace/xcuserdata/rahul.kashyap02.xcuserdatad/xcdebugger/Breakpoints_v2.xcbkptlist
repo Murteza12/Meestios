@@ -7,95 +7,47 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "09C0F1DE-20B1-4F05-925A-C2B64E47E31A"
+            uuid = "7136ABF4-DB41-40DA-8904-A3416233F59D"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/singleChatVC.swift"
+            filePath = "meestApp/View Controller/Status/statusMainVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
-            landmarkName = "addHandler()"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
+            landmarkName = "insertStories()"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "0BB8D698-C08E-4F86-B126-D85579D03AC3"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/callsVC.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "addHandler()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D6FBEEFF-8ACB-49CA-9299-89EF366F7261"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/singleChatVC.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
-            landmarkName = "addHandler()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "93D7FAA8-3E63-4BE8-81D0-8CBAFCAF6044"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "206"
-            endingLineNumber = "206"
-            landmarkName = "unknown"
-            landmarkType = "0">
             <Locations>
                <Location
-                  uuid = "93D7FAA8-3E63-4BE8-81D0-8CBAFCAF6044 - b0b8387cf1437dc4"
+                  uuid = "7136ABF4-DB41-40DA-8904-A3416233F59D - 9b2c659a57bf21a3"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Demo.mainChatVC.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  symbolName = "Demo.statusMainVC.insertStories() -&gt; ()"
                   moduleName = "Demo"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/View%20Controller/Messenger/mainChatVC.swift"
+                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/View%20Controller/Status/statusMainVC.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "206"
-                  endingLineNumber = "206"
-                  offsetFromSymbolStart = "3394">
+                  startingLineNumber = "157"
+                  endingLineNumber = "157"
+                  offsetFromSymbolStart = "2460">
                </Location>
                <Location
-                  uuid = "93D7FAA8-3E63-4BE8-81D0-8CBAFCAF6044 - e3006b8cc446ac57"
+                  uuid = "7136ABF4-DB41-40DA-8904-A3416233F59D - 6890f4ba8bf03c96"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Result&lt;Kingfisher.RetrieveImageResult, Kingfisher.KingfisherError&gt;) -&gt; () in Demo.mainChatVC.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  symbolName = "closure #1 (Swift.String) -&gt; () in Demo.statusMainVC.insertStories() -&gt; ()"
                   moduleName = "Demo"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/View%20Controller/Messenger/mainChatVC.swift"
+                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/View%20Controller/Status/statusMainVC.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "207"
-                  endingLineNumber = "207"
-                  offsetFromSymbolStart = "352">
+                  startingLineNumber = "158"
+                  endingLineNumber = "158"
+                  offsetFromSymbolStart = "91">
                </Location>
             </Locations>
          </BreakpointContent>
