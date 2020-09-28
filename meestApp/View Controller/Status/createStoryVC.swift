@@ -9,13 +9,18 @@
 import UIKit
 import Photos
 
+protocol createStoryDeleagte {
+    func getImage(image: UIImage)
+    func getText(text: String)
+}
+
 class createStoryVC: RootBaseVC {
 
     var allPhotos : PHFetchResult<PHAsset>? = nil
     @IBOutlet weak var collectionView:UICollectionView!
     @IBOutlet weak var textView:UIView!
     @IBOutlet weak var selfieView:UIView!
-    
+    var delegate: createStoryDeleagte?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,10 +54,28 @@ class createStoryVC: RootBaseVC {
         self.selfieView.cornerRadius(radius: 8)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "createTextSegue"{
+            let createText = segue.destination as? createTxtVC
+            createText?.delegate = self
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.textView.applyGradient(with: [ UIColor(red: 0.976, green: 0.247, blue: 0.31, alpha: 1), UIColor(red: 0.498, green: 0.106, blue: 0.725, alpha: 1)], gradient: .vertical)
         self.selfieView.applyGradient(with: [ UIColor(red: 0.976, green: 0.247, blue: 0.31, alpha: 1), UIColor(red: 0.498, green: 0.106, blue: 0.725, alpha: 1)], gradient: .vertical)
+    }
+    
+    func getAssetThumbnail(asset: PHAsset) -> UIImage {
+        let manager = PHImageManager.default()
+        let option = PHImageRequestOptions()
+        var thumbnail = UIImage()
+        option.isSynchronous = true
+        manager.requestImage(for: asset, targetSize: CGSize(width: 100.0, height: 100.0), contentMode: .aspectFit, options: option, resultHandler: {(result, info)->Void in
+                thumbnail = result!
+        })
+        return thumbnail
     }
 }
 extension createStoryVC:UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -67,6 +90,10 @@ extension createStoryVC:UICollectionViewDelegate, UICollectionViewDataSource, UI
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize.init(width: self.view.frame.width / 3, height: 128)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegate?.getImage(image: getAssetThumbnail(asset: allPhotos![indexPath.row]))
     }
 }
 extension UIImageView{
@@ -90,4 +117,12 @@ extension UIImageView{
 class galleryCell:UICollectionViewCell {
     
     @IBOutlet weak var img:UIImageView!
+}
+
+extension createStoryVC: createTxtVCDelegate{
+    func enterText(text: String) {
+        delegate?.getText(text: text)
+    }
+    
+    
 }

@@ -741,6 +741,37 @@ class APIManager {
         }
     }
     
+    func insertStory(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        APICall.sharedInstance.alamofireCall(url: APIS.insertStory, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
+//            var all = [Story]()
+            if statusCode == 200 {
+                let data = responseData.value as! [String:Any]
+                let code = data["code"] as! Int
+                if code == 1 {
+                    completion("success")
+                }else{
+                    completion("failure")
+                }
+            }
+        }
+    }
+    
+    func insertView(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        APICall.sharedInstance.alamofireCall(url: APIS.insertView, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
+            if statusCode == 200 {
+                let data = responseData.value as? [String:Any] ?? [:]
+                let code = data["code"] as! Int
+                if code == 1 {
+                    completion("success")
+                }else{
+                    completion("failure")
+                }
+            }
+        }
+    }
+    
     func getComment(postId:String,vc:RootBaseVC,completion:@escaping ([PostCommentElement]) -> Void) {
         let para = ["postId":postId]
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]

@@ -8,18 +8,25 @@
 
 import UIKit
 
+protocol createTxtVCDelegate {
+    func enterText(text: String)
+}
+
 class createTxtVC: RootBaseVC {
 
     @IBOutlet weak var fontBtn:UIButton!
     @IBOutlet weak var backgroundBtn:UIButton!
     @IBOutlet weak var collectionView:UICollectionView!
     var colors = [[UIColor]]()
+    @IBOutlet weak var storyTextView: UITextView!
+    var delegate: createTxtVCDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
+        self.storyTextView.delegate = self
         
         self.colors.append([UIColor(red: 0.231, green: 0.349, blue: 0.596, alpha: 1), UIColor(red: 0.498, green: 0.106, blue: 0.725, alpha: 1) ])
         self.colors.append([UIColor(red: 0.976, green: 0.247, blue: 0.31, alpha: 1), UIColor(red: 0.976, green: 0.471, blue: 0.153, alpha: 1) ])
@@ -27,7 +34,13 @@ class createTxtVC: RootBaseVC {
         self.colors.append([UIColor(red: 1, green: 0.859, blue: 0.263, alpha: 1),UIColor(red: 0.988, green: 0.141, blue: 0.278, alpha: 1)])
         self.colors.append([ UIColor(red: 0.976, green: 0.247, blue: 0.31, alpha: 1), UIColor(red: 0.498, green: 0.106, blue: 0.725, alpha: 1)])
     }
-
+    @IBAction func doneButtonAction(_ sender: Any) {
+        if self.storyTextView.text != ""{
+            delegate?.enterText(text: self.storyTextView.text)
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.view.applyGradient(with: [ UIColor(red: 0.976, green: 0.247, blue: 0.31, alpha: 1), UIColor(red: 0.498, green: 0.106, blue: 0.725, alpha: 1)], gradient: .vertical)
@@ -58,5 +71,16 @@ extension createTxtVC:UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.view.applyGradient(with: self.colors[indexPath.row], gradient: .vertical)
         
+    }
+}
+
+extension createTxtVC: UITextViewDelegate{
+    
+//    func textViewDidChange(_ textView: UITextView) {
+//        textView.text = ""
+//    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        textView.text = ""
     }
 }

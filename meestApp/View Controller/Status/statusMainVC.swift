@@ -8,6 +8,8 @@
 
 import UIKit
 import MobileCoreServices
+import CoreLocation
+import AVKit
 
 class statusMainVC: RootBaseVC {
 
@@ -15,7 +17,9 @@ class statusMainVC: RootBaseVC {
     @IBOutlet weak var photoBtn:UIButton!
     @IBOutlet weak var videoBtn:UIButton!
     @IBOutlet weak var contentView:UIView!
-    
+    var imageURL:String?
+    var locManager = CLLocationManager()
+    var currentLocation: CLLocation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +28,13 @@ class statusMainVC: RootBaseVC {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        locManager.requestWhenInUseAuthorization()
         
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse ||
+           CLLocationManager.authorizationStatus() ==  .authorizedAlways
+        {
+            currentLocation = locManager.location
+        }
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -49,7 +59,10 @@ class statusMainVC: RootBaseVC {
             controller.view.frame = self.contentView.bounds
             controller.view.layoutIfNeeded()
             controller.didMove(toParent: self)
+            controller.delegate = self
         } else if type == "photo" {
+            guard AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .front) != nil
+            else { fatalError("no front camera. but don't all iOS 10 devices have them?")}
             let imagePicker = UIImagePickerController()
             imagePicker.delegate = self
             imagePicker.sourceType = UIImagePickerController.SourceType.camera
@@ -96,13 +109,79 @@ class statusMainVC: RootBaseVC {
         self.galleryBtn.titleLabel?.font = UIFont.init(name: APPFont.semibold, size: 12)
         self.setView(type: "video")
     }
+    @IBAction func selfieButtonAction(_ sender: Any) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = UIImagePickerController.SourceType.camera
+        imagePicker.allowsEditing = false
+        guard AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .front) != nil
+        else { fatalError("No front camera")}
+        self.present(imagePicker, animated: true, completion: nil)
+    }
 }
 extension statusMainVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-    }
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let img = info[.editedImage] as! UIImage
+        picker.dismiss(animated: true) {
+            self.uploadImg(imageTouplaod: img)
+        }
+    }
+    
+    func uploadImg(imageTouplaod: UIImage) {
+       self.loadAnimation()
+       APIManager.sharedInstance.uploadImage(vc: self, img: imageTouplaod) { (str) in
+           if str == "success" {
+               self.removeAnimation()
+               let imgURL = UserDefaults.standard.string(forKey: "IMG")
+                self.imageURL = imgURL
+            self.insertStories()
+           }
+       }
+   }
+    
+    func insertStories(){
+        let hastags = [String]()
+        let latLongLocation = ["lat":"\(currentLocation?.coordinate.latitude)", "long":"\(currentLocation?.coordinate.longitude)"]
+        let location = ["lat":21.603176, "long":71.222084]
+
+        let parameter = ["story": self.imageURL ?? "",
+                         "caption": "",
+                         "hashTags":hastags,
+                         "location": latLongLocation,
+                         "status":true,
+                         "image":true] as [String : Any]
+//        {
+//            "story":"https://meest.ams3.digitaloceanspaces.com/userUploads/VHTzM2zAlANKW.jpg",
+//            "caption":" ",
+//            "hashTags":[],
+//            "location":{
+//                "lat":21.603176,
+//                "long":71.222084
+//            },
+//            "status":true,
+//            "image":true
+//        }
+        APIManager.sharedInstance.insertStory(vc: self, para: parameter) { (str) in
+            if str == "success"{
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
 }
+
+extension statusMainVC: createStoryDeleagte{
+    func getImage(image: UIImage) {
+        uploadImg(imageTouplaod: image)
+    }
+    
+    func getText(text: String) {
+        self.imageURL = text
+        self.insertStories()
+    }
+}
+

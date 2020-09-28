@@ -38,6 +38,8 @@ struct APIS {
     static let postComment = BASEURL.baseurl + "/post/insertComment"
     static let chat = BASEURL.baseurl + "/chat/getChat"
     static let story = BASEURL.baseurl + "/stories/getAll"
+    static let insertStory = BASEURL.baseurl + "/stories/insert"
+    static let insertView = BASEURL.baseurl + "/stories/insertView"
     static let getComment = BASEURL.baseurl + "/post/getComments"
     static let deleteComment = BASEURL.baseurl + "/post/removeComment"
     static let commentLike = BASEURL.baseurl + "/post/commentLike"

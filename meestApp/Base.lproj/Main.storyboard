@@ -11399,7 +11399,7 @@ to your mobile number.</string>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q7M-3x-YFQ">
                                                         <rect key="frame" x="0.0" y="0.0" width="153.5" height="124"/>
                                                         <connections>
-                                                            <segue destination="vvI-yp-me7" kind="presentation" modalPresentationStyle="fullScreen" id="v1R-hx-RXu"/>
+                                                            <segue destination="vvI-yp-me7" kind="presentation" identifier="createTextSegue" modalPresentationStyle="fullScreen" id="v1R-hx-RXu"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -11438,6 +11438,9 @@ to your mobile number.</string>
                                                     </label>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dGh-u9-yI4">
                                                         <rect key="frame" x="0.0" y="0.0" width="153.5" height="124"/>
+                                                        <connections>
+                                                            <action selector="selfieButtonAction:" destination="Zl2-zV-hyv" eventType="touchUpInside" id="00e-7T-D1t"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -11529,6 +11532,7 @@ to your mobile number.</string>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gJY-Ma-tDp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="Zl2-zV-hyv" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="10489" y="-1550"/>
         </scene>
@@ -11754,6 +11758,9 @@ to your mobile number.</string>
                                         <state key="normal" title="Done">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
+                                        <connections>
+                                            <action selector="doneButtonAction:" destination="vvI-yp-me7" eventType="touchUpInside" id="Jbk-Rm-1Ht"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -11856,6 +11863,7 @@ to your mobile number.</string>
                         <outlet property="backgroundBtn" destination="5Gv-0I-FNN" id="5rs-cK-dtT"/>
                         <outlet property="collectionView" destination="ZDX-3a-fBd" id="pq9-G5-QCV"/>
                         <outlet property="fontBtn" destination="flm-vC-6E3" id="bRJ-VT-BGW"/>
+                        <outlet property="storyTextView" destination="7Kd-qn-JKW" id="2gr-V3-K9y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EQK-b8-L0P" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -15132,6 +15140,14 @@ Nam a nisi eu arcu dictum mattis. Aenean varius justo a sollicitudin tincidunt. 
             <point key="canvasLocation" x="15078" y="724"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="0mI-Es-372">
+            <size key="intrinsicContentSize" width="-1" height="65"/>
+        </designable>
+        <designable name="w5q-bQ-5vo">
+            <size key="intrinsicContentSize" width="-1" height="65"/>
+        </designable>
+    </designables>
     <inferredMetricsTieBreakers>
         <segue reference="TcL-PG-Gm6"/>
         <segue reference="dCK-KW-u8Y"/>
