@@ -59,7 +59,7 @@ class mainChatVC: RootBaseVC {
         self.img.cornerRadius(radius: self.img.frame.height / 2)
         self.tableView.delegate = self
         self.tableView.dataSource = self
-//        self.socket =  SocketSessionHandler.sharedInstance.getSocket()
+        self.socket =  SocketSessionHandler.manager.defaultSocket
 
         self.addHandler()
         self.tableView.becomeFirstResponder()
