@@ -93,6 +93,7 @@ PODS:
   - InputBarAccessoryView (5.2.0):
     - InputBarAccessoryView/Core (= 5.2.0)
   - InputBarAccessoryView/Core (5.2.0)
+  - iOSPhotoEditor (1.0.0)
   - JitsiMeetSDK (2.10.2)
   - KeyboardAvoidingView (5.0.1):
     - ViewState (>= 1.0.0)
@@ -156,6 +157,7 @@ DEPENDENCIES:
   - GrowingTextView (= 0.7.2)
   - Hero
   - IHKeyboardAvoiding
+  - iOSPhotoEditor
   - JitsiMeetSDK
   - KeyboardAvoidingView (~> 5.0)
   - Kingfisher
@@ -200,6 +202,7 @@ SPEC REPOS:
     - Hero
     - IHKeyboardAvoiding
     - InputBarAccessoryView
+    - iOSPhotoEditor
     - JitsiMeetSDK
     - KeyboardAvoidingView
     - Kingfisher
@@ -253,6 +256,7 @@ SPEC CHECKSUMS:
   Hero: b7385b75e7259da62f4f85462f59a5082d66b058
   IHKeyboardAvoiding: 4cae0880c3975feffa278495df894c5166e71ad0
   InputBarAccessoryView: ac1bc2a11508fc2490c2322beb1d4c9f05c8e634
+  iOSPhotoEditor: 2951f35246a31dcb428b6292248a9c065582d03e
   JitsiMeetSDK: d7612d73befd3f7f51f989458a816bbd05d0bc8e
   KeyboardAvoidingView: ef26d0d7e55ae412e9ef6e02ba84e7540af0ce4e
   Kingfisher: 1f60394409c6b916ce31474bcf73fdde6f3b9a7b
@@ -285,6 +289,6 @@ SPEC CHECKSUMS:
   ViewState: 78aa77483e74e592c22e841619b853bc686843be
   YPImagePicker: 08bbb809ed62bf4149fc015c97249eb4b9463ff9
 
-PODFILE CHECKSUM: ec0c471f462bb5901b40544694ae075e4f698714
+PODFILE CHECKSUM: 5b8ee563b3f227afa106ca39d20c2a16921f26a5
 
 COCOAPODS: 1.9.3

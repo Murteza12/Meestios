@@ -32,6 +32,7 @@ class homeVC: RootBaseVC, UIViewControllerTransitioningDelegate {
     var postid = ""
     var senduserid = ""
     var action = ["Report","Turn On Push Notification","Copy Link","Share to..","Unfollow","Mute"]
+    var selectedStory: Story?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +84,9 @@ class homeVC: RootBaseVC, UIViewControllerTransitioningDelegate {
         } else if segue.identifier == "profile" {
             let dvc = segue.destination as! otherProfileVC
             dvc.userid = self.senduserid
+        } else if segue.identifier == "StatusPhoto"{
+            let dvc = segue.destination as! statusPhotoVC
+            dvc.story = self.selectedStory
         }
 //        let secondVC = segue.destination as! videoHomeVC
 //        secondVC.transitioningDelegate = self
@@ -466,6 +470,9 @@ extension homeVC:UICollectionViewDelegate, UICollectionViewDataSource, UICollect
         if collectionView == self.storyCollection {
             if indexPath.row == 0 {
                 self.performSegue(withIdentifier: "statusadd", sender: self)
+            }else{
+                selectedStory = allStory[indexPath.row]
+                self.performSegue(withIdentifier: "StatusPhoto", sender: self)
             }
         }
     }

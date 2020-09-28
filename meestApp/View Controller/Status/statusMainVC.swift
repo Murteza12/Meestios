@@ -10,6 +10,7 @@ import UIKit
 import MobileCoreServices
 import CoreLocation
 import AVKit
+import iOSPhotoEditor
 
 class statusMainVC: RootBaseVC {
 
@@ -117,6 +118,41 @@ class statusMainVC: RootBaseVC {
         else { fatalError("No front camera")}
         self.present(imagePicker, animated: true, completion: nil)
     }
+    
+    func editImage(image: UIImage){
+//    let photoEditor = statusPhotoVC(nibName: "statusPhotoVC", bundle: nil)
+    let photoEditor = PhotoEditorViewController(nibName:"PhotoEditorViewController",bundle: Bundle(for: PhotoEditorViewController.self))
+
+    //PhotoEditorDelegate
+    photoEditor.photoEditorDelegate = self
+
+    //The image to be edited
+    photoEditor.image = image
+
+    //Stickers that the user will choose from to add on the image
+//    photoEditor.stickers.append(UIImage(named: "sticker" )!)
+
+    //Optional: To hide controls - array of enum control
+//    photoEditor.hiddenControls = [.crop, .draw, .share]
+
+    //Optional: Colors for drawing and Text, If not set default values will be used
+    photoEditor.colors = [.red,.blue,.green, .brown, .white, .darkGray]
+
+    //Present the View Controller
+    present(photoEditor, animated: true, completion: nil)
+    }
+}
+
+extension statusMainVC : PhotoEditorDelegate{
+    func doneEditing(image: UIImage) {
+        self.uploadImg(imageTouplaod: image)
+    }
+    
+    func canceledEditing() {
+        
+    }
+    
+    
 }
 extension statusMainVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -127,7 +163,7 @@ extension statusMainVC: UIImagePickerControllerDelegate, UINavigationControllerD
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let img = info[.editedImage] as! UIImage
         picker.dismiss(animated: true) {
-            self.uploadImg(imageTouplaod: img)
+            self.editImage(image: img)
         }
     }
     
@@ -138,7 +174,7 @@ extension statusMainVC: UIImagePickerControllerDelegate, UINavigationControllerD
                self.removeAnimation()
                let imgURL = UserDefaults.standard.string(forKey: "IMG")
                 self.imageURL = imgURL
-            self.insertStories()
+                self.insertStories()
            }
        }
    }
@@ -146,15 +182,9 @@ extension statusMainVC: UIImagePickerControllerDelegate, UINavigationControllerD
     func insertStories(){
         let hastags = [String]()
         
-        if CLLocationManager.locationServicesEnabled()
-        
-        {
-            
-            
-            
+        if CLLocationManager.locationServicesEnabled(){
             if CLLocationManager.authorizationStatus() == .authorizedWhenInUse ||
-                CLLocationManager.authorizationStatus() ==  .authorizedAlways
-            {
+                CLLocationManager.authorizationStatus() ==  .authorizedAlways{
                 currentLocation = locManager.location
             }
         }
@@ -194,7 +224,7 @@ extension statusMainVC: CLLocationManagerDelegate{
 
 extension statusMainVC: createStoryDeleagte{
     func getImage(image: UIImage) {
-        uploadImg(imageTouplaod: image)
+        self.editImage(image: image)
     }
     
     func getText(text: String) {

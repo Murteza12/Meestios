@@ -39,6 +39,7 @@ target 'meestApp' do
    pod 'RangeSeekSlider'
    pod 'JitsiMeetSDK'
    pod 'PeekPop', '~> 1.0'
+   pod 'iOSPhotoEditor'
 
   target 'meestAppTests' do
     inherit! :search_paths
