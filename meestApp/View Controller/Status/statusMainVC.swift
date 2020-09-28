@@ -24,17 +24,16 @@ class statusMainVC: RootBaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+        locManager.requestWhenInUseAuthorization()
+        locManager.requestAlwaysAuthorization()
+        locManager.delegate = self
+        locManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        locManager.requestWhenInUseAuthorization()
-        
-        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse ||
-           CLLocationManager.authorizationStatus() ==  .authorizedAlways
-        {
-            currentLocation = locManager.location
-        }
+        locManager.startUpdatingLocation()
+//        locManager.requestLocation()
+
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -146,31 +145,50 @@ extension statusMainVC: UIImagePickerControllerDelegate, UINavigationControllerD
     
     func insertStories(){
         let hastags = [String]()
-        let latLongLocation = ["lat":"\(currentLocation?.coordinate.latitude)", "long":"\(currentLocation?.coordinate.longitude)"]
-        let location = ["lat":21.603176, "long":71.222084]
-
+        
+        if CLLocationManager.locationServicesEnabled()
+        
+        {
+            
+            
+            
+            if CLLocationManager.authorizationStatus() == .authorizedWhenInUse ||
+                CLLocationManager.authorizationStatus() ==  .authorizedAlways
+            {
+                currentLocation = locManager.location
+            }
+        }
+        let lat = currentLocation?.coordinate.latitude
+        let long = currentLocation?.coordinate.longitude
+        let latLongLocation = ["lat": lat,
+                               "long": long]
+        
         let parameter = ["story": self.imageURL ?? "",
                          "caption": "",
                          "hashTags":hastags,
                          "location": latLongLocation,
                          "status":true,
                          "image":true] as [String : Any]
-//        {
-//            "story":"https://meest.ams3.digitaloceanspaces.com/userUploads/VHTzM2zAlANKW.jpg",
-//            "caption":" ",
-//            "hashTags":[],
-//            "location":{
-//                "lat":21.603176,
-//                "long":71.222084
-//            },
-//            "status":true,
-//            "image":true
-//        }
+        
         APIManager.sharedInstance.insertStory(vc: self, para: parameter) { (str) in
             if str == "success"{
                 self.dismiss(animated: true, completion: nil)
+            }else {
+                let act = UIAlertController.init(title: "Error", message: "Error in uploading status", preferredStyle: .alert)
+                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                    
+                }))
+                self.present(act, animated: true, completion: nil)
             }
         }
+    }
+}
+
+extension statusMainVC: CLLocationManagerDelegate{
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        currentLocation = locations[locations.count-1]
+        print("locations = \(String(describing: currentLocation))")
     }
 }
 

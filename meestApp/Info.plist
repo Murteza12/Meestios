@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Need Location access</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Need location</string>
+	<string>Need Location access</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Need Location</string>
+	<string>Need Location access</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Caledar use</string>
 	<key>CFBundleDevelopmentRegion</key>

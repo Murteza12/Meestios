@@ -11881,12 +11881,63 @@ to your mobile number.</string>
                     <view key="view" contentMode="scaleToFill" id="Sj2-4L-FBH">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hAS-RB-LMe">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tGg-sC-Esz">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yt6-YH-Vfs">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G7Q-yf-t06">
+                                                <rect key="frame" x="16" y="19" width="22" height="22"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="22" id="Vxs-PR-hVr"/>
+                                                    <constraint firstAttribute="height" constant="22" id="vFN-Ic-h4n"/>
+                                                </constraints>
+                                                <state key="normal" image="lose"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Edx-L9-Twg">
+                                                <rect key="frame" x="322" y="15" width="37" height="30"/>
+                                                <state key="normal" title="Done"/>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="G7Q-yf-t06" firstAttribute="leading" secondItem="yt6-YH-Vfs" secondAttribute="leading" constant="16" id="Hnz-EI-V2Q"/>
+                                            <constraint firstItem="G7Q-yf-t06" firstAttribute="centerY" secondItem="yt6-YH-Vfs" secondAttribute="centerY" id="KTy-69-B1s"/>
+                                            <constraint firstItem="Edx-L9-Twg" firstAttribute="centerY" secondItem="yt6-YH-Vfs" secondAttribute="centerY" id="Q77-9o-YBY"/>
+                                            <constraint firstAttribute="trailing" secondItem="Edx-L9-Twg" secondAttribute="trailing" constant="16" id="YDw-fx-tCH"/>
+                                            <constraint firstAttribute="height" constant="60" id="vUy-xt-gj7"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="yt6-YH-Vfs" firstAttribute="leading" secondItem="tGg-sC-Esz" secondAttribute="leading" id="IRj-SJ-YdD"/>
+                                    <constraint firstAttribute="trailing" secondItem="yt6-YH-Vfs" secondAttribute="trailing" id="aWj-Yb-88L"/>
+                                    <constraint firstItem="yt6-YH-Vfs" firstAttribute="top" secondItem="tGg-sC-Esz" secondAttribute="top" id="cYd-IK-ZvB"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="tGg-sC-Esz" firstAttribute="leading" secondItem="Sj2-4L-FBH" secondAttribute="leading" id="5bF-92-06D"/>
+                            <constraint firstItem="hc4-bJ-aFD" firstAttribute="top" secondItem="tGg-sC-Esz" secondAttribute="bottom" id="AK2-Jm-5uL"/>
+                            <constraint firstItem="hAS-RB-LMe" firstAttribute="leading" secondItem="Sj2-4L-FBH" secondAttribute="leading" id="DuH-50-1CR"/>
+                            <constraint firstAttribute="trailing" secondItem="hAS-RB-LMe" secondAttribute="trailing" id="Isl-VP-vvD"/>
+                            <constraint firstItem="tGg-sC-Esz" firstAttribute="top" secondItem="OCE-oQ-snz" secondAttribute="bottom" id="KDU-vq-85A"/>
+                            <constraint firstAttribute="trailing" secondItem="tGg-sC-Esz" secondAttribute="trailing" id="LSF-uV-MzM"/>
+                            <constraint firstItem="hAS-RB-LMe" firstAttribute="top" secondItem="OCE-oQ-snz" secondAttribute="bottom" id="jbC-Gd-dcH"/>
+                            <constraint firstItem="hc4-bJ-aFD" firstAttribute="top" secondItem="hAS-RB-LMe" secondAttribute="bottom" id="nAv-be-4RE"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fH7-GA-RMJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="11190" y="-1032"/>
+            <point key="canvasLocation" x="11189.6" y="-1032.2338830584708"/>
         </scene>
         <!--Post MainVC-->
         <scene sceneID="uRD-vU-pSa">
@@ -15226,6 +15277,7 @@ Nam a nisi eu arcu dictum mattis. Aenean varius justo a sollicitudin tincidunt. 
         <image name="lock" width="48" height="48"/>
         <image name="login-signup" width="1056" height="1056"/>
         <image name="logout" width="22" height="22"/>
+        <image name="lose" width="128" height="128"/>
         <image name="man" width="132" height="132"/>
         <image name="menu" width="24" height="24"/>
         <image name="microphone" width="23" height="23"/>

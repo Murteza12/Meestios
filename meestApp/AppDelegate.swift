@@ -13,6 +13,7 @@ import SocketIO
 import FirebaseMessaging
 import PushKit
 import AVFoundation
+import CoreLocation
 
 @available(iOS 13.0, *)
 @UIApplicationMain
@@ -26,10 +27,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
     var isUserHasLoggedInWithApp: Bool = true
     var checkForIncomingCall: Bool = true
     var userIsHolding: Bool = true
+    var locManager = CLLocationManager()
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
+        locManager.requestWhenInUseAuthorization()
+        locManager.requestAlwaysAuthorization()
         if UserDefaults.standard.string(forKey: "launch") == nil {
             UserDefaults.standard.set(true, forKey: "launch")
         } else {
