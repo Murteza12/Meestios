@@ -87,6 +87,7 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
         switch indexPath.row {
         case 0:
             self.showViewContactVC()
+            print("View Contact called")
         case 4:
             self.showWallpaperOptionView()
         case 5:

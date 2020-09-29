@@ -182,7 +182,7 @@ class mainChatVC: RootBaseVC {
             print(data)
             if let val = self.selectedCell?.row{
                 let data = self.messages[val]
-                if data.status == 0 {
+                if data.status == 1 {
                     let cell = self.tableView.cellForRow(at: self.selectedCell!)
                     if let cell = cell as? msgSenderCell{
                         cell.txt1.text = "@This message was deleted."
@@ -272,7 +272,9 @@ class mainChatVC: RootBaseVC {
                 self.messages.insert(contentsOf: self.lastData, at: 0)
             }
             self.numberOfRecords = self.messages.count
-            self.tableView.reloadData()
+            self.tableView.reloadData {
+        
+            }
             if !self.isScrollToTop{
             self.scrollToBottom()
             }
@@ -366,6 +368,14 @@ extension mainChatVC: UITextViewDelegate {
         }
     }
 }
+
+extension UITableView {
+func reloadData(completion:@escaping ()->()) {
+    UIView.animate(withDuration: 0, animations: { self.reloadData() })
+        { _ in completion() }
+}
+}
+
 extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -423,16 +433,19 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell2") as! msgReceiverCell
             cell.selectionStyle = .none
             if isGroup == true{
-                cell.chatNameView.isHidden = true
-            }else{
                 cell.chatNameView.isHidden = false
-                cell.chatNameView.cornerRadius(radius: 13)
+//                cell.chatNameView.cornerRadius(radius: 13)
                 cell.chatNameView.backgroundColor = UIColor.init(hex: 0xE0F3FF )
                 cell.chatNameLabel.textColor = UIColor.init(hex: 0x3B5998)
                 cell.chatNameLabel.font = UIFont.init(name: APPFont.regular, size: 10)
+               cell.chatNameView.roundCorners(corners: [.topLeft, .topRight], radius: 13.0)
+                cell.view1.roundCorners(corners: [.bottomLeft, .bottomRight], radius: 13.0)
+            }else{
+                cell.chatNameView.isHidden = true
+                cell.view1.cornerRadius(radius: 13)
             }
             let ind = self.messages[indexPath.row]
-            cell.view1.cornerRadius(radius: 13)
+            cell.chatNameLabel.text = ind.senderData["username"] as? String ?? ""
             cell.txt1.text = ind.msg
             cell.view1.backgroundColor = UIColor.init(hex: 0xECF7FE)
             cell.txt1.textColor = UIColor.init(hex: 0x354052)
@@ -488,6 +501,13 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         if self.messages.count > 0, self.messages[indexPath.row].attachment == 1{
             if self.messages[indexPath.row].attachmentType != "Audio"{
             return 250
+            }
+        }
+        
+        if isGroup == true{
+            let cell = self.tableView.cellForRow(at: indexPath)
+            if let cell = cell as? msgReceiverCell{
+                return 70
             }
         }
         return UITableView.automaticDimension
@@ -571,7 +591,24 @@ class msgReceiverCell:UITableViewCell {
         self.backgroundColor = .clear
         self.audioPlayer.cornerRadius(radius: 13)
         self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
+        
+        
     }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        layoutIfNeeded()
+    }
+    
 }
 
 extension mainChatVC: UIGestureRecognizerDelegate{
@@ -589,8 +626,6 @@ extension mainChatVC: UIGestureRecognizerDelegate{
 }
 
 extension mainChatVC : AVPlayerViewControllerDelegate {
-    
-    
     
     func videoPlaySelect(indexPath: IndexPath ) {
         print("\(String(describing: indexPath.row)) Tapped")
