@@ -8,18 +8,24 @@
 
 import UIKit
 
+protocol MultiOptionVCDelegate {
+    func showWallpaperOption()
+}
+
 class MultiOptionVC: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var tabelviewBackgroundView: UIView!
     @IBOutlet weak var tableViewHeightConstraints: NSLayoutConstraint!
     @IBOutlet weak var tabelView: UITableView!
+    var allChatMessage = [MockMessage]()
+    var deleagte: MultiOptionVCDelegate?
+    var delegateViewContact: ViewContactVCDeleagte?
     var isFirstOption: Bool = true
     var firstOptions = ["View Contact","Media, links, and docs", "Search", "Mute Notification", "Wallpaper", "More"]
     var secondOptions = ["Report","Block", "Clear Chat", "Export Chat", "Add Shortcut"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         self.tabelView.delegate = self
         self.tabelView.dataSource = self
@@ -77,16 +83,47 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        tableView.deselectRow(at: indexPath, animated: false)
 //        isFirstOption = false
-        if indexPath.row == 5{
-            tableViewHeightConstraints.constant = 279
-            firstOptions.remove(at: 5)
-            firstOptions.append(contentsOf: secondOptions)
-            tabelView.isScrollEnabled = true
-                UIView.transition(with: tableView,
-                              duration: 0.35,
-                              options: .transitionCrossDissolve,
-                              animations: { tableView.reloadData() })
+        
+        switch indexPath.row {
+        case 0:
+            self.showViewContactVC()
+        case 4:
+            self.showWallpaperOptionView()
+        case 5:
+            self.loadMore()
+        default:
+            print("Default called")
         }
+        
+    }
+    
+    func showViewContactVC(){
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let viewContactVC = stoaryboard.instantiateViewController(withIdentifier: "ViewContactVC") as? ViewContactVC
+        viewContactVC?.modalPresentationStyle = .overCurrentContext
+        viewContactVC?.allChatMessage = self.allChatMessage
+        viewContactVC?.delegate = self.delegateViewContact
+        self.present(viewContactVC!, animated: true) {
+        }
+    }
+    
+    func showWallpaperOptionView()  {
+        self.dismiss(animated: true) {
+            self.deleagte?.showWallpaperOption()
+        }
+       
+    }
+    
+    func loadMore(){
+        tableViewHeightConstraints.constant = 279
+        firstOptions.remove(at: 5)
+        firstOptions.append(contentsOf: secondOptions)
+        tabelView.isScrollEnabled = true
+        tabelView.reloadData()
+//        UIView.transition(with: tableView,
+//                          duration: 0.35,
+//                          options: .transitionCrossDissolve,
+//                          animations: { tabelView.reloadData() })
     }
     
 }

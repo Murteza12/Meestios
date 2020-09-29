@@ -19,6 +19,8 @@ class msgSendView: UIView {
     var isAudioRecordingGranted: Bool!
     
     var toUser:ChatHeads?
+    var group:groupHeads?
+    var isGroup:Bool?
     var userid = ""
     var socket:SocketIOClient!
     
@@ -52,16 +54,26 @@ class msgSendView: UIView {
     
     @IBAction func btnSendActino(_ sender: Any) {
         if sendBtn.currentImage == UIImage(named: "navigation"){
-            if self.textView.text != ""{
-                let new = ["msg" : (self.textView.text ?? "").encode(),
-                           "chatHeadId" : self.toUser?.chatHeadId ?? "",
-                           "userId": self.userid ,
-                           "attachment":false,"attachmentType":"","fileURL":""] as [String : Any]
-                self.textView.text = ""
-                print(new)
-                self.socket.emit("send", new)
-//                let neww = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
-//                self.socket.emit("get_history", neww)
+            if isGroup == true{
+                if self.textView.text != ""{
+                    let new = ["msg" : (self.textView.text ?? "").encode(),
+                               "chatHeadId" : self.group?.id ?? "",
+                               "userId": self.userid ,
+                               "attachment":false,"attachmentType":"","fileURL":""] as [String : Any]
+                    self.textView.text = ""
+                    print(new)
+                    self.socket.emit("send", new)
+                }
+            }else{
+                if self.textView.text != ""{
+                    let new = ["msg" : (self.textView.text ?? "").encode(),
+                               "chatHeadId" : self.toUser?.chatHeadId ?? "",
+                               "userId": self.userid ,
+                               "attachment":false,"attachmentType":"","fileURL":""] as [String : Any]
+                    self.textView.text = ""
+                    print(new)
+                    self.socket.emit("send", new)
+                }
             }
         }else{
             self.enableZoom()
@@ -102,7 +114,7 @@ extension msgSendView {
         textView.translatesAutoresizingMaskIntoConstraints = false
         
 //            self.socket = APIManager.sharedInstance.getSocket()
-//        self.socket =  SocketSessionHandler.sharedInstance.getSocket()
+        self.socket =  SocketSessionHandler.manager.defaultSocket
 
             APIManager.sharedInstance.getCurrentUser(vc: UIViewController()) { (user) in
                 self.userid = user.id
@@ -173,7 +185,12 @@ extension msgSendView: GrowingTextViewDelegate {
     }
     
     func sendTypingEmit(){
-        let new = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
+        var new = [String : Any]()
+        if isGroup == true{
+             new = ["userId":self.userid,"chatHeadId":self.group?.id ?? ""] as [String : Any]
+        }else{
+             new = ["userId":self.userid,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
+        }
         self.socket.emit("typing", new)
         isSender = true
 
@@ -318,8 +335,14 @@ extension msgSendView : AVAudioRecorderDelegate{
             APIManager.sharedInstance.uploadAudio(vc: topController, url: audioFilename, fileName: "audio.mp3") { (str) in
                 if str == "success"{
                     let audioUrl = UserDefaults.standard.string(forKey: "Audio")
+                    var chatID: String?
+                    if self.isGroup == true{
+                        chatID = self.group?.id ?? ""
+                    }else{
+                        chatID = self.toUser?.chatHeadId ?? ""
+                    }
                     let new = ["msg" : "",
-                               "chatHeadId" : self.toUser?.chatHeadId ?? "",
+                               "chatHeadId" : chatID ?? "",
                                "userId": self.userid ,
                                "attachment":true,"attachmentType":"Audio","fileURL":audioUrl ?? ""] as [String : Any]
                     print(new)

@@ -14,10 +14,10 @@ class groupsVC: RootBaseVC {
     @IBOutlet weak var tableVIew:UICollectionView!
     var socket:SocketIOClient!
     var allUser = [groupHeads]()
+    var groupChat: groupHeads?
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
         self.tableVIew.delegate = self
         self.tableVIew.dataSource = self
 //        self.socket = APIManager.sharedInstance.getSocket()
@@ -30,6 +30,11 @@ class groupsVC: RootBaseVC {
         if segue.identifier == "addPeopleGroup" {
             let peopleGroup = segue.destination as! AddPeopleGroupVC
 //            dvc.toUser = self.senduser
+        }else if segue.identifier == "mainChatVC" {
+            let group = segue.destination as! mainChatVC
+            group.groupHead = self.groupChat
+            group.isGroup = true
+            
         }
     }
     func getAllGroupHeads(){
@@ -62,6 +67,7 @@ class groupsVC: RootBaseVC {
             
             all.append(temp)
         }
+        print(all)
         self.allUser = all
     }
 
@@ -125,6 +131,10 @@ extension groupsVC:UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.row == 0{
             self.performSegue(withIdentifier: "addPeopleGroup", sender: self)
+        }else {
+            self.groupChat = self.allUser[indexPath.row-1]
+            self.performSegue(withIdentifier: "mainChatVC", sender: self)
+            
         }
     }
 }

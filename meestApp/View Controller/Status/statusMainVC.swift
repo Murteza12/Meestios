@@ -130,10 +130,18 @@ class statusMainVC: RootBaseVC {
     photoEditor.image = image
 
     //Stickers that the user will choose from to add on the image
-//    photoEditor.stickers.append(UIImage(named: "sticker" )!)
+    photoEditor.stickers.append(UIImage(named: "feel1" )!)
+    photoEditor.stickers.append(UIImage(named: "feel2" )!)
+    photoEditor.stickers.append(UIImage(named: "feel1" )!)
+    photoEditor.stickers.append(UIImage(named: "feel3" )!)
+    photoEditor.stickers.append(UIImage(named: "feel4" )!)
+    photoEditor.stickers.append(UIImage(named: "feel5" )!)
+    photoEditor.stickers.append(UIImage(named: "feel6" )!)
+    photoEditor.stickers.append(UIImage(named: "feeld1" )!)
+    photoEditor.stickers.append(UIImage(named: "feeld2" )!)
 
     //Optional: To hide controls - array of enum control
-//    photoEditor.hiddenControls = [.crop, .draw, .share]
+        photoEditor.hiddenControls = [ .draw, .share, .share]
 
     //Optional: Colors for drawing and Text, If not set default values will be used
     photoEditor.colors = [.red,.blue,.green, .brown, .white, .darkGray]

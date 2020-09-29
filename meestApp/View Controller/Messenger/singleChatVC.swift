@@ -24,7 +24,7 @@ class singleChatVC:MessagesViewController {
     var messages = [MockMessage]()
     var count = 0
     var toUser:ChatUser?
-    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
+//    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
     var socket:SocketIOClient!
     var userid = ""
     
@@ -32,7 +32,7 @@ class singleChatVC:MessagesViewController {
         super.viewDidLoad()
         configureMessageCollectionView()
         configureMessageInputBar()
-        self.socket = self.manager.defaultSocket
+        self.socket = SocketSessionHandler.manager.defaultSocket
         self.addHandler()
 //        self.socket.connect()
         NotificationCenter.default.addObserver(self, selector: #selector(sendMsg), name: NSNotification.Name.init("msgsend"), object: nil)
@@ -47,7 +47,7 @@ class singleChatVC:MessagesViewController {
         super.viewDidAppear(animated)
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             self.userid = user.id
-            let neww = ["pageSize":50,"userId":user.id,"toUserId":self.toUser?.id ?? "","pageNumber":1] as [String : Any]
+            let neww = ["userId":user.id,"toUserId":self.toUser?.id ?? "","pageNumber":1] as [String : Any]
             self.socket.emitWithAck("get_history", neww).timingOut(after: 20) {data in
                 return
             }

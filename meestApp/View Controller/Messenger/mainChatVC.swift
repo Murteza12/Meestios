@@ -23,7 +23,7 @@ enum AttachmentType:String {
 class mainChatVC: RootBaseVC {
 
     @IBOutlet weak var headerView:UIView!
-  //  @IBOutlet weak var bottomView:UIView!
+    @IBOutlet weak var backGroundView:UIView!
     @IBOutlet weak var txtView:UIView!
     @IBOutlet weak var sendBtn:UIButton!
     @IBOutlet weak var nameLbl:UILabel!
@@ -47,10 +47,14 @@ class mainChatVC: RootBaseVC {
     var toUser:ChatHeads?
     var messages = [MockMessage]()
     var lastData = [MockMessage]()
+    var groupHead: groupHeads?
+    var isGroup: Bool?
     var socket:SocketIOClient!
     var playerController : AVPlayerViewController!
     var isScrollToTop: Bool = false
     var offsetObservation: NSKeyValueObservation?
+    var isWallpaperOption:Bool = false
+    var wallpaperImageView: UIImageView?
             
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,6 +74,32 @@ class mainChatVC: RootBaseVC {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.typingLabel.text = ""
+        
+        if isGroup == true{
+            
+            APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
+                self.userid = user.id
+                let neww = ["userId":user.id,"chatHeadId":self.groupHead?.id ?? ""] as [String : Any]
+                self.socket.emitWithAck("get_history", neww).timingOut(after: 20) {data in
+                    return
+                }
+            }
+            self.nameLbl.text = self.groupHead?.groupName
+            self.img.applyRoundedView()
+            self.img.kf.indicatorType = .activity
+            self.img.kf.setImage(with: URL(string: self.groupHead?.groupIcon ?? ""),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
+                switch result {
+                case .success(let value):
+                    print("Task done for: \(value.source.url?.absoluteString ?? "")")
+
+                case .failure(let error):
+                    print(self.groupHead?.groupIcon)
+                    print("Job failed: \(error.localizedDescription)")
+                }
+            }
+            
+            
+        }else{
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             self.userid = user.id
             let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? ""] as [String : Any]
@@ -90,8 +120,15 @@ class mainChatVC: RootBaseVC {
                 print("Job failed: \(error.localizedDescription)")
             }
         }
+        }
         self.messages.removeAll()
-        self.tableView.toUser = self.toUser
+        
+        if isGroup == true{
+            self.tableView.group = self.groupHead
+            self.tableView.isGroup = isGroup
+        }else{
+            self.tableView.toUser = self.toUser
+        }
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -126,6 +163,8 @@ class mainChatVC: RootBaseVC {
         let multiOptionVC = stoaryboard.instantiateViewController(withIdentifier: "MultiOptionVC") as? MultiOptionVC
         multiOptionVC?.modalPresentationStyle = .overCurrentContext
         multiOptionVC?.modalTransitionStyle = .crossDissolve
+        multiOptionVC?.allChatMessage = messages
+        multiOptionVC?.deleagte = self
         self.present(multiOptionVC!, animated: true) {
             
         }
@@ -146,14 +185,16 @@ class mainChatVC: RootBaseVC {
                 if data.status == 0 {
                     let cell = self.tableView.cellForRow(at: self.selectedCell!)
                     if let cell = cell as? msgSenderCell{
-                        cell.txt1.text = "@This message is deleted."
+                        cell.txt1.text = "@This message was deleted."
                         cell.txt1.textColor = UIColor.lightGray
                         cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
                     }else if let cell = cell as? msgReceiverCell{
-                        cell.txt1.text = "@This message is deleted."
+                        cell.txt1.text = "@This message was deleted."
                         cell.txt1.textColor = UIColor.lightGray
                         cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
                     }
+                    self.messages[val].msg = "@This message was deleted"
+                    self.messages[val].status = 0
                 }
             }
         }
@@ -177,38 +218,12 @@ class mainChatVC: RootBaseVC {
             self.scrollToBottom()
             self.getHistorySocketCall(pageNumber: 1)
         }
-        self.socket.on("message") { (dataa, ack) in
-            print(dataa)
-            var ChatUserID = ""
-            let ChatUserName = ""
-            let datamsg = dataa as! [[String:Any]]
-            let data = datamsg[0]["msg"] as! [String:Any]
-            let attachment = data["attachment"] as? Int ?? 0
-            let attachmentType = data["attachmentType"] as? String ?? ""
-            let fileURL = data["fileURL"] as? String ?? ""
-            let createdAt = data["createdAt"] as? String ?? ""
-            let deletedAt = data["deletedAt"] as? String ?? ""
-            let id = data["id"] as? String ?? ""
-            let msg = data["msg"] as? String ?? ""
-            let status = data["status"] as? Int ?? 0
-            let toUserId = data["toUserId"] as? String ?? ""
-            let updatedAt = data["updatedAt"] as? String ?? ""
-            let userId = data["userId"] as? String ?? ""
-            let sent = data["sender"] as? Bool ?? false
-            let videothumbnail = data["thumbnail"] as? String ?? ""
-            if sent {
-                
-                ChatUserID = self.toUser?.id ?? ""
-            } else {
-                ChatUserID = self.userid
-                
-            }
-            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: [:], fileURL:fileURL, attachmentType: attachmentType, videothumbnail: videothumbnail)
-            
-            self.messages.append(temp)
-            
-            self.tableView.reloadData()
+        
+        self.socket.on("sent_ios") { data, ack in
+            print(data)
+            self.isSent = true
             self.scrollToBottom()
+            self.getHistorySocketCall(pageNumber: 1)
         }
         
         self.socket.on("chat_history") { (dataa, ack) in
@@ -244,8 +259,12 @@ class mainChatVC: RootBaseVC {
                
             }
             if self.isSent  {
-                for _ in 0...9 {
-                    self.messages.removeLast()
+                if self.messages.count > 10{
+                    for _ in 0...9 {
+                        self.messages.removeLast()
+                    }
+                }else{
+                    self.messages.removeAll()
                 }
                 self.messages.append(contentsOf: self.lastData)
                 self.isSent = false
@@ -274,7 +293,13 @@ class mainChatVC: RootBaseVC {
     func getHistorySocketCall(pageNumber: Int){
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             self.userid = user.id
-            let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? "","page":pageNumber] as [String : Any]
+            var chatID: String?
+            if self.isGroup == true{
+                chatID = self.groupHead?.id ?? ""
+            }else{
+                chatID = self.toUser?.chatHeadId ?? ""
+            }
+            let neww = ["userId":user.id,"chatHeadId":chatID ?? "","page":pageNumber] as [String : Any]
             self.socket.emit("get_history", neww)
         }
 
@@ -286,7 +311,13 @@ class mainChatVC: RootBaseVC {
                 pageNumberToBeLoad += 1
                 APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
                     self.userid = user.id
-                    let neww = ["userId":user.id,"chatHeadId":self.toUser?.chatHeadId ?? "","page":self.pageNumberToBeLoad] as [String : Any]
+                    var chatID: String?
+                    if self.isGroup == true{
+                        chatID = self.groupHead?.id ?? ""
+                    }else{
+                        chatID = self.toUser?.chatHeadId ?? ""
+                    }
+                    let neww = ["userId":user.id,"chatHeadId":chatID ?? "","page":self.pageNumberToBeLoad] as [String : Any]
                     self.isSent = false
                     self.socket.emit("get_history", neww)
                 }
@@ -300,19 +331,6 @@ class mainChatVC: RootBaseVC {
     func decode(_ s: String) -> String? {
         let data = s.data(using: .utf8)!
         return String(data: data, encoding: .nonLossyASCII)
-    }
-    @IBAction func sendMsg(_ sender:UIButton) {
-        
-        let new = ["msg" : self.msgTxtView.text ?? "",
-                   "chatHeadId" : self.toUser?.chatHeadId ?? "",
-                   "userId": self.userid ,
-                   "attachment":false] as [String : Any]
-        
-        self.messages.append(MockMessage.init(text: self.msgTxtView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.msgTxtView.text ?? "", status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true,senderData: [:], fileURL:"", attachmentType: "",videothumbnail:""))
-        self.msgTxtView.text = ""
-        
-        self.socket.emit("send", new)
-        
     }
 }
 
@@ -356,7 +374,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if self.messages[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
-//            cell.selectionStyle = .none
+            cell.selectionStyle = .none
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
@@ -369,7 +387,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.playImageView.image = nil
             cell.audioPlayer.isHidden = true
             if ind.status == 0{
-                cell.txt1.text = "@This message is deleted."
+                cell.txt1.text = "@This message was deleted."
                 cell.txt1.textColor = UIColor.lightGray
                 cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
             }
@@ -379,7 +397,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
-                        cell.playImageView.image = UIImage(named: "play")
+                        cell.playImageView.image = UIImage(named: "Play")
 //                        addBlurEffectToImageView(imageView: cell.img)
                         cell.img.tag = indexPath.row
                         cell.img.isUserInteractionEnabled = true
@@ -404,10 +422,19 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell2") as! msgReceiverCell
             cell.selectionStyle = .none
+            if isGroup == true{
+                cell.chatNameView.isHidden = true
+            }else{
+                cell.chatNameView.isHidden = false
+                cell.chatNameView.cornerRadius(radius: 13)
+                cell.chatNameView.backgroundColor = UIColor.init(hex: 0xE0F3FF )
+                cell.chatNameLabel.textColor = UIColor.init(hex: 0x3B5998)
+                cell.chatNameLabel.font = UIFont.init(name: APPFont.regular, size: 10)
+            }
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
-            cell.view1.backgroundColor = UIColor.init(hex: 0x3B5998)
+            cell.view1.backgroundColor = UIColor.init(hex: 0xECF7FE)
             cell.txt1.textColor = UIColor.init(hex: 0x354052)
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
             cell.timelbl.text = ind.createdAt
@@ -415,7 +442,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.playImageView.image = nil
             cell.audioPlayer.isHidden = true
             if ind.status == 0{
-                cell.txt1.text = "@This message is deleted."
+                cell.txt1.text = "@This message was deleted."
                 cell.txt1.textColor = UIColor.lightGray
                 cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
             }
@@ -425,7 +452,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
-                        cell.playImageView.image = UIImage(named: "play")
+                        cell.playImageView.image = UIImage(named: "Play")
 //                        addBlurEffectToImageView(imageView: cell.img)
                         cell.img.tag = indexPath.row
                         cell.img.isUserInteractionEnabled = true
@@ -474,9 +501,12 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         tableView.becomeFirstResponder()
     }
     func scrollToBottom(){
+        
+        if self.messages.count > 0{
         DispatchQueue.main.async {
             let indexPath = IndexPath(row: self.messages.count-1, section: 0)
             self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
         }
     }
     
@@ -514,12 +544,15 @@ class msgSenderCell:UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.backgroundColor = .clear
         self.audioPlayer.cornerRadius(radius: 13)
         self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
     }
 }
 class msgReceiverCell:UITableViewCell {
     
+    @IBOutlet weak var chatNameLabel: UILabel!
+    @IBOutlet weak var chatNameView: UIView!
     @IBOutlet weak var view1:UIView!
     @IBOutlet weak var txt1:UITextView!
     @IBOutlet weak var img:UIImageView!
@@ -535,6 +568,7 @@ class msgReceiverCell:UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.backgroundColor = .clear
         self.audioPlayer.cornerRadius(radius: 13)
         self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
     }
@@ -661,7 +695,7 @@ extension mainChatVC{
         }
         
         attachmentVC?.openGalleryCompletion = { [weak self] in
-            
+            self?.isWallpaperOption = false
             self?.openGallery()
         }
         
@@ -692,12 +726,24 @@ extension mainChatVC{
             if str == "success" {
                 self.removeAnimation()
                 let imgURL = UserDefaults.standard.string(forKey: "IMG")
+                var chatID: String?
+                if self.isGroup == true{
+                    chatID = self.groupHead?.id ?? ""
+                }else{
+                    chatID = self.toUser?.chatHeadId ?? ""
+                }
                 let new = ["msg" : "",
-                           "chatHeadId" : self.toUser?.chatHeadId ?? "",
+                           "chatHeadId" : chatID ?? "",
                            "userId": self.userid ,
                            "attachment":true,"attachmentType":"Image","fileURL":imgURL ?? ""] as [String : Any]
                 print(new)
                 self.socket.emit("send", new)
+            }else{
+                let act = UIAlertController.init(title: "Error", message: "Error in uploading image", preferredStyle: .alert)
+                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                    
+                }))
+                self.present(act, animated: true, completion: nil)
             }
         }
     }
@@ -712,7 +758,11 @@ extension mainChatVC:UINavigationControllerDelegate, UIImagePickerControllerDele
         let img = info[.editedImage] as! UIImage
         self.uploadImage = img
         picker.dismiss(animated: true) {
-            self.uploadImg()
+            if self.isWallpaperOption == false{
+                self.uploadImg()
+            }else{
+                self.setImageInBackgroud(image: img)
+            }
         }
     }
 }
@@ -774,4 +824,54 @@ extension mainChatVC{
                     }
         }
     }
+}
+
+extension mainChatVC: MultiOptionVCDelegate{
+    func showWallpaperOption() {
+        openWallpaper()
+    }
+    
+    func openWallpaper(){
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let multiOptionVC = stoaryboard.instantiateViewController(withIdentifier: "WallpaperOptionVC") as? WallpaperOptionVC
+        multiOptionVC?.modalPresentationStyle = .overCurrentContext
+        multiOptionVC?.modalTransitionStyle = .crossDissolve
+        self.present(multiOptionVC!, animated: true) {
+            
+        }
+        
+        multiOptionVC?.openGalleryCompletion = {
+            self.isWallpaperOption = true
+            self.openGallery()
+        }
+        
+        multiOptionVC?.noWallpaerCompletion = {
+            self.removeImageFromBackground()
+        }
+    }
+    
+    
+    func setImageInBackgroud(image: UIImage){
+        self.wallpaperImageView = UIImageView(image: image)
+        self.wallpaperImageView?.frame = self.backGroundView.bounds
+        self.backGroundView.addSubview(self.wallpaperImageView ?? UIImageView())
+        self.backGroundView.bringSubviewToFront(self.tableView)
+        self.backGroundView.bringSubviewToFront(self.headerView)
+        self.tableView.backgroundColor = UIColor.clear
+    }
+    
+    func removeImageFromBackground(){
+        self.wallpaperImageView?.removeFromSuperview()
+        self.tableView.backgroundColor = UIColor.white
+    }
+    
+    
+}
+
+extension mainChatVC: ViewContactVCDeleagte{
+    func showWallpaperOptions() {
+        openWallpaper()
+    }
+    
+    
 }

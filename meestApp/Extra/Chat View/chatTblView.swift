@@ -12,10 +12,14 @@ import UIKit
 class chatTblView: UITableView {
   
     var toUser:ChatHeads?
+    var group:groupHeads?
+    var isGroup:Bool?
     lazy var inputAccessory: msgSendView = {
         let rect = CGRect(x: 0,y: 0,width: UIScreen.main.bounds.width,height: 70)
         let inputAccessory = msgSendView(frame: rect)
         inputAccessory.toUser = self.toUser
+        inputAccessory.group = self.group
+        inputAccessory.isGroup = self.isGroup
         return inputAccessory
     }()
 

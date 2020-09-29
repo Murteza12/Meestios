@@ -15,6 +15,8 @@
 		5A5C448F252091C600C01782 /* CreateGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C448E252091C600C01782 /* CreateGroupVC.swift */; };
 		5A82D46C251E70DA007E402A /* DeleteOptionForEveryOneVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */; };
 		5A82D471251E7BFF007E402A /* MultiOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A82D470251E7BFF007E402A /* MultiOptionVC.swift */; };
+		5A835C71252388A70008D24A /* ViewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A835C70252388A70008D24A /* ViewContactVC.swift */; };
+		5A835C762523A88E0008D24A /* WallpaperOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A835C752523A88E0008D24A /* WallpaperOptionVC.swift */; };
 		5A9E553F251CDE7200A30EA8 /* Messenger.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */; };
 		5A9E5544251CE43400A30EA8 /* DeleteOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */; };
 		5A9E554C251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */; };
@@ -194,6 +196,8 @@
 		5A5C448E252091C600C01782 /* CreateGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupVC.swift; sourceTree = "<group>"; };
 		5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteOptionForEveryOneVC.swift; sourceTree = "<group>"; };
 		5A82D470251E7BFF007E402A /* MultiOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiOptionVC.swift; sourceTree = "<group>"; };
+		5A835C70252388A70008D24A /* ViewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewContactVC.swift; sourceTree = "<group>"; };
+		5A835C752523A88E0008D24A /* WallpaperOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperOptionVC.swift; sourceTree = "<group>"; };
 		5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Messenger.storyboard; sourceTree = "<group>"; };
 		5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteOptionVC.swift; sourceTree = "<group>"; };
 		5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteChatHeadOptionVC.swift; sourceTree = "<group>"; };
@@ -904,6 +908,8 @@
 				5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */,
 				5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */,
 				5A5C448E252091C600C01782 /* CreateGroupVC.swift */,
+				5A835C70252388A70008D24A /* ViewContactVC.swift */,
+				5A835C752523A88E0008D24A /* WallpaperOptionVC.swift */,
 			);
 			path = Messenger;
 			sourceTree = "<group>";
@@ -1256,6 +1262,7 @@
 				D3C703E124DC96870001E220 /* customTbl.swift in Sources */,
 				D34A19EE24FEDC1000F2BFAA /* editProfileVC.swift in Sources */,
 				D336CA3D2506D5750097FB1C /* manageVC.swift in Sources */,
+				5A835C71252388A70008D24A /* ViewContactVC.swift in Sources */,
 				D3DE9D3424DB60B100CFB3BF /* otpVC.swift in Sources */,
 				D360141E2508087200391004 /* blockedContactVC.swift in Sources */,
 				D3C703E324DCAA6E0001E220 /* CollectionView.swift in Sources */,
@@ -1313,6 +1320,7 @@
 				D3853155250ACBC3002B6C58 /* boostPostDetailVC.swift in Sources */,
 				5A5C448F252091C600C01782 /* CreateGroupVC.swift in Sources */,
 				5A9E554C251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift in Sources */,
+				5A835C762523A88E0008D24A /* WallpaperOptionVC.swift in Sources */,
 				D3AEA983250F538C007FDFA5 /* createPhotoPostVC.swift in Sources */,
 				D324FEFB24ECA43300ABAE9F /* addPostVC.swift in Sources */,
 				D3FC4840250BCEAD00BA14EA /* OthereUser.swift in Sources */,
