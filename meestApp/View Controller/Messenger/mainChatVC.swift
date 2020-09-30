@@ -503,13 +503,6 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             return 250
             }
         }
-        
-        if isGroup == true{
-            let cell = self.tableView.cellForRow(at: indexPath)
-            if let cell = cell as? msgReceiverCell{
-                return 70
-            }
-        }
         return UITableView.automaticDimension
     }
     
