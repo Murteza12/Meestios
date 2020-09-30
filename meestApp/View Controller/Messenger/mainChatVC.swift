@@ -75,6 +75,9 @@ class mainChatVC: RootBaseVC {
         recognizer.delegate = self
         self.view.addGestureRecognizer(recognizer)
         NotificationCenter.default.addObserver(self, selector: #selector(attachmentButtonClicked), name: Notification.Name.init(rawValue: "attachmentButtonClicked"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(showBlockContact), name: Notification.Name.init(rawValue: "blockContact"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(showWallpaper), name: Notification.Name.init(rawValue: "showWallpaper"), object: nil)
+        
     }
 
     private func getDataFromDB(objects: Results<Object>) {
@@ -810,7 +813,27 @@ extension mainChatVC{
         attachmentVC?.openAttachmnetCompletion = { [weak self] in
             self?.openCamera()
         }
-}
+    }
+        
+        @objc func showBlockContact(){
+            let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+            let multiOptionVC = stoaryboard.instantiateViewController(withIdentifier: "DeleteChatHeadOptionVC") as? DeleteChatHeadOptionVC
+            multiOptionVC?.modalPresentationStyle = .overCurrentContext
+            multiOptionVC?.modalTransitionStyle = .crossDissolve
+            multiOptionVC?.isBlock = true
+            self.present(multiOptionVC!, animated: true) {
+                
+            }
+            multiOptionVC?.deleteCompletion = {
+                print("Delete API Called")
+            }
+        }
+    
+    @objc func showWallpaper(){
+        
+        self.openWallpaper()
+    }
+
     
     func openGallery() {
         let img = UIImagePickerController()

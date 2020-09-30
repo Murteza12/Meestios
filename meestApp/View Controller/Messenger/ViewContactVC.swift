@@ -78,6 +78,9 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
         switch indexPath.row {
         case 0:
             self.openWallpaper()
+            
+        case 3:
+            self.blockContact()
         default:
             print("Default Called")
         }
@@ -85,7 +88,17 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
     
     func openWallpaper(){
         self.presentingViewController?.presentingViewController?.dismiss(animated: true) {
-            self.delegate?.showWallpaperOptions()
+            //self.delegate?.showWallpaperOptions()
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "showWallpaper"), object: nil)
+            
+        }
+    }
+    
+    func blockContact(){
+        
+        self.presentingViewController?.presentingViewController?.dismiss(animated: true) {
+            //self.delegate?.showWallpaperOptions()
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "blockContact"), object: nil)
         }
     }
 }
