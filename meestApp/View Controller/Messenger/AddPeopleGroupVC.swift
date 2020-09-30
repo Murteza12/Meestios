@@ -15,6 +15,9 @@ class AddPeopleGroupVC: RootBaseVC {
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var nextButtonView: UIView!
+    @IBOutlet weak var peopleCountLabel: UILabel!
+    @IBOutlet weak var allPeopleLabel: UILabel!
+    @IBOutlet weak var sortButton: UIButton!
     
     @IBOutlet weak var nextButton: UIButton!
     var allFollwedUser = [SuggestedUser]()
@@ -26,8 +29,15 @@ class AddPeopleGroupVC: RootBaseVC {
         self.tableView.separatorStyle = .none
         self.nextButtonView.isHidden = true
         
+        self.peopleCountLabel.font = UIFont.init(name: APPFont.regular, size: 14)
+        self.peopleCountLabel.textColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.5)
+        self.allPeopleLabel.font = UIFont.init(name: APPFont.regular, size: 19)
+        self.sortButton.setTitle("Newest", for: .normal)
+        self.sortButton.titleLabel?.font = UIFont.init(name: APPFont.regular, size: 14)
+        self.allPeopleLabel.text = "All People"
         APIManager.sharedInstance.followGetFriends(vc: self) { all in
             self.allFollwedUser = all
+            self.peopleCountLabel.text =  self.allFollwedUser.count > 9 ? (self.allFollwedUser.count).toString() + " Peoples" : "0"+(self.allFollwedUser.count).toString() + " Peoples"
             self.tableView.reloadData()
         }
     }
@@ -50,6 +60,9 @@ class AddPeopleGroupVC: RootBaseVC {
     
     @IBAction func nextButtonClicked(_ sender: Any) {
         self.performSegue(withIdentifier: "createGroupVC", sender: self)
+    }
+    
+    @IBAction func sortButtonAction(_ sender: Any) {
     }
     
     

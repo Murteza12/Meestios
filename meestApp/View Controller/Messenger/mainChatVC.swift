@@ -14,6 +14,7 @@ import IHKeyboardAvoiding
 import AVKit
 import AVFoundation
 import MMPlayerView
+import RealmSwift
 
 enum AttachmentType:String {
     case Image = "Image"
@@ -55,6 +56,9 @@ class mainChatVC: RootBaseVC {
     var offsetObservation: NSKeyValueObservation?
     var isWallpaperOption:Bool = false
     var wallpaperImageView: UIImageView?
+    var timeCount = 0
+    var realmManager = RealmManager()
+    var sendImageChange = 0
             
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,12 +72,27 @@ class mainChatVC: RootBaseVC {
         self.addHandler()
         self.tableView.becomeFirstResponder()
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapBtnAction(_:)))
+        recognizer.delegate = self
         self.view.addGestureRecognizer(recognizer)
         NotificationCenter.default.addObserver(self, selector: #selector(attachmentButtonClicked), name: Notification.Name.init(rawValue: "attachmentButtonClicked"), object: nil)
+    }
+
+    private func getDataFromDB(objects: Results<Object>) {
+        for element in objects {
+            if let data = element as? Imagedata {
+                self.setImageInBackgroud(image: UIImage(data: data.data!)!)
+            }
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.typingLabel.text = ""
+        
+//        guard let info = realm.objects(Info.self).first else {return}
+        if let displayContent = realmManager.getObjects(type: Imagedata.self), displayContent.count > 0 {
+            // display data
+            getDataFromDB(objects: displayContent)
+        }
         
         if isGroup == true{
             
@@ -178,6 +197,10 @@ class mainChatVC: RootBaseVC {
     
     func addHandler() {
         
+        self.socket.on("read") {data, ack in
+            
+        }
+        
         self.socket.on("deletedMessage") { data, ack in
             print(data)
             if let val = self.selectedCell?.row{
@@ -214,6 +237,14 @@ class mainChatVC: RootBaseVC {
         
         self.socket.on("sent") { data, ack in
             print(data)
+            var chatID = ""
+            if self.isGroup == true{
+                chatID = self.groupHead?.id ?? ""
+            }else{
+                chatID = self.toUser?.chatHeadId ?? ""
+            }
+            let data = ["userId":self.userid,"chatHeadId":chatID]
+            self.socket.emit("readMessage", data)
             self.isSent = true
             self.scrollToBottom()
             self.getHistorySocketCall(pageNumber: 1)
@@ -221,6 +252,14 @@ class mainChatVC: RootBaseVC {
         
         self.socket.on("sent_ios") { data, ack in
             print(data)
+            var chatID = ""
+            if self.isGroup == true{
+                chatID = self.groupHead?.id ?? ""
+            }else{
+                chatID = self.toUser?.chatHeadId ?? ""
+            }
+            let data = ["userId":self.userid,"chatHeadId":chatID]
+            self.socket.emit("readMessage", data)
             self.isSent = true
             self.scrollToBottom()
             self.getHistorySocketCall(pageNumber: 1)
@@ -247,13 +286,14 @@ class mainChatVC: RootBaseVC {
                 let sent = ii["sender"] as? Bool ?? false
                 let senderData = ii["senderData"] as? [String: Any] ?? [:]
                 let videothumbnail = ii["thumbnail"] as? String ?? ""
+                let read = ii["read"] as? Int ?? 0
                 if sent {
                     ChatUserID = self.userid
                     
                 } else {
                     ChatUserID = self.toUser?.id ?? ""
                 }
-                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: senderData, fileURL:fileURL, attachmentType: attachmentType, videothumbnail: videothumbnail )
+                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: senderData, fileURL:fileURL, attachmentType: attachmentType, videothumbnail: videothumbnail, read: read )
                 
                 self.lastData.append(temp)
                
@@ -338,6 +378,7 @@ class mainChatVC: RootBaseVC {
 
 extension mainChatVC{
     func playAudio(url: String, cell: UITableViewCell) {
+        self.timeCount = 0
         let player = AVPlayer(url: URL(string: url)!)
         player.play()
         player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: .main) { time in
@@ -345,8 +386,10 @@ extension mainChatVC{
             let fraction = CMTimeGetSeconds(time) / CMTimeGetSeconds(player.currentItem!.duration)
             if let cell = cell as? msgSenderCell{
                 cell.progressBar.progress = Float(fraction)
+                self.timeCount += 1
+                cell.audioTimerLabel.text = String(format: "%02d:%02d",(self.timeCount/60)%60,self.timeCount%60)
             }
-            if let cell = cell as? msgSenderCell{
+            if let cell = cell as? msgReceiverCell{
                 cell.progressBar.progress = Float(fraction)
             }
         }
@@ -388,7 +431,15 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
-            cell.sentimg.image = UIImage.init(named: "sent")
+            if toUser?.isOnline == true{
+                if ind.read == 1{
+                    cell.sentimg.image = UIImage.init(named: "ReadChat")
+                }else{
+                    cell.sentimg.image = UIImage.init(named: "sent")
+                }
+            }else{
+                cell.sentimg.image = UIImage.init(named: "SingleTick")
+            }
             cell.view1.backgroundColor = UIColor.init(hex: 0x3B5998)
             cell.txt1.textColor = UIColor.white
             cell.txt1.font = UIFont.init(name: APPFont.semibold, size: 16)
@@ -634,12 +685,22 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
                     }
                 }else if data.attachmentType == "Audio"{
                     if !data.fileURL.isEmpty{
+//                        let audioFilename = getDocumentsDirectory().appending("/audio.aac")
                         let cell = self.tableView.cellForRow(at: indexPath)
                         playAudio(url: data.fileURL, cell: cell!)
+//                            let audioURL = URL(fileURLWithPath: audioFilename)
+//                            let strURL = audioURL.absoluteString
+//                            playAudio(url: strURL, cell: cell!)
                     }
                 }
             }
         }
+    
+    func getDocumentsDirectory() -> String {
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0]
+        return documentsDirectory
+    }
     
     func play(url1: String) {
         guard let urlFromString = URL(string: url1) else { return }
@@ -695,10 +756,24 @@ extension mainChatVC{
         
         deleteOptionVC?.deleteCompletion = { [weak self] in
             print("Delete Called")
-            let data = self?.messages[(self?.selectedCell!.row)!]
-            let payload = ["messageId": data?.id, "userId": data?.userID]
-            self?.socket.emit("deleteChat", payload)
-            //self?.getHistorySocketCall(pageNumber:self!.pageNumberToBeLoad)
+            
+            let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+            let deleteEveryoneVC = stoaryboard.instantiateViewController(withIdentifier: "DeleteOptionForEveryOneVC") as? DeleteOptionForEveryOneVC
+            deleteEveryoneVC?.modalPresentationStyle = .overCurrentContext
+            deleteEveryoneVC?.modalTransitionStyle = .crossDissolve
+            self?.present(deleteEveryoneVC!, animated: true, completion: nil)
+            
+            deleteEveryoneVC?.deleteForEveryOneCompletion = {
+                let data = self?.messages[(self?.selectedCell!.row)!]
+                let payload = ["messageId": data?.id, "userId": data?.userID]
+                self?.socket.emit("deleteChat", payload)
+            }
+            
+            deleteEveryoneVC?.deletedCompletion = {
+                let data = self?.messages[(self?.selectedCell!.row)!]
+                let payload = ["messageId": data?.id, "userId": data?.userID]
+                self?.socket.emit("deleteChat", payload)
+            }
         }
         
         deleteOptionVC?.replyCompletion = { [weak self] in
@@ -789,7 +864,7 @@ extension mainChatVC:UINavigationControllerDelegate, UIImagePickerControllerDele
             if self.isWallpaperOption == false{
                 self.uploadImg()
             }else{
-                self.setImageInBackgroud(image: img)
+                self.saveImage(image: img)
             }
         }
     }
@@ -878,6 +953,12 @@ extension mainChatVC: MultiOptionVCDelegate{
         }
     }
     
+    func saveImage(image: UIImage){
+        let imageData = Imagedata()
+        imageData.data = image.pngData()
+        RealmManager().saveObjects(objs: imageData)
+        self.setImageInBackgroud(image: image)
+    }
     
     func setImageInBackgroud(image: UIImage){
         self.wallpaperImageView = UIImageView(image: image)
@@ -888,9 +969,14 @@ extension mainChatVC: MultiOptionVCDelegate{
         self.tableView.backgroundColor = UIColor.clear
     }
     
+    func removeImageFromDB(){
+        realmManager.deleteDatabase()
+    }
+    
     func removeImageFromBackground(){
         self.wallpaperImageView?.removeFromSuperview()
         self.tableView.backgroundColor = UIColor.white
+        self.removeImageFromDB()
     }
     
     

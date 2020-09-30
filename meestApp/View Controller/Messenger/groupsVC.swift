@@ -89,6 +89,7 @@ extension groupsVC:UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             return cell
         }else{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell2", for: indexPath) as! groupCell
+            cell.delegate = self
             cell.onlineView.cornerRadius(radius: cell.onlineView.frame.height / 2)
             cell.proImg.cornerRadius(radius: cell.proImg.frame.height / 2)
             cell.img1.cornerRadius(radius: cell.img1.frame.height / 2)
@@ -102,7 +103,8 @@ extension groupsVC:UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             
             let groupData = self.allUser[indexPath.row-1]
             cell.groupName.text = groupData.groupName
-            //        cell.img1.kf.indicatorType = .activity
+            
+            cell.onlineView.backgroundColor = UIColor.init(hex: 0xF8C756)
             cell.proImg.kf.setBackgroundImage(with: URL(string: groupData.groupIcon), for: .normal)
             cell.img1.kf.indicatorType = .activity
             cell.img2.kf.indicatorType = .activity
@@ -139,6 +141,37 @@ extension groupsVC:UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     }
 }
 
+extension groupsVC: GroupCellDelegate{
+    func optionButtonAction(sender: Any) {
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let multiOptionVC = stoaryboard.instantiateViewController(withIdentifier: "MultiOptionVC") as? MultiOptionVC
+        multiOptionVC?.modalPresentationStyle = .overCurrentContext
+        multiOptionVC?.modalTransitionStyle = .crossDissolve
+//        multiOptionVC?.allChatMessage = messages
+//        multiOptionVC?.deleagte = self
+        multiOptionVC?.isGroup = true
+        self.present(multiOptionVC!, animated: true) {
+            
+        }
+    }
+    
+    func starButtonAction(sender: Any) {
+        
+    }
+    
+    func displayPictureButtonAction(sender: Any) {
+        
+    }
+    
+    
+}
+
+protocol GroupCellDelegate {
+    func optionButtonAction(sender: Any)
+    func starButtonAction(sender: Any)
+    func displayPictureButtonAction(sender: Any)
+}
+
 class groupCell:UICollectionViewCell {
     
     @IBOutlet weak var view1:UIView!
@@ -153,6 +186,17 @@ class groupCell:UICollectionViewCell {
     @IBOutlet weak var img2:UIImageView!
     @IBOutlet weak var img3:UIImageView!
     @IBOutlet weak var img4:UIImageView!
+    var delegate: GroupCellDelegate?
+    
+    @IBAction func starButtonAction(_ sender: Any) {
+        delegate?.starButtonAction(sender: sender)
+    }
+    @IBAction func optionButtonAction(_ sender: Any) {
+        delegate?.optionButtonAction(sender: sender)
+    }
+    @IBAction func displayPictureButtonAction(_ sender: Any) {
+        delegate?.displayPictureButtonAction(sender: sender)
+    }
     
 }
 class createCell:UICollectionViewCell {

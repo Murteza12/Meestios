@@ -86,6 +86,104 @@
             </objects>
             <point key="canvasLocation" x="-297" y="-49"/>
         </scene>
+        <!--Clear ChatVC-->
+        <scene sceneID="BYE-sF-eHx">
+            <objects>
+                <viewController storyboardIdentifier="ClearChatVC" id="di5-Wd-aTO" customClass="ClearChatVC" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1wE-fX-phI">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="STC-n7-K6N">
+                                <rect key="frame" x="30" y="334.5" width="354" height="227"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Are you sure you want to clear messages in this chat?" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gU3-Yt-YLs">
+                                        <rect key="frame" x="33" y="25" width="288" height="41"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <color key="textColor" red="0.23137254900000001" green="0.34901960780000002" blue="0.59607843140000005" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Delete media in this chat" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EOM-fj-Frs">
+                                        <rect key="frame" x="82" y="93" width="200" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <color key="textColor" red="0.23137254900000001" green="0.34901960780000002" blue="0.59607843140000005" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qwj-Bc-2Qa">
+                                        <rect key="frame" x="254" y="157" width="56" height="34"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Cancel">
+                                            <color key="titleColor" red="0.039215686274509803" green="0.12156862745098039" blue="0.26666666666666666" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancelButtonAction:" destination="cqt-gH-Gle" eventType="touchUpInside" id="Syz-3m-FuU"/>
+                                            <action selector="cancelButtonAction:" destination="di5-Wd-aTO" eventType="touchUpInside" id="myO-Cb-Nx0"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HKE-HY-dte">
+                                        <rect key="frame" x="33" y="97" width="12" height="12"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="12" id="tpP-ww-r2a"/>
+                                            <constraint firstAttribute="width" constant="12" id="xdx-Ui-tp3"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="checkBoxButtonAction:" destination="di5-Wd-aTO" eventType="touchUpInside" id="Yep-Wm-KEs"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="elw-OH-NNT">
+                                        <rect key="frame" x="189" y="157" width="43" height="34"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Clear">
+                                            <color key="titleColor" red="0.97647058823529409" green="0.24705882352941178" blue="0.30980392156862746" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="clearButtonAction:" destination="di5-Wd-aTO" eventType="touchUpInside" id="WKI-1w-ynU"/>
+                                            <action selector="confirmButtonAction:" destination="cqt-gH-Gle" eventType="touchUpInside" id="W8A-Hy-dKZ"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="HKE-HY-dte" firstAttribute="top" secondItem="gU3-Yt-YLs" secondAttribute="bottom" constant="31" id="4Gm-Jw-8Gz"/>
+                                    <constraint firstItem="HKE-HY-dte" firstAttribute="centerY" secondItem="EOM-fj-Frs" secondAttribute="centerY" id="5Yb-F6-ZsX"/>
+                                    <constraint firstAttribute="trailing" secondItem="gU3-Yt-YLs" secondAttribute="trailing" constant="33" id="5cD-OO-6qE"/>
+                                    <constraint firstAttribute="bottom" secondItem="Qwj-Bc-2Qa" secondAttribute="bottom" constant="36" id="F0c-Cp-uEf"/>
+                                    <constraint firstItem="HKE-HY-dte" firstAttribute="leading" secondItem="gU3-Yt-YLs" secondAttribute="leading" id="JQN-dg-5j6"/>
+                                    <constraint firstItem="Qwj-Bc-2Qa" firstAttribute="centerY" secondItem="elw-OH-NNT" secondAttribute="centerY" id="TFE-q0-zH1"/>
+                                    <constraint firstItem="Qwj-Bc-2Qa" firstAttribute="leading" secondItem="elw-OH-NNT" secondAttribute="trailing" constant="22" id="VAZ-8A-svf"/>
+                                    <constraint firstItem="EOM-fj-Frs" firstAttribute="leading" secondItem="HKE-HY-dte" secondAttribute="trailing" constant="37" id="c0y-3a-tQg"/>
+                                    <constraint firstAttribute="height" constant="227" id="lp7-Uc-hKr"/>
+                                    <constraint firstAttribute="trailing" secondItem="Qwj-Bc-2Qa" secondAttribute="trailing" constant="44" id="wHO-X6-3fE"/>
+                                    <constraint firstItem="gU3-Yt-YLs" firstAttribute="top" secondItem="STC-n7-K6N" secondAttribute="top" constant="25" id="yF6-L8-btn"/>
+                                    <constraint firstItem="gU3-Yt-YLs" firstAttribute="leading" secondItem="STC-n7-K6N" secondAttribute="leading" constant="33" id="zkl-0K-s8U"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="2Lq-bU-D2D"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="STC-n7-K6N" firstAttribute="leading" secondItem="1wE-fX-phI" secondAttribute="leading" constant="30" id="COt-eX-xXb"/>
+                            <constraint firstAttribute="trailing" secondItem="STC-n7-K6N" secondAttribute="trailing" constant="30" id="KHm-bP-8rt"/>
+                            <constraint firstItem="STC-n7-K6N" firstAttribute="centerY" secondItem="1wE-fX-phI" secondAttribute="centerY" id="kOq-0B-jCV"/>
+                            <constraint firstItem="STC-n7-K6N" firstAttribute="centerX" secondItem="1wE-fX-phI" secondAttribute="centerX" id="pY4-r7-wtu"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="backgroundView" destination="1wE-fX-phI" id="CWB-8b-qTG"/>
+                        <outlet property="cancelButton" destination="Qwj-Bc-2Qa" id="47q-0R-TvS"/>
+                        <outlet property="checkBoxButton" destination="HKE-HY-dte" id="2a6-hC-CDg"/>
+                        <outlet property="clearButton" destination="elw-OH-NNT" id="84q-Ei-npc"/>
+                        <outlet property="confirmLabel" destination="EOM-fj-Frs" id="6aX-Ri-t1M"/>
+                        <outlet property="descriptionLabel" destination="gU3-Yt-YLs" id="TiX-0j-dx4"/>
+                        <outlet property="optionView" destination="STC-n7-K6N" id="o4v-RZ-qiv"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MaN-hD-5kV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="260.86956521739131" y="424.55357142857139"/>
+        </scene>
         <!--Delete Chat Head OptionVC-->
         <scene sceneID="6fc-zb-rTx">
             <objects>
@@ -750,6 +848,90 @@ text-align: center;</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uor-24-Orh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1081.1594202898552" y="-181.47321428571428"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="xeR-sC-6Rk">
+            <objects>
+                <viewController id="uNv-6p-z5T" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="4c1-1M-UOk">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ddd-9m-yhF">
+                                <rect key="frame" x="30" y="334.5" width="354" height="227"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Are you sure you want to clear messages in this chat?" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jbK-bu-aCE">
+                                        <rect key="frame" x="33" y="25" width="288" height="41"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <color key="textColor" red="0.23137254900000001" green="0.34901960780000002" blue="0.59607843140000005" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Delete media in this chat" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VbK-d3-CiQ">
+                                        <rect key="frame" x="82" y="93" width="200" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <color key="textColor" red="0.23137254900000001" green="0.34901960780000002" blue="0.59607843140000005" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2bi-J8-Z29">
+                                        <rect key="frame" x="254" y="157" width="56" height="34"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Cancel">
+                                            <color key="titleColor" red="0.039215686270000001" green="0.1215686275" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancelButtonAction:" destination="cqt-gH-Gle" eventType="touchUpInside" id="wiC-mM-zim"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bzX-PV-1Rk">
+                                        <rect key="frame" x="33" y="97" width="12" height="12"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="12" id="MvF-1o-uxn"/>
+                                            <constraint firstAttribute="width" constant="12" id="TOJ-vk-k28"/>
+                                        </constraints>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2KI-TA-aL7">
+                                        <rect key="frame" x="189" y="157" width="43" height="34"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Clear">
+                                            <color key="titleColor" red="0.97647058819999999" green="0.2470588235" blue="0.30980392159999998" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="confirmButtonAction:" destination="cqt-gH-Gle" eventType="touchUpInside" id="yvj-bc-rCy"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="jbK-bu-aCE" firstAttribute="leading" secondItem="Ddd-9m-yhF" secondAttribute="leading" constant="33" id="B19-ir-PJa"/>
+                                    <constraint firstItem="bzX-PV-1Rk" firstAttribute="leading" secondItem="jbK-bu-aCE" secondAttribute="leading" id="BWl-dk-dzP"/>
+                                    <constraint firstItem="VbK-d3-CiQ" firstAttribute="leading" secondItem="bzX-PV-1Rk" secondAttribute="trailing" constant="37" id="CGm-Y3-fY7"/>
+                                    <constraint firstItem="bzX-PV-1Rk" firstAttribute="top" secondItem="jbK-bu-aCE" secondAttribute="bottom" constant="31" id="EIO-Iw-JDO"/>
+                                    <constraint firstAttribute="bottom" secondItem="2bi-J8-Z29" secondAttribute="bottom" constant="36" id="Fje-l0-0k4"/>
+                                    <constraint firstAttribute="trailing" secondItem="2bi-J8-Z29" secondAttribute="trailing" constant="44" id="HPN-Bi-xtU"/>
+                                    <constraint firstAttribute="trailing" secondItem="jbK-bu-aCE" secondAttribute="trailing" constant="33" id="LfG-am-L2g"/>
+                                    <constraint firstItem="jbK-bu-aCE" firstAttribute="top" secondItem="Ddd-9m-yhF" secondAttribute="top" constant="25" id="M0k-NP-4R1"/>
+                                    <constraint firstItem="2bi-J8-Z29" firstAttribute="leading" secondItem="2KI-TA-aL7" secondAttribute="trailing" constant="22" id="d5a-PK-QVF"/>
+                                    <constraint firstAttribute="height" constant="227" id="gih-cX-NP4"/>
+                                    <constraint firstItem="bzX-PV-1Rk" firstAttribute="centerY" secondItem="VbK-d3-CiQ" secondAttribute="centerY" id="oFF-QB-qr1"/>
+                                    <constraint firstItem="2bi-J8-Z29" firstAttribute="centerY" secondItem="2KI-TA-aL7" secondAttribute="centerY" id="vTR-YJ-2Co"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="22W-uU-86e"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Ddd-9m-yhF" secondAttribute="trailing" constant="30" id="0bC-IQ-I7n"/>
+                            <constraint firstItem="Ddd-9m-yhF" firstAttribute="centerY" secondItem="4c1-1M-UOk" secondAttribute="centerY" id="GWS-Rj-eG5"/>
+                            <constraint firstItem="Ddd-9m-yhF" firstAttribute="leading" secondItem="4c1-1M-UOk" secondAttribute="leading" constant="30" id="UQG-Fv-1Jr"/>
+                            <constraint firstItem="Ddd-9m-yhF" firstAttribute="centerX" secondItem="4c1-1M-UOk" secondAttribute="centerX" id="sJD-G5-Vnd"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Xpm-em-ZM7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="984" y="418"/>
         </scene>
     </scenes>
     <resources>

@@ -94,9 +94,16 @@ class APIManager {
         APICall.sharedInstance.alamofireCall(url: APIS.mobileVerify, method: .post, para: para, header: [:], vc: vc) { (url, responseData, statusCode) in
             if statusCode == 200 {
                 let data = responseData.value as! [String:Any]
-                let innerData = data["data"] as! [String:Any]
-                let message = innerData["message"] as? String ?? ""
-                completion(message)
+                let code = data["code"] as! Int
+                if code == 1 {
+                    let innerData = data["data"] as! [String:Any]
+                    let message = innerData["message"] as? String ?? ""
+                    completion(message)
+                }else {
+                    let errormsg = data["errorMessage"] as? [String:Any] ?? [:]
+                    let msg = errormsg["message"] as? String ?? ""
+                    completion(msg)
+                }
             }
         }
     }

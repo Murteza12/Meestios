@@ -92,6 +92,19 @@ class peoplesVC: RootBaseVC {
             dvc.toUser = self.senduser
         }
     }
+    
+    func deleteChatHead(){
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let multiOptionVC = stoaryboard.instantiateViewController(withIdentifier: "DeleteChatHeadOptionVC") as? DeleteChatHeadOptionVC
+        multiOptionVC?.modalPresentationStyle = .overCurrentContext
+        multiOptionVC?.modalTransitionStyle = .crossDissolve
+        self.present(multiOptionVC!, animated: true) {
+            
+        }
+        multiOptionVC?.deleteCompletion = {
+            print("Delete API Called")
+        }
+    }
 }
 extension peoplesVC:UITableViewDelegate, UITableViewDataSource {
     
@@ -128,9 +141,9 @@ extension peoplesVC:UITableViewDelegate, UITableViewDataSource {
         }
         cell.unreadView2.isHidden = true
         if ind.isOnline {
-            cell.onlineView.backgroundColor = UIColor.systemGreen
+            cell.onlineView.backgroundColor = UIColor.init(hex: 0x7F1BB9)
         } else {
-            cell.onlineView.backgroundColor = UIColor.init(named: "backgroundcolor")
+            cell.onlineView.backgroundColor = UIColor.init(hex: 0xD1D1D1)
         }
         
         return cell
@@ -139,6 +152,30 @@ extension peoplesVC:UITableViewDelegate, UITableViewDataSource {
         self.senduser = self.allUser[indexPath.row]
         self.performSegue(withIdentifier: "proceed", sender: self)
     }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let delete = UITableViewRowAction(style: .destructive, title: "") { (action, indexPath) in
+            
+        }
+
+        delete.backgroundColor = UIColor.white
+        
+
+        return [delete]
+    }
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+            -> UISwipeActionsConfiguration? {
+                let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
+                // delete the item here
+                    self.deleteChatHead()
+                completionHandler(true)
+            }
+            deleteAction.image = UIImage(named: "deleteicon")
+            deleteAction.backgroundColor = .white
+            let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+            return configuration
+    }
+
 }
 class peoplesCell:UITableViewCell {
     

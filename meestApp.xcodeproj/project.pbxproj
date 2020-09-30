@@ -20,6 +20,9 @@
 		5A9E553F251CDE7200A30EA8 /* Messenger.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */; };
 		5A9E5544251CE43400A30EA8 /* DeleteOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */; };
 		5A9E554C251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */; };
+		5AABEA592524CCE300AB6637 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AABEA582524CCE300AB6637 /* RealmManager.swift */; };
+		5AABEA5E2524CD9300AB6637 /* Imagedata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AABEA5D2524CD9300AB6637 /* Imagedata.swift */; };
+		5AABEA632524F7F000AB6637 /* ClearChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AABEA622524F7F000AB6637 /* ClearChatVC.swift */; };
 		6BA2BD269A267466758E6D11 /* Pods_meestAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D113DE30FAF3B5EC0C7686 /* Pods_meestAppTests.framework */; };
 		A2F8F131F4B94188CEC6AE3E /* Pods_meestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7827A8AA99F95EF411D4EC04 /* Pods_meestApp.framework */; };
 		D308E7F524D9D7850061B793 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D308E7F424D9D7850061B793 /* AppDelegate.swift */; };
@@ -201,6 +204,9 @@
 		5A9E553E251CDE7200A30EA8 /* Messenger.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Messenger.storyboard; sourceTree = "<group>"; };
 		5A9E5543251CE43400A30EA8 /* DeleteOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteOptionVC.swift; sourceTree = "<group>"; };
 		5A9E554B251D0C5C00A30EA8 /* DeleteChatHeadOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteChatHeadOptionVC.swift; sourceTree = "<group>"; };
+		5AABEA582524CCE300AB6637 /* RealmManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
+		5AABEA5D2524CD9300AB6637 /* Imagedata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Imagedata.swift; sourceTree = "<group>"; };
+		5AABEA622524F7F000AB6637 /* ClearChatVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearChatVC.swift; sourceTree = "<group>"; };
 		5FDBB0CB3EA696D754184352 /* Pods-meestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp.debug.xcconfig"; path = "Target Support Files/Pods-meestApp/Pods-meestApp.debug.xcconfig"; sourceTree = "<group>"; };
 		7827A8AA99F95EF411D4EC04 /* Pods_meestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_meestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F7119B3E85EFEECA0A54E7C /* Pods-meestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp.release.xcconfig"; path = "Target Support Files/Pods-meestApp/Pods-meestApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -845,6 +851,7 @@
 		D3C703E624DCACA90001E220 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5AABEA5D2524CD9300AB6637 /* Imagedata.swift */,
 				D3C703DE24DC8EA80001E220 /* Token.swift */,
 				D3A800DE250CDB6100E22848 /* SuggestedUser.swift */,
 				D3FC483F250BCEAD00BA14EA /* OthereUser.swift */,
@@ -910,6 +917,7 @@
 				5A5C448E252091C600C01782 /* CreateGroupVC.swift */,
 				5A835C70252388A70008D24A /* ViewContactVC.swift */,
 				5A835C752523A88E0008D24A /* WallpaperOptionVC.swift */,
+				5AABEA622524F7F000AB6637 /* ClearChatVC.swift */,
 			);
 			path = Messenger;
 			sourceTree = "<group>";
@@ -917,6 +925,7 @@
 		D3DE9D2A24DB454700CFB3BF /* API Manager */ = {
 			isa = PBXGroup;
 			children = (
+				5AABEA582524CCE300AB6637 /* RealmManager.swift */,
 				D3DE9D2824DB436900CFB3BF /* Constant.swift */,
 				D3DE9D2F24DB465F00CFB3BF /* APIManager.swift */,
 				D3DE9D2B24DB45C700CFB3BF /* APICall.swift */,
@@ -1272,6 +1281,7 @@
 				D344FEEA24FBD94E00CF50E5 /* mainChatVC.swift in Sources */,
 				D37AA1B22502F94600E574D2 /* adsPreviewVC.swift in Sources */,
 				D32BF5A924DECE9A0001B175 /* Onboard.swift in Sources */,
+				5AABEA632524F7F000AB6637 /* ClearChatVC.swift in Sources */,
 				D3DE9D2C24DB45C700CFB3BF /* APICall.swift in Sources */,
 				D3AEA985250F6B95007FDFA5 /* PostData.swift in Sources */,
 				D3B3F47F2505868500D9D59C /* statusMainVC.swift in Sources */,
@@ -1325,8 +1335,10 @@
 				D324FEFB24ECA43300ABAE9F /* addPostVC.swift in Sources */,
 				D3FC4840250BCEAD00BA14EA /* OthereUser.swift in Sources */,
 				D3AF940D25090BE50026CE6C /* campaignPayVC.swift in Sources */,
+				5AABEA592524CCE300AB6637 /* RealmManager.swift in Sources */,
 				D31BEC4024FEFEC60074110A /* notificationVC.swift in Sources */,
 				D358AD7E24FC338C00EE85DF /* chatTblView.swift in Sources */,
+				5AABEA5E2524CD9300AB6637 /* Imagedata.swift in Sources */,
 				D37AA1B02502F58C00E574D2 /* feelingDetailVC.swift in Sources */,
 				D3C74D7024F146DB00A82CBE /* profileVC.swift in Sources */,
 				D3DE9D2724DB391D00CFB3BF /* loginVC.swift in Sources */,

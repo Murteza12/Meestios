@@ -268,8 +268,8 @@ extension msgSendView : AVAudioRecorderDelegate{
                     ]
 
                     //file name URL
-                    audioFilename = getDocumentsDirectory().appendingPathComponent("audio.mp3")
-
+                    audioFilename = getDocumentsDirectory().appendingPathComponent("audio.aac")
+                    print(audioFilename)
                     //Create the audio recording, and assign ourselves as the delegate
                     audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
                     audioRecorder.delegate = self
@@ -293,6 +293,7 @@ extension msgSendView : AVAudioRecorderDelegate{
             if success {
                 textView.text = ""
                 print("Finished.")
+                uploadAudio()
             } else {
                 print("Failed :(")
             }
@@ -332,7 +333,7 @@ extension msgSendView : AVAudioRecorderDelegate{
             while let presentedViewController = topController.presentedViewController {
                 topController = presentedViewController
             }
-            APIManager.sharedInstance.uploadAudio(vc: topController, url: audioFilename, fileName: "audio.mp3") { (str) in
+            APIManager.sharedInstance.uploadAudio(vc: topController, url: audioFilename, fileName: "audio.aac") { (str) in
                 if str == "success"{
                     let audioUrl = UserDefaults.standard.string(forKey: "Audio")
                     var chatID: String?
