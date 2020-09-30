@@ -14,13 +14,13 @@
             filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "384"
-            endingLineNumber = "384"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
             landmarkName = "playAudio(url:cell:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "C2787A88-7808-4968-A8EB-51B850552888 - 76d2a5bcfb1230ab"
+                  uuid = "C2787A88-7808-4968-A8EB-51B850552888 - 76d2a5bcfb1231c6"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -30,12 +30,12 @@
                   urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/View%20Controller/Messenger/mainChatVC.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "384"
-                  endingLineNumber = "384"
+                  startingLineNumber = "389"
+                  endingLineNumber = "389"
                   offsetFromSymbolStart = "503">
                </Location>
                <Location
-                  uuid = "C2787A88-7808-4968-A8EB-51B850552888 - d6086e89d6700735"
+                  uuid = "C2787A88-7808-4968-A8EB-51B850552888 - d6086e89d67007d8"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -45,8 +45,8 @@
                   urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/View%20Controller/Messenger/mainChatVC.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "386"
-                  endingLineNumber = "386"
+                  startingLineNumber = "391"
+                  endingLineNumber = "391"
                   offsetFromSymbolStart = "348">
                </Location>
             </Locations>
@@ -62,8 +62,8 @@
             filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "388"
-            endingLineNumber = "388"
+            startingLineNumber = "393"
+            endingLineNumber = "393"
             landmarkName = "playAudio(url:cell:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,9 +78,25 @@
             filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "393"
-            endingLineNumber = "393"
+            startingLineNumber = "398"
+            endingLineNumber = "398"
             landmarkName = "playAudio(url:cell:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "84A6E311-06F6-4D98-BC0A-C3E0F1FE2B72"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
+            landmarkName = "viewWillAppear(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

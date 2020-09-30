@@ -12,7 +12,7 @@ protocol MultiOptionVCDelegate {
     func showWallpaperOption()
 }
 
-class MultiOptionVC: UIViewController, UIGestureRecognizerDelegate {
+class MultiOptionVC: RootBaseVC, UIGestureRecognizerDelegate {
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var tabelviewBackgroundView: UIView!
     @IBOutlet weak var tableViewHeightConstraints: NSLayoutConstraint!
@@ -26,6 +26,10 @@ class MultiOptionVC: UIViewController, UIGestureRecognizerDelegate {
     var secondOptions = ["Report","Block", "Clear Chat", "Export Chat", "Add Shortcut"]
     var groupOption = ["Open Conversation", "Snooze Conversation", "Archive Conversation", "Mark as priority", "Share Conversation", "Add a member"]
     
+    var userID = ""
+    var chatHeadID = ""
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -33,6 +37,12 @@ class MultiOptionVC: UIViewController, UIGestureRecognizerDelegate {
         self.tabelView.dataSource = self
         self.tabelView.separatorStyle = .none
         self.tabelView.isScrollEnabled = false
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.userID = UserDefaults.standard.string(forKey: "UserId")!
+        self.chatHeadID = UserDefaults.standard.string(forKey: "ChatHeadId")!
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -186,11 +196,33 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
     }
     
     func muteNotification(){
-        
+        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
+        APIManager.sharedInstance.muteNotification(vc: self, para: parameter) { (str) in
+            if str == "success"{
+                self.dismiss(animated: true, completion: nil)
+            }else{
+                let act = UIAlertController.init(title: "Error", message: "Error while mute notification", preferredStyle: .alert)
+                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                    
+                }))
+                self.present(act, animated: true, completion: nil)
+            }
+        }
     }
     
     func report(){
-        
+        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
+        APIManager.sharedInstance.reportUser(vc: self, para: parameter) { (str) in
+            if str == "success"{
+                self.dismiss(animated: true, completion: nil)
+            }else{
+                let act = UIAlertController.init(title: "Error", message: "Error while clearing chat", preferredStyle: .alert)
+                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                    
+                }))
+                self.present(act, animated: true, completion: nil)
+            }
+        }
     }
     func block(){
         let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
@@ -214,10 +246,23 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
         self.present(clearVC!, animated: true, completion: nil)
         clearVC?.clearCompletion = {
             print("clear API Called")
+            //self.clearChatCompletion()
         }
         
     }
     func exportChat(){
+        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
+        APIManager.sharedInstance.exportChat(vc: self, para: parameter) { (str) in
+            if str == "success"{
+                self.dismiss(animated: true, completion: nil)
+            }else{
+                let act = UIAlertController.init(title: "Error", message: "Error while clearing chat", preferredStyle: .alert)
+                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                    
+                }))
+                self.present(act, animated: true, completion: nil)
+            }
+        }
     }
     func addShortcut(){
     }

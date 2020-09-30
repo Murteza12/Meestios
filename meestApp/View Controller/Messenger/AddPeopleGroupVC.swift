@@ -22,6 +22,7 @@ class AddPeopleGroupVC: RootBaseVC {
     @IBOutlet weak var nextButton: UIButton!
     var allFollwedUser = [SuggestedUser]()
     var selectedMember = [String]()
+    var selectedUser = [SuggestedUser]()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.delegate = self
@@ -46,7 +47,8 @@ class AddPeopleGroupVC: RootBaseVC {
         if segue.identifier == "createGroupVC" {
             let peopleGroup = segue.destination as! CreateGroupVC
                 peopleGroup.allUser = allFollwedUser
-                peopleGroup.selectedUser = selectedMember
+                peopleGroup.selectedMember = selectedMember
+                peopleGroup.selectedUser = self.selectedUser
         }
     }
 
@@ -98,6 +100,7 @@ extension AddPeopleGroupVC: UITableViewDelegate,UITableViewDataSource{
 extension AddPeopleGroupVC: AddPeopleDelegate{
     func addPeople(at index: IndexPath, selected: Bool) {
         if selected{
+            selectedUser.append(allFollwedUser[index.row])
             if let groupMember = allFollwedUser[index.row].id as? String{
                 selectedMember.append(groupMember)
             }
@@ -107,6 +110,12 @@ extension AddPeopleGroupVC: AddPeopleDelegate{
                     if let itemToRemoveIndex = selectedMember.firstIndex(of: groupMember) {
                         selectedMember.remove(at: itemToRemoveIndex)
                     }
+                }
+            }
+            
+            if let allMember = allFollwedUser[index.row] as? SuggestedUser{
+                if let idx = selectedUser.firstIndex(where: { $0 === allMember }) {
+                    selectedUser.remove(at: idx)
                 }
             }
         }

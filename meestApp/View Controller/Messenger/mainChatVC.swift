@@ -103,6 +103,9 @@ class mainChatVC: RootBaseVC {
                     return
                 }
             }
+            
+            UserDefaults.standard.set(self.userid, forKey: "UserId")
+            UserDefaults.standard.set(self.groupHead?.id, forKey: "ChatHeadId")
             self.nameLbl.text = self.groupHead?.groupName
             self.img.applyRoundedView()
             self.img.kf.indicatorType = .activity
@@ -126,6 +129,8 @@ class mainChatVC: RootBaseVC {
                 return
             }
         }
+            UserDefaults.standard.set(self.userid, forKey: "UserId")
+            UserDefaults.standard.set(self.toUser?.chatHeadId, forKey: "ChatHeadId")
         self.nameLbl.text = (self.toUser?.firstName ?? "") + " " + (self.toUser?.lastName ?? "")
         self.img.applyRoundedView()
         self.img.kf.indicatorType = .activity

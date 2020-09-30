@@ -84,7 +84,7 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
     }
     
     func openWallpaper(){
-        self.dismiss(animated: true) {
+        self.presentingViewController?.presentingViewController?.dismiss(animated: true) {
             self.delegate?.showWallpaperOptions()
         }
     }

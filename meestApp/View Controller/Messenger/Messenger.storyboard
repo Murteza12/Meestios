@@ -121,12 +121,15 @@
                                             <action selector="cancelButtonAction:" destination="di5-Wd-aTO" eventType="touchUpInside" id="myO-Cb-Nx0"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HKE-HY-dte">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HKE-HY-dte">
                                         <rect key="frame" x="33" y="97" width="12" height="12"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="12" id="tpP-ww-r2a"/>
                                             <constraint firstAttribute="width" constant="12" id="xdx-Ui-tp3"/>
                                         </constraints>
+                                        <state key="normal" image="Deselect">
+                                            <color key="titleColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
                                         <connections>
                                             <action selector="checkBoxButtonAction:" destination="di5-Wd-aTO" eventType="touchUpInside" id="Yep-Wm-KEs"/>
                                         </connections>
@@ -937,6 +940,7 @@ text-align: center;</string>
     <resources>
         <image name="Color_White" width="23" height="22"/>
         <image name="Copy" width="19" height="20"/>
+        <image name="Deselect" width="16" height="16"/>
         <image name="Dustbin" width="19" height="21"/>
         <image name="Dustibin" width="21" height="25"/>
         <image name="Gallery_White" width="25" height="25"/>

@@ -13,15 +13,22 @@ class CreateGroupVC: RootBaseVC, UINavigationControllerDelegate {
     @IBOutlet weak var widthConstraintsConstant: NSLayoutConstraint!
     @IBOutlet weak var heightConstraintsConstant: NSLayoutConstraint!
     @IBOutlet weak var groupNameTextField: UITextField!
+    @IBOutlet weak var participateLabel: UILabel!
+    @IBOutlet weak var participantTableView: UITableView!
     @IBOutlet weak var cameraView: UIView!
     @IBOutlet weak var cameraButton: UIButton!
     var allUser = [SuggestedUser]()
-    var selectedUser = [String]()
+    var selectedMember = [String]()
+    var selectedUser = [SuggestedUser]()
     var imageURL: String?
     override func viewDidLoad() {
         super.viewDidLoad()
         cameraView.cornerRadiuss = (self.cameraView.frame.height / 2)
         navigationController?.navigationBar.isHidden = true
+        self.participateLabel.text = "Participants: " + String(selectedUser.count)
+        self.participantTableView.delegate = self
+        self.participantTableView.dataSource = self
+        self.participantTableView.separatorStyle = .none
     }
     
 
@@ -118,5 +125,39 @@ extension CreateGroupVC: UIImagePickerControllerDelegate {
        }
    }
 
+}
+
+extension CreateGroupVC: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return selectedUser.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ParticipantTableViewCell", for: indexPath) as! ParticipantTableViewCell
+        cell.selectionStyle = .none
+        let data = selectedUser[indexPath.row]
+        cell.userImage.cornerRadiuss = cell.userImage.frame.height / 2
+        cell.userImage.kf.setImage(with: URL(string: data.displayPicture))
+        cell.nameLabel.text = data.firstName + " " + data.lastName
+        cell.nameLabel.font = UIFont.init(name: APPFont.regular, size: 16)
+        cell.nameLabel.textColor = UIColor.init(hex: 0x151624)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    
+    
+}
+
+class ParticipantTableViewCell: UITableViewCell{
+    
+    @IBOutlet weak var userImage: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
+    
+    override class func awakeFromNib() {
+//        userImage.cornerRadiuss = self.userImage.frame.height / 2
+    }
 }
 
