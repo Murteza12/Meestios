@@ -59,6 +59,8 @@ class mainChatVC: RootBaseVC {
     var timeCount = 0
     var realmManager = RealmManager()
     var sendImageChange = 0
+    var isMediaAutoDowload: Bool = false
+    var player: AVPlayer?
             
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,7 +92,7 @@ class mainChatVC: RootBaseVC {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.typingLabel.text = ""
-        
+        self.isMediaAutoDowload = UserDefaults.standard.bool(forKey: "Media")
 //        guard let info = realm.objects(Info.self).first else {return}
         if let displayContent = realmManager.getObjects(type: Imagedata.self), displayContent.count > 0 {
             // display data
@@ -167,6 +169,11 @@ class mainChatVC: RootBaseVC {
         super.viewDidDisappear(animated)
         self.messages.removeAll()
         self.lastData.removeAll()
+        if player != nil{
+            player?.pause() // 1. pause the player to stop it
+//        playerLayer?.player = nil // 2. set the playerLayer's player to nil
+//        playerLayer?.removeFromSuperlayer() // 3 remove the playerLayer from its superLayer
+        }
     }
     
     @IBAction func playAudioButtonAction(_ sender:UIButton) {
@@ -192,6 +199,12 @@ class mainChatVC: RootBaseVC {
         multiOptionVC?.modalTransitionStyle = .crossDissolve
         multiOptionVC?.allChatMessage = messages
         multiOptionVC?.deleagte = self
+        
+        if isGroup == true{
+            multiOptionVC?.isFromGroup = true
+        }else{
+            multiOptionVC?.isFromGroup = false
+        }
         self.present(multiOptionVC!, animated: true) {
             
         }
@@ -384,14 +397,14 @@ class mainChatVC: RootBaseVC {
     }
 }
 
-extension mainChatVC{
+extension mainChatVC: AVAudioPlayerDelegate{
     func playAudio(url: String, cell: UITableViewCell) {
         self.timeCount = 0
-        let player = AVPlayer(url: URL(string: url)!)
-        player.play()
-        player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: .main) { time in
+        player = AVPlayer(url: URL(string: url)!)
+        player?.play()
+        player?.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: .main) { time in
 
-            let fraction = CMTimeGetSeconds(time) / CMTimeGetSeconds(player.currentItem!.duration)
+            let fraction = CMTimeGetSeconds(time)  / CMTimeGetSeconds((self.player?.currentItem!.duration)!)
             if let cell = cell as? msgSenderCell{
                 cell.progressBar.progress = Float(fraction)
                 self.timeCount += 1
@@ -399,8 +412,14 @@ extension mainChatVC{
             }
             if let cell = cell as? msgReceiverCell{
                 cell.progressBar.progress = Float(fraction)
+                self.timeCount += 1
+                cell.audioTimerLabel.text = String(format: "%02d:%02d",(self.timeCount/60)%60,self.timeCount%60)
             }
         }
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+            
     }
 }
 extension mainChatVC: UITextViewDelegate {
@@ -436,6 +455,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         if self.messages[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
             cell.selectionStyle = .none
+            cell.delegate = self
             let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
@@ -475,6 +495,10 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     if !ind.fileURL.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.fileURL))
+//                        KingfisherManager.shared.retrieveImage(with: URL(string: ind.fileURL)!, options: nil, progressBlock: nil, completionHandler: { image, error, cacheType, imageURL in
+//                            UIImageWriteToSavedPhotosAlbum((image ?? UIImage(named: "Play"))!, self, nil, nil)
+//                        })
+
                         cell.img.tag = indexPath.row
                     }else{
                         cell.img.image = nil
@@ -600,6 +624,16 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         
     }
 }
+
+extension mainChatVC: MsgSenderDelegate{
+    func playAudiosender(cell: msgSenderCell) {
+        
+    }
+}
+
+protocol MsgSenderDelegate {
+    func playAudiosender(cell: msgSenderCell)
+}
 class msgSenderCell:UITableViewCell {
     
     @IBOutlet weak var view1:UIView!
@@ -613,12 +647,16 @@ class msgSenderCell:UITableViewCell {
     @IBOutlet weak var audioTimerLabel:UILabel!
     @IBOutlet var audiaPlayButtonImageView: UIImageView!
     @IBOutlet weak var progressBar: UIProgressView!
-    
+    var delegate: MsgSenderDelegate?
     override func awakeFromNib() {
         super.awakeFromNib()
         self.backgroundColor = .clear
         self.audioPlayer.cornerRadius(radius: 13)
         self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
+    }
+    
+    @IBAction func playAudioAction(_ sender:UIButton) {
+        delegate?.playAudiosender(cell: self)
     }
 }
 class msgReceiverCell:UITableViewCell {
@@ -643,6 +681,11 @@ class msgReceiverCell:UITableViewCell {
         self.backgroundColor = .clear
         self.audioPlayer.cornerRadius(radius: 13)
         self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
+        
+    }
+    
+    @IBAction func playAudioAction(_ sender:UIButton) {
+       
         
         
     }
@@ -958,6 +1001,11 @@ extension mainChatVC{
 }
 
 extension mainChatVC: MultiOptionVCDelegate{
+    func clearChatCompleted() {
+        self.messages.removeAll()
+        self.tableView.reloadData()
+    }
+    
     func showWallpaperOption() {
         openWallpaper()
     }

@@ -15,6 +15,7 @@ class groupsVC: RootBaseVC {
     var socket:SocketIOClient!
     var allUser = [groupHeads]()
     var groupChat: groupHeads?
+    var selectedUser = [SuggestedUser]()
     var chatHeadId = ""
     
     
@@ -37,7 +38,8 @@ class groupsVC: RootBaseVC {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "addPeopleGroup" {
             let peopleGroup = segue.destination as! AddPeopleGroupVC
-//            dvc.toUser = self.senduser
+            peopleGroup.selectedUser = self.selectedUser
+
         }else if segue.identifier == "mainChatVC" {
             let group = segue.destination as! mainChatVC
             group.groupHead = self.groupChat
@@ -122,7 +124,7 @@ extension groupsVC:UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             cell.groupName.text = groupData.groupName
             
             cell.onlineView.backgroundColor = UIColor.init(hex: 0xF8C756)
-            cell.proImg.kf.setBackgroundImage(with: URL(string: groupData.groupIcon), for: .normal)
+            cell.proImg.kf.setBackgroundImage(with: URL(string: groupData.groupAdminData["displayPicture"] as? String ?? ""), for: .normal)
             cell.img1.kf.indicatorType = .activity
             cell.img2.kf.indicatorType = .activity
             cell.img3.kf.indicatorType = .activity

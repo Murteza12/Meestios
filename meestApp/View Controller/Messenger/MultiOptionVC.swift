@@ -10,6 +10,7 @@ import UIKit
 
 protocol MultiOptionVCDelegate {
     func showWallpaperOption()
+    func clearChatCompleted()
 }
 
 class MultiOptionVC: RootBaseVC, UIGestureRecognizerDelegate {
@@ -22,6 +23,7 @@ class MultiOptionVC: RootBaseVC, UIGestureRecognizerDelegate {
     var delegateViewContact: ViewContactVCDeleagte?
     var isFirstOption: Bool = true
     var isGroup: Bool?
+    var isFromGroup: Bool?
     var openChatCompletion: (()->())?
     var firstOptions = ["View Contact","Media, links, and docs", "Search", "Mute Notification", "Wallpaper", "More"]
     var secondOptions = ["Report","Block", "Clear Chat", "Export Chat", "Add Shortcut"]
@@ -190,39 +192,28 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
     }
     
     func mediaLinksandDocs(){
-        
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let medicVC = stoaryboard.instantiateViewController(withIdentifier: "MediadocslinksVC") as? MediadocslinksVC
+        medicVC?.modalPresentationStyle = .overCurrentContext
+//        medicVC?.modalTransitionStyle = .crossDissolve
+        self.present(medicVC!, animated: true, completion: nil)
     }
     
     func search(){
     }
     
-//    func muteNotification(){
-//        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
-//        APIManager.sharedInstance.muteNotification(vc: self, para: parameter) { (str) in
-//            if str == "success"{
-//                self.dismiss(animated: true, completion: nil)
-//            }else{
-//                let act = UIAlertController.init(title: "Error", message: "Error while mute notification", preferredStyle: .alert)
-//                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
-//
-//                }))
-//                self.present(act, animated: true, completion: nil)
-//            }
-//        }
-//    }
     func muteNotification(isTrue: Bool){
-        /*{
-            "chatHeadId": "ae382bba-10d3-42e5-a4be-b53584fe5aec",
-            "settingType": "aaaaaa",
-            "isNotificationMute": false,
-            "isReported": false,
-            "reportText": "aa",
-            "markPriority": true
-        }*/
-        let parameter = ["chatHeadId": self.chatHeadID, "isNotificationMute": isTrue] as [String : Any]
+        var type = ""
+        if isFromGroup == true{
+            type = "group"
+        }else{
+            type = "chat"
+        }
+        
+        let parameter = ["chatHeadId": self.chatHeadID, "settingType": type, "isNotificationMute": isTrue] as [String : Any]
         APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
             if str == "success"{
-                
+                self.dismiss(animated: true, completion: nil)
             }else{
                 let act = UIAlertController.init(title: "Error", message: "Error while mute notification", preferredStyle: .alert)
                 act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
@@ -234,12 +225,18 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
     }
 
     func report(isTrue: Bool){
-        let parameter = ["chatHeadId": self.chatHeadID, "isReported": isTrue] as [String : Any]
+        var type = ""
+        if isFromGroup == true{
+            type = "group"
+        }else{
+            type = "chat"
+        }
+        let parameter = ["chatHeadId": self.chatHeadID,"settingType": type, "isReported": isTrue] as [String : Any]
         APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
             if str == "success"{
-                
+                self.dismiss(animated: true, completion: nil)
             }else{
-                let act = UIAlertController.init(title: "Error", message: "Error while mute notification", preferredStyle: .alert)
+                let act = UIAlertController.init(title: "Error", message: "Error while report user", preferredStyle: .alert)
                 act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
                     
                 }))
@@ -257,7 +254,24 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
             
         }
         multiOptionVC?.deleteCompletion = {
-            print("Delete API Called")
+            var type = ""
+            if self.isFromGroup == true{
+                type = "group"
+            }else{
+                type = "chat"
+            }
+            let parameter = ["chatHeadId": self.chatHeadID,"settingType": type, "isBlocked": true] as [String : Any]
+            APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
+                if str == "success"{
+                    self.dismiss(animated: true, completion: nil)
+                }else{
+                    let act = UIAlertController.init(title: "Error", message: "Error while block user", preferredStyle: .alert)
+                    act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                        
+                    }))
+                    self.present(act, animated: true, completion: nil)
+                }
+            }
         }
         
     }
@@ -269,17 +283,49 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
         self.present(clearVC!, animated: true, completion: nil)
         clearVC?.clearCompletion = {
             print("clear API Called")
-            //self.clearChatCompletion()
+            /*clearChat
+             chatId
+             exportChat
+             snoozeChat
+             archiveChat*/
+            var type = ""
+            if self.isFromGroup == true{
+                type = "group"
+            }else{
+                type = "chat"
+            }
+            let chatID = self.allChatMessage.last
+            let parameter = ["chatHeadId": self.chatHeadID,"settingType": type, "chatId": chatID?.id ?? "", "clearChat": true] as [String : Any]
+            APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
+                if str == "success"{
+                    self.dismiss(animated: true) {
+                        self.deleagte?.clearChatCompleted()
+                    }
+                }else{
+                    let act = UIAlertController.init(title: "Error", message: "Error while clearing chat", preferredStyle: .alert)
+                    act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                        
+                    }))
+                    self.present(act, animated: true, completion: nil)
+                }
+            }
+            
         }
         
     }
     func exportChat(){
-        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
-        APIManager.sharedInstance.exportChat(vc: self, para: parameter) { (str) in
+        var type = ""
+        if self.isFromGroup == true{
+            type = "group"
+        }else{
+            type = "chat"
+        }
+        let parameter = ["chatHeadId": self.chatHeadID,"settingType": type, "exportChat": true] as [String : Any]
+        APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
             if str == "success"{
                 self.dismiss(animated: true, completion: nil)
             }else{
-                let act = UIAlertController.init(title: "Error", message: "Error while clearing chat", preferredStyle: .alert)
+                let act = UIAlertController.init(title: "Error", message: "Error while export chat", preferredStyle: .alert)
                 act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
                     
                 }))
@@ -297,18 +343,54 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
     }
     
     func archiveConversation(){
-        
+        var type = ""
+        if self.isFromGroup == true{
+            type = "group"
+        }else{
+            type = "chat"
+        }
+        let parameter = ["chatHeadId": self.chatHeadID,"settingType": type, "archiveChat": true] as [String : Any]
+        APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
+            if str == "success"{
+                self.dismiss(animated: true, completion: nil)
+            }else{
+                let act = UIAlertController.init(title: "Error", message: "Error while export chat", preferredStyle: .alert)
+                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                    
+                }))
+                self.present(act, animated: true, completion: nil)
+            }
+        }
+
     }
     
     func snoozeConversation(){
-        
+        var type = ""
+        if self.isFromGroup == true{
+            type = "group"
+        }else{
+            type = "chat"
+        }
+        let parameter = ["chatHeadId": self.chatHeadID,"settingType": type, "snnozeChat": true] as [String : Any]
+        APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
+            if str == "success"{
+                self.dismiss(animated: true, completion: nil)
+            }else{
+                let act = UIAlertController.init(title: "Error", message: "Error while export chat", preferredStyle: .alert)
+                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                    
+                }))
+                self.present(act, animated: true, completion: nil)
+            }
+        }
+
     }
     func markAsPriority(){
         func markPriority(isTrue: Bool){
             let parameter = ["chatHeadId": self.chatHeadID, "markPriority": true] as [String : Any]
             APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
                 if str == "success"{
-                    
+                    self.dismiss(animated: true, completion: nil)
                 }else{
                     let act = UIAlertController.init(title: "Error", message: "Error while mark priority", preferredStyle: .alert)
                     act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in

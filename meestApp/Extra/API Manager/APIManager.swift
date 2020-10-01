@@ -281,6 +281,16 @@ class APIManager {
             }
         }
     }
+    
+    func updateAutodownload(vc:RootBaseVC,mediaAutoDownload:Bool,completion:@escaping (String) -> Void) {
+        let para = ["mediaAutoDownload":mediaAutoDownload]
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        APICall.sharedInstance.alamofireCall(url: APIS.update, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
+            if statusCode == 200 {
+                completion("success")
+            }
+        }
+    }
     func submitURL(vc:UIViewController,displayPicture:String,completion:@escaping (String) -> Void) {
         let para = ["displayPicture":displayPicture]
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
@@ -432,6 +442,7 @@ class APIManager {
                     let totalFollowers = newUser["totalFollowers"] as? Int ?? 0
                     let totalFollowings = newUser["totalFollowings"] as? Int ?? 0
                     let totalPosts = newUser["totalPosts"] as? Int ?? 0
+                    let mediaAutoDownload = newUser["mediaAutoDownload"] as? Bool ?? false
                     if Token.sharedInstance.getToken().count != 0 {
                         let t1 = Token()
                         t1.token = Token.sharedInstance.getToken()
@@ -444,12 +455,12 @@ class APIManager {
                         }
                     }
                     
-                    let tempUser = CurrentUser.init(id: id, likes: likes, email: email, firstName: firstName, lastName: lastName, mobile: mobile, dob: dob, status: status, username: username, gender: gender, dp: displayPicture, about: about, totalFollowers: totalFollowers, totalFollowings: totalFollowings, totalPosts: totalPosts)
+                    let tempUser = CurrentUser.init(id: id, likes: likes, email: email, firstName: firstName, lastName: lastName, mobile: mobile, dob: dob, status: status, username: username, gender: gender, dp: displayPicture, about: about, totalFollowers: totalFollowers, totalFollowings: totalFollowings, totalPosts: totalPosts,mediaAutoDownload: mediaAutoDownload)
                     completion(tempUser)
                 }
                 
             } else {
-                completion(CurrentUser.init(id: "error", likes: 0, email: "", firstName: "", lastName: "", mobile: 0, dob: "", status: true, username: "", gender: "", dp: "", about: "", totalFollowers: 0, totalFollowings: 0, totalPosts: 0))
+                completion(CurrentUser.init(id: "error", likes: 0, email: "", firstName: "", lastName: "", mobile: 0, dob: "", status: true, username: "", gender: "", dp: "", about: "", totalFollowers: 0, totalFollowings: 0, totalPosts: 0, mediaAutoDownload: false))
             }
         }
     }
@@ -863,8 +874,6 @@ class APIManager {
                 let code = data["code"] as? Int ?? 0
                 if code == 1 {
                     let i = data["data"] as? [String: Any] ?? [:]
-                    
-//                    for i in mainData{
                         let userId = i["userId"] as? String ?? ""
                         let chatHeadId = i["chatHeadId"] as? String ?? ""
                         let settingType = i["settingType"] as? String ?? ""
@@ -876,7 +885,6 @@ class APIManager {
                         
                         let temp = ChatSetting.init(userId: userId, chatHeadId: chatHeadId, settingType: settingType, id: id, markPriority: markPriority, isNotificationMute: isNotificationMute, isReported: isReported, status: status)
                         chat.append(temp)
-//                    }
                     completion(chat, "success")
                 }else{
                     completion(chat, "failure")

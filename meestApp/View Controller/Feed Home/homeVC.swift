@@ -46,6 +46,8 @@ class homeVC: RootBaseVC, UIViewControllerTransitioningDelegate {
         
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             if Token.sharedInstance.getToken() != "" {
+                let value = user.mediaAutoDownload
+                UserDefaults.standard.setValue(value, forKey: "Media")
                 self.socket = SocketSessionHandler.manager.defaultSocket
                 self.addHandlers(userid: user.id, username: user.username)
                 if self.socket.status != .connected{

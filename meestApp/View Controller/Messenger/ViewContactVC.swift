@@ -23,6 +23,7 @@ class ViewContactVC: RootBaseVC {
     var allChatMessage = [MockMessage]()
     var chatHeadImage = ""
     var isMuted: Bool = false
+    var isMediaAutodownload: Bool?
     var options = ["Change Wallpaper", "Mute Notification", "Media Autodownload", "Block Contact"]
     var delegate: ViewContactVCDeleagte?
     override func viewDidLoad() {
@@ -43,6 +44,7 @@ class ViewContactVC: RootBaseVC {
         super.viewWillAppear(animated)
         
         self.chatHeadImage = UserDefaults.standard.string(forKey: "ChatHeadId") ?? ""
+        self.isMediaAutodownload = UserDefaults.standard.bool(forKey: "Media")
         self.loadImage()
         self.getChatSetting()
     }
@@ -92,6 +94,11 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
         if indexPath.row == 0{
             cell.onOffSwitch.isHidden = true
         }
+        
+        if cell.optionLabel.text == "Media Autodownload"{
+            cell.onOffSwitch.isOn = self.isMediaAutodownload ?? false
+        }
+        
         
         if cell.optionLabel.text == "Mute Notification"{
             cell.onOffSwitch.isOn = isMuted
@@ -155,6 +162,20 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
         }
     }
     
+    func mediaAutodownload(isTrue: Bool, sender: UISwitch){
+        APIManager.sharedInstance.updateAutodownload(vc: self, mediaAutoDownload: isTrue) { (str) in
+            if str == "success"{
+                
+            }else{
+                if sender.isOn == true{
+                    sender.isOn = false
+                }else{
+                    sender.isOn = true
+                }
+            }
+        }
+    }
+    
     func getChatSetting(){
         
         APIManager.sharedInstance.getChatSetting(vc: self) { (chat, str) in
@@ -179,7 +200,6 @@ extension ViewContactVC: UICollectionViewDelegate, UICollectionViewDataSource, U
         let message = allChatMessage[indexPath.row]
         if message.attachment == 1{
             if message.attachmentType == "Image"{
-//                cell.imageView.kf.setImage(with: URL(string: message.fileURL))
                 cell.imageView.kf.indicatorType = .activity
                 cell.imageView.kf.setImage(with: URL(string: message.fileURL),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
                     switch result {
@@ -204,7 +224,7 @@ extension ViewContactVC: UICollectionViewDelegate, UICollectionViewDataSource, U
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize.init(width: 90, height: floor(90))
+        return CGSize.init(width: self.view.frame.width/3, height:self.viewContactCollectionView.frame.height)
     }
     
 }
@@ -220,7 +240,13 @@ extension ViewContactVC: ViewContactTableViewCellDeleagte{
                 muteNotification(isTrue: false, sender: sender)
             }
         }else if options[indexPath!.row] == "Media Autodownload"{
-            
+            if sender.isOn{
+                self.mediaAutodownload(isTrue: true, sender: sender)
+                UserDefaults.standard.setValue(true, forKey: "Media")
+            }else{
+                self.mediaAutodownload(isTrue: false, sender: sender)
+                UserDefaults.standard.setValue(false, forKey: "Media")
+            }
         }
     }
     

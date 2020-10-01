@@ -84,6 +84,11 @@ extension AddPeopleGroupVC: UITableViewDelegate,UITableViewDataSource{
         cell.chatHeadsImageView.kf.setImage(with: URL(string: allUser.displayPicture))
         cell.names.text = allUser.firstName + " " + allUser.lastName
         
+        if selectedUser.contains(where: { $0 === allUser}){
+            cell.buttonImageView.setImage(UIImage(named: "CircleRight")!)
+        }else{
+            cell.buttonImageView.setImage(UIImage(named: "AddPeople")!)
+        }
         return cell
     }
     

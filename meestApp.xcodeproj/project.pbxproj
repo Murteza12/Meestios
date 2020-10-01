@@ -14,6 +14,9 @@
 		5A5C448A2520889F00C01782 /* AddPeopleCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */; };
 		5A5C448F252091C600C01782 /* CreateGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C448E252091C600C01782 /* CreateGroupVC.swift */; };
 		5A71028E252625FD00FBF5D3 /* ChatSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A71028D252625FD00FBF5D3 /* ChatSetting.swift */; };
+		5A71029325265A9800FBF5D3 /* MediadocslinksVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A71029225265A9700FBF5D3 /* MediadocslinksVC.swift */; };
+		5A710298252660D800FBF5D3 /* DocsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A710297252660D800FBF5D3 /* DocsViewController.swift */; };
+		5A71029D2526645900FBF5D3 /* MediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A71029C2526645900FBF5D3 /* MediaViewController.swift */; };
 		5A82D46C251E70DA007E402A /* DeleteOptionForEveryOneVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */; };
 		5A82D471251E7BFF007E402A /* MultiOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A82D470251E7BFF007E402A /* MultiOptionVC.swift */; };
 		5A835C71252388A70008D24A /* ViewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A835C70252388A70008D24A /* ViewContactVC.swift */; };
@@ -199,6 +202,9 @@
 		5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPeopleCellTableViewCell.swift; sourceTree = "<group>"; };
 		5A5C448E252091C600C01782 /* CreateGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupVC.swift; sourceTree = "<group>"; };
 		5A71028D252625FD00FBF5D3 /* ChatSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSetting.swift; sourceTree = "<group>"; };
+		5A71029225265A9700FBF5D3 /* MediadocslinksVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediadocslinksVC.swift; sourceTree = "<group>"; };
+		5A710297252660D800FBF5D3 /* DocsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocsViewController.swift; sourceTree = "<group>"; };
+		5A71029C2526645900FBF5D3 /* MediaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
 		5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteOptionForEveryOneVC.swift; sourceTree = "<group>"; };
 		5A82D470251E7BFF007E402A /* MultiOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiOptionVC.swift; sourceTree = "<group>"; };
 		5A835C70252388A70008D24A /* ViewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewContactVC.swift; sourceTree = "<group>"; };
@@ -903,6 +909,7 @@
 		D3DB8D7A24DDDAD400865971 /* Messenger */ = {
 			isa = PBXGroup;
 			children = (
+				5A71029225265A9700FBF5D3 /* MediadocslinksVC.swift */,
 				5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */,
 				D3DB8D7624DDDA3000865971 /* mssengerHomeVC.swift */,
 				D3DB8D7824DDDACF00865971 /* peoplesVC.swift */,
@@ -921,6 +928,8 @@
 				5A835C70252388A70008D24A /* ViewContactVC.swift */,
 				5A835C752523A88E0008D24A /* WallpaperOptionVC.swift */,
 				5AABEA622524F7F000AB6637 /* ClearChatVC.swift */,
+				5A710297252660D800FBF5D3 /* DocsViewController.swift */,
+				5A71029C2526645900FBF5D3 /* MediaViewController.swift */,
 			);
 			path = Messenger;
 			sourceTree = "<group>";
@@ -1265,6 +1274,7 @@
 				D38AD68D250675680094A126 /* statusPhotoVC.swift in Sources */,
 				D3E0F4DC24F2746600A8E3BE /* rightVC.swift in Sources */,
 				D356ADC724E2903A0096E74E /* usernameVC.swift in Sources */,
+				5A710298252660D800FBF5D3 /* DocsViewController.swift in Sources */,
 				D3838F0C24EC886500E87442 /* singleChatVC.swift in Sources */,
 				D336CA332506C4A80097FB1C /* postMainVC.swift in Sources */,
 				D3DE9D3E24DB6BDA00CFB3BF /* uploadPhotoVC.swift in Sources */,
@@ -1310,6 +1320,7 @@
 				5A82D471251E7BFF007E402A /* MultiOptionVC.swift in Sources */,
 				D308E7F524D9D7850061B793 /* AppDelegate.swift in Sources */,
 				D37AA1A92502DCD000E574D2 /* profileViewerVC.swift in Sources */,
+				5A71029D2526645900FBF5D3 /* MediaViewController.swift in Sources */,
 				D3DB8D7E24DDDCE900865971 /* callsVC.swift in Sources */,
 				D3DE9D3024DB465F00CFB3BF /* APIManager.swift in Sources */,
 				D3DE9D3624DB61E700CFB3BF /* resetPasswordVC.swift in Sources */,
@@ -1376,6 +1387,7 @@
 				D3A800E1250CEB9600E22848 /* previewVC.swift in Sources */,
 				D31D0EEB2508F54B00803F04 /* campaignPreviewVC.swift in Sources */,
 				D34DC9CA24ED5E2E00BAD566 /* Story.swift in Sources */,
+				5A71029325265A9800FBF5D3 /* MediadocslinksVC.swift in Sources */,
 				5A82D46C251E70DA007E402A /* DeleteOptionForEveryOneVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

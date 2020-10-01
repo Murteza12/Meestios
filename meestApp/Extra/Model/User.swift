@@ -43,10 +43,10 @@ class CurrentUser {
     var email, firstName, lastName: String
     var mobile,totalFollowers,totalFollowings,totalPosts: Int
     var dob, about: String
-    var status: Bool
+    var status, mediaAutoDownload: Bool
     var username, gender,dp: String
 
-    init(id: String, likes: Int, email: String, firstName: String, lastName: String, mobile: Int, dob: String, status: Bool, username: String, gender: String,dp:String,about:String,totalFollowers:Int,totalFollowings:Int,totalPosts:Int) {
+    init(id: String, likes: Int, email: String, firstName: String, lastName: String, mobile: Int, dob: String, status: Bool, username: String, gender: String,dp:String,about:String,totalFollowers:Int,totalFollowings:Int,totalPosts:Int, mediaAutoDownload:Bool) {
         self.id = id
         self.likes = likes
         self.email = email
@@ -63,6 +63,7 @@ class CurrentUser {
         self.totalPosts = totalPosts
         self.totalFollowers = totalFollowers
         self.totalFollowings = totalFollowings
+        self.mediaAutoDownload = mediaAutoDownload
     }
     
 }
