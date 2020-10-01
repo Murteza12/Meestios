@@ -7,96 +7,64 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C2787A88-7808-4968-A8EB-51B850552888"
+            uuid = "3B864ADA-AB5D-408A-B375-E54660F04419"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
+            filePath = "meestApp/View Controller/Messenger/ViewContactVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "392"
-            endingLineNumber = "392"
-            landmarkName = "playAudio(url:cell:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "C2787A88-7808-4968-A8EB-51B850552888 - 76d2a5bcfb1231a3"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Demo.mainChatVC.playAudio(url: Swift.String, cell: __C.UITableViewCell) -&gt; ()"
-                  moduleName = "Demo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/View%20Controller/Messenger/mainChatVC.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "392"
-                  endingLineNumber = "392"
-                  offsetFromSymbolStart = "503">
-               </Location>
-               <Location
-                  uuid = "C2787A88-7808-4968-A8EB-51B850552888 - d6086e89d670043d"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (__C.CMTime) -&gt; () in Demo.mainChatVC.playAudio(url: Swift.String, cell: __C.UITableViewCell) -&gt; ()"
-                  moduleName = "Demo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/View%20Controller/Messenger/mainChatVC.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "394"
-                  endingLineNumber = "394"
-                  offsetFromSymbolStart = "348">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F473ABB3-4360-4010-BE22-1DD2A7637F7C"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "396"
-            endingLineNumber = "396"
-            landmarkName = "playAudio(url:cell:)"
+            startingLineNumber = "146"
+            endingLineNumber = "146"
+            landmarkName = "muteNotification(isTrue:sender:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B25D047B-7D00-4D21-B3AE-43BD8C298FFA"
+            uuid = "FFE3EAAB-3662-4C0B-8FB6-AEB9C0267620"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
+            filePath = "meestApp/Extra/API Manager/APIManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "401"
-            endingLineNumber = "401"
-            landmarkName = "playAudio(url:cell:)"
+            startingLineNumber = "860"
+            endingLineNumber = "860"
+            landmarkName = "getChatSetting(vc:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "84A6E311-06F6-4D98-BC0A-C3E0F1FE2B72"
+            uuid = "6853AB05-A39F-489C-8320-CCD4D222A30B"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
+            filePath = "meestApp/Extra/API Manager/APIManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
-            landmarkName = "viewWillAppear(_:)"
+            startingLineNumber = "865"
+            endingLineNumber = "865"
+            landmarkName = "getChatSetting(vc:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CB8855E8-C25C-43F9-BDE7-75052C11DC81"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "meestApp/Extra/API Manager/APIManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "868"
+            endingLineNumber = "868"
+            landmarkName = "getChatSetting(vc:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -15,6 +15,9 @@ class groupsVC: RootBaseVC {
     var socket:SocketIOClient!
     var allUser = [groupHeads]()
     var groupChat: groupHeads?
+    var chatHeadId = ""
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,6 +29,11 @@ class groupsVC: RootBaseVC {
         self.getAllGroupHeads()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.chatHeadId = UserDefaults.standard.string(forKey: "ChatHeadId") ?? ""
+        
+    }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "addPeopleGroup" {
             let peopleGroup = segue.destination as! AddPeopleGroupVC
@@ -48,8 +56,17 @@ class groupsVC: RootBaseVC {
         self.socket.on("groupHeads") { data, ack in
             print(data)
             self.setGroupHeadsData(data: data)
+            if self.allUser.count == 0{
+                self.tableVIew.isHidden = true
+            }else{
+                self.tableVIew.isHidden = false
+            }
             self.tableVIew.reloadData()
         }
+    }
+    
+    @IBAction func showCollectionView(_ sender: Any){
+        self.tableVIew.isHidden = false
     }
     
     func setGroupHeadsData(data: [Any]){
@@ -142,7 +159,9 @@ extension groupsVC:UICollectionViewDelegate, UICollectionViewDataSource, UIColle
 }
 
 extension groupsVC: GroupCellDelegate{
-    func optionButtonAction(sender: Any) {
+    
+    
+    func optionButtonAction(sender: Any, cell: groupCell) {
         let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
         let multiOptionVC = stoaryboard.instantiateViewController(withIdentifier: "MultiOptionVC") as? MultiOptionVC
         multiOptionVC?.modalPresentationStyle = .overCurrentContext
@@ -150,25 +169,28 @@ extension groupsVC: GroupCellDelegate{
 //        multiOptionVC?.allChatMessage = messages
 //        multiOptionVC?.deleagte = self
         multiOptionVC?.isGroup = true
-        self.present(multiOptionVC!, animated: true) {
+        self.present(multiOptionVC!, animated: true) {}
+        multiOptionVC?.openChatCompletion = {
             
+            let indexPath = self.tableVIew.indexPath(for: cell)
+            self.groupChat = self.allUser[indexPath!.row - 1]
+            self.performSegue(withIdentifier: "mainChatVC", sender: self)
         }
     }
     
-    func starButtonAction(sender: Any) {
+    func starButtonAction(sender: Any, cell: groupCell) {
+        let indexPath = self.tableVIew.indexPath(for: cell)
         
     }
-    
     func displayPictureButtonAction(sender: Any) {
         
     }
     
-    
 }
 
 protocol GroupCellDelegate {
-    func optionButtonAction(sender: Any)
-    func starButtonAction(sender: Any)
+    func optionButtonAction(sender: Any, cell: groupCell)
+    func starButtonAction(sender: Any, cell: groupCell)
     func displayPictureButtonAction(sender: Any)
 }
 
@@ -186,13 +208,14 @@ class groupCell:UICollectionViewCell {
     @IBOutlet weak var img2:UIImageView!
     @IBOutlet weak var img3:UIImageView!
     @IBOutlet weak var img4:UIImageView!
+
     var delegate: GroupCellDelegate?
     
     @IBAction func starButtonAction(_ sender: Any) {
-        delegate?.starButtonAction(sender: sender)
+        delegate?.starButtonAction(sender: sender, cell: self)
     }
     @IBAction func optionButtonAction(_ sender: Any) {
-        delegate?.optionButtonAction(sender: sender)
+        delegate?.optionButtonAction(sender: sender, cell: self)
     }
     @IBAction func displayPictureButtonAction(_ sender: Any) {
         delegate?.displayPictureButtonAction(sender: sender)

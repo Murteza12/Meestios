@@ -13,7 +13,7 @@ protocol ViewContactVCDeleagte {
     func showWallpaperOptions()
 }
 
-class ViewContactVC: UIViewController {
+class ViewContactVC: RootBaseVC {
 
     @IBOutlet weak var nameHeaderLabel: UILabel!
     @IBOutlet weak var displayPictureImaegView: UIImageView!
@@ -21,6 +21,8 @@ class ViewContactVC: UIViewController {
     @IBOutlet weak var viewContactTableView: UITableView!
     @IBOutlet weak var mediaLinkLabel: UILabel!
     var allChatMessage = [MockMessage]()
+    var chatHeadImage = ""
+    var isMuted: Bool = false
     var options = ["Change Wallpaper", "Mute Notification", "Media Autodownload", "Block Contact"]
     var delegate: ViewContactVCDeleagte?
     override func viewDidLoad() {
@@ -34,8 +36,16 @@ class ViewContactVC: UIViewController {
         self.mediaLinkLabel.text = "Media Links and Docs"
         self.mediaLinkLabel.textColor = UIColor.init(hex: 0x151624)
         self.mediaLinkLabel.font = UIFont.init(name: APPFont.regular, size: 16)
+        viewContactCollectionView.contentInsetAdjustmentBehavior = .never
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.chatHeadImage = UserDefaults.standard.string(forKey: "ChatHeadId") ?? ""
+        self.loadImage()
+        self.getChatSetting()
+    }
     @IBAction func backButtonAction(_ sender: Any) {
         self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
@@ -44,6 +54,22 @@ class ViewContactVC: UIViewController {
     }
     
     @IBAction func audioCallAction(_ sender: Any) {
+    }
+    
+    func loadImage(){
+        let parameter = ["chatHeadId": self.chatHeadImage, "attachmentType": "Image"]
+        APIManager.sharedInstance.getMediaLinksAndDocs(vc: self, para: parameter) { (message, str) in
+            if str == "success"{
+                self.allChatMessage.append(contentsOf: message)
+                self.viewContactCollectionView.reloadData()
+            }else{
+                let act = UIAlertController.init(title: "Error", message: "Error in getting data", preferredStyle: .alert)
+                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                    
+                }))
+                self.present(act, animated: true, completion: nil)
+            }
+        }
     }
 }
 
@@ -65,6 +91,10 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
         }
         if indexPath.row == 0{
             cell.onOffSwitch.isHidden = true
+        }
+        
+        if cell.optionLabel.text == "Mute Notification"{
+            cell.onOffSwitch.isOn = isMuted
         }
         cell.optionLabel.font = UIFont.init(name: APPFont.regular, size: 16)
         return cell
@@ -101,9 +131,45 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "blockContact"), object: nil)
         }
     }
+    
+    func muteNotification(isTrue: Bool, sender: UISwitch){
+        /*{
+            "chatHeadId": "ae382bba-10d3-42e5-a4be-b53584fe5aec",
+            "settingType": "aaaaaa",
+            "isNotificationMute": false,
+            "isReported": false,
+            "reportText": "aa",
+            "markPriority": true
+        }*/
+        let parameter = ["chatHeadId": self.chatHeadImage, "isNotificationMute": isTrue] as [String : Any]
+        APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
+            if str == "success"{
+                 
+            }else{
+                if sender.isOn == true{
+                    sender.isOn = false
+                }else{
+                    sender.isOn = true
+                }
+            }
+        }
+    }
+    
+    func getChatSetting(){
+        
+        APIManager.sharedInstance.getChatSetting(vc: self) { (chat, str) in
+            if str == "success"{
+                self.isMuted = chat[0].isNotificationMute ?? false
+                self.viewContactTableView.reloadData()
+            }else{
+                
+            }
+        }
+        
+    }
 }
 
-extension ViewContactVC: UICollectionViewDelegate, UICollectionViewDataSource{
+extension ViewContactVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return allChatMessage.count
     }
@@ -113,23 +179,47 @@ extension ViewContactVC: UICollectionViewDelegate, UICollectionViewDataSource{
         let message = allChatMessage[indexPath.row]
         if message.attachment == 1{
             if message.attachmentType == "Image"{
-                cell.imageView.kf.setImage(with: URL(string: message.fileURL))
+//                cell.imageView.kf.setImage(with: URL(string: message.fileURL))
+                cell.imageView.kf.indicatorType = .activity
+                cell.imageView.kf.setImage(with: URL(string: message.fileURL),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
+                    switch result {
+                    case .success(let value):
+                        print("Task done for: \(value.source.url?.absoluteString ?? "")")
+                        
+                    case .failure(let error):
+                        print(message.fileURL)
+                        print("Job failed: \(error.localizedDescription)")
+                        
+                    }
+                }
+
             }else if message.attachmentType == "Video"{
                 cell.imageView.kf.setImage(with: URL(string: message.videothumbnail))
-            }else{
+            }else if message.attachmentType == "Audio"{
                 cell.imageView.image = UIImage(named: "Headphone")
             }
         }
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize.init(width: 90, height: floor(90))
+    }
+    
 }
 
 extension ViewContactVC: ViewContactTableViewCellDeleagte{
-    func toggleAction(sender: UISwitch) {
-        if sender.isOn{
-            
-        }else{
+    func toggleAction(sender: UISwitch, cell: ViewContactTableViewCell) {
+        
+        let indexPath = viewContactTableView.indexPath(for: cell)
+        if options[indexPath!.row] == "Mute Notification"{
+            if sender.isOn{
+                muteNotification(isTrue: true, sender: sender)
+            }else{
+                muteNotification(isTrue: false, sender: sender)
+            }
+        }else if options[indexPath!.row] == "Media Autodownload"{
             
         }
     }
@@ -138,7 +228,7 @@ extension ViewContactVC: ViewContactTableViewCellDeleagte{
 }
 
 protocol ViewContactTableViewCellDeleagte {
-    func toggleAction(sender: UISwitch)
+    func toggleAction(sender: UISwitch, cell: ViewContactTableViewCell)
 }
 
 class ViewContactTableViewCell: UITableViewCell {
@@ -147,11 +237,12 @@ class ViewContactTableViewCell: UITableViewCell {
     var delegate: ViewContactTableViewCellDeleagte?
     
     @IBAction func switchToggleAction(_ sender: UISwitch) {
-        delegate?.toggleAction(sender: sender)
+        delegate?.toggleAction(sender: sender, cell: self)
     }
 }
 
 class ViewContactCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
+    
 }

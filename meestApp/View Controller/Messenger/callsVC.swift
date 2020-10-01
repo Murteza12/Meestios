@@ -45,6 +45,8 @@ class callsVC: RootBaseVC {
 //            self.allUser = all
 //            self.tableView.reloadData()
 //        }
+        self.tableView.isHidden = true
+        
     }
     func addHandler() {
         self.socket.on("message") { (dataa, ack) in
@@ -53,6 +55,10 @@ class callsVC: RootBaseVC {
         self.socket.on("chat_history") { (dataa, ack) in
             print(dataa)
         }
+    }
+    
+    @IBAction func showtableView(_ sender: Any){
+        self.tableView.isHidden = false
     }
     
     @objc func makecallVideo(_ sender:UIButton) {

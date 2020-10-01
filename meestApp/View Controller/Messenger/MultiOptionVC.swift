@@ -22,6 +22,7 @@ class MultiOptionVC: RootBaseVC, UIGestureRecognizerDelegate {
     var delegateViewContact: ViewContactVCDeleagte?
     var isFirstOption: Bool = true
     var isGroup: Bool?
+    var openChatCompletion: (()->())?
     var firstOptions = ["View Contact","Media, links, and docs", "Search", "Mute Notification", "Wallpaper", "More"]
     var secondOptions = ["Report","Block", "Clear Chat", "Export Chat", "Add Shortcut"]
     var groupOption = ["Open Conversation", "Snooze Conversation", "Archive Conversation", "Mark as priority", "Share Conversation", "Add a member"]
@@ -135,7 +136,7 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
                 self.search()
                 print("2 called")
             case 3:
-                self.muteNotification()
+                self.muteNotification(isTrue: true)
                 print("3 called")
             case 4:
                 self.showWallpaperOptionView()
@@ -143,7 +144,7 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
                 if self.firstOptions.count < 7{
                     self.loadMore()
                 }else{
-                    self.report()
+                    self.report(isTrue: true)
                 }
             case 6:
                 self.block()
@@ -168,7 +169,7 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
         let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
         let viewContactVC = stoaryboard.instantiateViewController(withIdentifier: "ViewContactVC") as? ViewContactVC
         viewContactVC?.modalPresentationStyle = .overCurrentContext
-        viewContactVC?.allChatMessage = self.allChatMessage
+//        viewContactVC?.allChatMessage = self.allChatMessage
         viewContactVC?.delegate = self.delegateViewContact
         self.present(viewContactVC!, animated: true) {
         }
@@ -195,11 +196,33 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
     func search(){
     }
     
-    func muteNotification(){
-        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
-        APIManager.sharedInstance.muteNotification(vc: self, para: parameter) { (str) in
+//    func muteNotification(){
+//        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
+//        APIManager.sharedInstance.muteNotification(vc: self, para: parameter) { (str) in
+//            if str == "success"{
+//                self.dismiss(animated: true, completion: nil)
+//            }else{
+//                let act = UIAlertController.init(title: "Error", message: "Error while mute notification", preferredStyle: .alert)
+//                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+//
+//                }))
+//                self.present(act, animated: true, completion: nil)
+//            }
+//        }
+//    }
+    func muteNotification(isTrue: Bool){
+        /*{
+            "chatHeadId": "ae382bba-10d3-42e5-a4be-b53584fe5aec",
+            "settingType": "aaaaaa",
+            "isNotificationMute": false,
+            "isReported": false,
+            "reportText": "aa",
+            "markPriority": true
+        }*/
+        let parameter = ["chatHeadId": self.chatHeadID, "isNotificationMute": isTrue] as [String : Any]
+        APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
             if str == "success"{
-                self.dismiss(animated: true, completion: nil)
+                
             }else{
                 let act = UIAlertController.init(title: "Error", message: "Error while mute notification", preferredStyle: .alert)
                 act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
@@ -209,14 +232,14 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
             }
         }
     }
-    
-    func report(){
-        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
-        APIManager.sharedInstance.reportUser(vc: self, para: parameter) { (str) in
+
+    func report(isTrue: Bool){
+        let parameter = ["chatHeadId": self.chatHeadID, "isReported": isTrue] as [String : Any]
+        APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
             if str == "success"{
-                self.dismiss(animated: true, completion: nil)
+                
             }else{
-                let act = UIAlertController.init(title: "Error", message: "Error while clearing chat", preferredStyle: .alert)
+                let act = UIAlertController.init(title: "Error", message: "Error while mute notification", preferredStyle: .alert)
                 act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
                     
                 }))
@@ -268,7 +291,9 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
     }
     
     func openConversation(){
-        
+        self.dismiss(animated: true) {
+            self.openChatCompletion?()
+        }
     }
     
     func archiveConversation(){
@@ -279,7 +304,21 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
         
     }
     func markAsPriority(){
-        
+        func markPriority(isTrue: Bool){
+            let parameter = ["chatHeadId": self.chatHeadID, "markPriority": true] as [String : Any]
+            APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
+                if str == "success"{
+                    
+                }else{
+                    let act = UIAlertController.init(title: "Error", message: "Error while mark priority", preferredStyle: .alert)
+                    act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                        
+                    }))
+                    self.present(act, animated: true, completion: nil)
+                }
+            }
+        }
+
     }
     func shareConversation(){
         

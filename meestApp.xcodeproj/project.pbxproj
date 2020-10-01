@@ -13,6 +13,7 @@
 		5A5C444C2520887C00C01782 /* AddPeopleGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */; };
 		5A5C448A2520889F00C01782 /* AddPeopleCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */; };
 		5A5C448F252091C600C01782 /* CreateGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C448E252091C600C01782 /* CreateGroupVC.swift */; };
+		5A71028E252625FD00FBF5D3 /* ChatSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A71028D252625FD00FBF5D3 /* ChatSetting.swift */; };
 		5A82D46C251E70DA007E402A /* DeleteOptionForEveryOneVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */; };
 		5A82D471251E7BFF007E402A /* MultiOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A82D470251E7BFF007E402A /* MultiOptionVC.swift */; };
 		5A835C71252388A70008D24A /* ViewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A835C70252388A70008D24A /* ViewContactVC.swift */; };
@@ -197,6 +198,7 @@
 		5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPeopleGroupVC.swift; sourceTree = "<group>"; };
 		5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPeopleCellTableViewCell.swift; sourceTree = "<group>"; };
 		5A5C448E252091C600C01782 /* CreateGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupVC.swift; sourceTree = "<group>"; };
+		5A71028D252625FD00FBF5D3 /* ChatSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSetting.swift; sourceTree = "<group>"; };
 		5A82D46B251E70DA007E402A /* DeleteOptionForEveryOneVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteOptionForEveryOneVC.swift; sourceTree = "<group>"; };
 		5A82D470251E7BFF007E402A /* MultiOptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiOptionVC.swift; sourceTree = "<group>"; };
 		5A835C70252388A70008D24A /* ViewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewContactVC.swift; sourceTree = "<group>"; };
@@ -867,6 +869,7 @@
 				D34DC9C924ED5E2E00BAD566 /* Story.swift */,
 				D35FDC7C24EF0B40007B589D /* Message.swift */,
 				D3AEA984250F6B95007FDFA5 /* PostData.swift */,
+				5A71028D252625FD00FBF5D3 /* ChatSetting.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1351,6 +1354,7 @@
 				D3DE9D2924DB436900CFB3BF /* Constant.swift in Sources */,
 				D3ECAF5B24F539F200491EAE /* Language.swift in Sources */,
 				D360142425080D7200391004 /* privacyVC.swift in Sources */,
+				5A71028E252625FD00FBF5D3 /* ChatSetting.swift in Sources */,
 				D3C69BC425027A9000F101F1 /* storyTabVC.swift in Sources */,
 				D3A13B5624E890D2000A2262 /* subTblView.swift in Sources */,
 				D3C7413C2502D345004D9E6A /* allLikesVC.swift in Sources */,

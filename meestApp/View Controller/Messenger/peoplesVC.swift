@@ -32,7 +32,10 @@ class peoplesVC: RootBaseVC {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        if self.allUser.count == 0{
+            self.tableView.isHidden = true
+        }
+
         
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -77,6 +80,11 @@ class peoplesVC: RootBaseVC {
 
         self.socket.on("chatHeads") { data, ack in
             self.setChatHeadsData(data: data)
+            if self.allUser.count == 0{
+                self.tableView.isHidden = true
+            }else{
+                self.tableView.isHidden = false
+            }
             self.tableView.reloadData()
         }
         self.socket.on("message") { dataa, ack in
@@ -104,6 +112,10 @@ class peoplesVC: RootBaseVC {
         multiOptionVC?.deleteCompletion = {
             print("Delete API Called")
         }
+    }
+    
+    @IBAction func showTable(_ sender: Any){
+        self.tableView.isHidden = false
     }
 }
 extension peoplesVC:UITableViewDelegate, UITableViewDataSource {

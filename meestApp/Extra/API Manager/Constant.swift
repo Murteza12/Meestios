@@ -62,9 +62,11 @@ struct APIS {
     static let blockContact = BASEURL.baseurl + ""
     static let deleteChatHeads = BASEURL.baseurl + ""
     static let reportUser = BASEURL.baseurl + ""
-    static let mediaLinksDocs = BASEURL.baseurl + ""
+    static let mediaLinksDocs = BASEURL.baseurl + "/chat/getDocsMedia"
     static let exportChat = BASEURL.baseurl + ""
     static let muteNotification = BASEURL.baseurl + ""
+    static let chatSetting = BASEURL.baseurl + "/chatSetting/update"
+    static let getChatSetting = BASEURL.baseurl + "/chatSetting/get"
     
 }
 struct Themes {

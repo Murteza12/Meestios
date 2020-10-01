@@ -839,9 +839,9 @@ class APIManager {
         }
     }
     
-    func muteNotification(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
+    func chatSetting(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
-        APICall.sharedInstance.alamofireCall(url: APIS.muteNotification, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
+        APICall.sharedInstance.alamofireCall(url: APIS.chatSetting, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
             if statusCode == 200 {
                 let data = responseData.value as? [String:Any] ?? [:]
                 let code = data["code"] as! Int
@@ -854,16 +854,60 @@ class APIManager {
         }
     }
     
-    func getMediaLinksAndDocs(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
+    func getChatSetting(vc:RootBaseVC,completion:@escaping ([ChatSetting], String) -> Void) {
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        APICall.sharedInstance.alamofireCall(url: APIS.getChatSetting, method: .post, para: "", header: header, vc: vc) { (url, responseData, statusCode) in
+            if statusCode == 200 {
+                var chat = [ChatSetting]()
+                let data = responseData.value as? [String:Any] ?? [:]
+                let code = data["code"] as? Int ?? 0
+                if code == 1 {
+                    let i = data["data"] as? [String: Any] ?? [:]
+                    
+//                    for i in mainData{
+                        let userId = i["userId"] as? String ?? ""
+                        let chatHeadId = i["chatHeadId"] as? String ?? ""
+                        let settingType = i["settingType"] as? String ?? ""
+                        let id: String = i["id"] as? String ?? ""
+                        let markPriority = i["markPriority"] as? Bool ?? false
+                        let isNotificationMute = i["isNotificationMute"] as? Bool ?? false
+                        let isReported = i["isReported"] as? Bool ?? false
+                        let status = i["status"] as? Int ?? 0
+                        
+                        let temp = ChatSetting.init(userId: userId, chatHeadId: chatHeadId, settingType: settingType, id: id, markPriority: markPriority, isNotificationMute: isNotificationMute, isReported: isReported, status: status)
+                        chat.append(temp)
+//                    }
+                    completion(chat, "success")
+                }else{
+                    completion(chat, "failure")
+                }
+            }
+        }
+    }
+
+    
+    func getMediaLinksAndDocs(vc:RootBaseVC, para: [String:Any],completion:@escaping ([MockMessage], String) -> Void) {
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
         APICall.sharedInstance.alamofireCall(url: APIS.mediaLinksDocs, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
+            var message = [MockMessage]()
             if statusCode == 200 {
                 let data = responseData.value as? [String:Any] ?? [:]
                 let code = data["code"] as! Int
                 if code == 1 {
-                    completion("success")
+                    let innerData = data["data"] as? [[String:Any]] ?? [[:]]
+                    
+                    for i in innerData{
+                    let attachment =    i["attachment"] as? Int ?? 0
+                    let fileURL =       i["fileURL"] as? String ?? ""
+                    let attachmentType = i["attachmentType"] as? String ?? ""
+                    
+                    let temp = MockMessage.init(text: "", user: MockUser.init(senderId: "", displayName: ""), messageId: "", date: Date(), attachment: attachment, createdAt: "", deletedAt: "", id: "", msg: "", status: 0, toUserID: "", updatedAt: "", userID: "", sent: false, senderData: [:], fileURL: fileURL, attachmentType: attachmentType, videothumbnail: "", read: 0)
+                        
+                        message.append(temp)
+                    }
+                    completion(message, "success")
                 }else{
-                    completion("failure")
+                    completion(message, "failure")
                 }
             }
         }
