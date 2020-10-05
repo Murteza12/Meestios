@@ -304,6 +304,7 @@ class APIManager {
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
         
         let imgData1 = img.jpegData(compressionQuality: 0.5)
+        let imageSize = imgData1?.count
         AF.upload(multipartFormData: { multipartFormData in
             
             multipartFormData.append(imgData1!, withName: "image", fileName: "fileName" + ".jpg",mimeType: "image/jpeg")
@@ -1407,6 +1408,37 @@ class APIManager {
         }
     }
     
+    func getGroupMembers(vc:RootBaseVC,groupId: String ,completion:@escaping ([GroupMember]) -> Void) {
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        let parameter = ["groupId":groupId]
+        APICall.sharedInstance.alamofireCall(url: APIS.getGroupMember, method: .post, para: parameter, header: header, vc: vc) { (url, res, sc) in
+            if sc == 200 {
+                var all = [GroupMember]()
+                let data = res.value as! [String:Any]
+                let code = data["code"] as! Int
+                if code == 1 {
+                    let innerData = data["data"] as! [[String:Any]]
+                    for i in innerData {
+                        let id = i["id"] as? String ?? ""
+                        let groupId = i["groupId"] as? String ?? ""
+                        let user = i["user"] as? [String: Any] ?? [:]
+                            let lastName = user["lastName"] as? String ?? ""
+                            let displayPicture = user["displayPicture"] as? String ?? ""
+                            let firstName = user["firstName"] as? String ?? ""
+                            let username = user["username"] as? String ?? ""
+                            let userid = user["id"] as? String ?? ""
+                                                
+                        all.append(GroupMember.init(groupId: groupId, id: id, displayPicture: displayPicture, firstName: firstName, userid: userid, lastName: lastName, username: username))
+                    }
+                    completion(all)
+                } else {
+                    
+                }
+            }
+        }
+    }
+
+    
     func getGroupChatHeads(vc:RootBaseVC,para: [String: Any],completion:@escaping (String) -> Void) {
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
         //let parameter = ["userId":userId, "toUserId": toUserId]
@@ -1422,6 +1454,24 @@ class APIManager {
             }
         }
     }
+    
+    func updateGroup(vc:RootBaseVC,para: [String: Any],completion:@escaping (String) -> Void) {
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        //let parameter = ["userId":userId, "toUserId": toUserId]
+        APICall.sharedInstance.alamofireCall(url: APIS.updateGroup, method: .post, para: para, header: header, vc: vc) { (url, res, sc) in
+            if sc == 200 {
+                let data = res.value as? [String:Any] ?? [:]
+                let code = data["code"] as? Int ?? 0
+                if code == 1  {
+                    completion("success")
+                }else{
+                    completion("failure")
+                }
+            }
+        }
+    }
+    
+
     
     func postPhoto(postData:[PostData]) {
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]

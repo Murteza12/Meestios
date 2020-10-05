@@ -23,6 +23,9 @@ class AddPeopleGroupVC: RootBaseVC {
     var allFollwedUser = [SuggestedUser]()
     var selectedMember = [String]()
     var selectedUser = [SuggestedUser]()
+    var addedMember = [GroupMember]()
+    var addMember: Bool = false
+    var groupId = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.delegate = self
@@ -41,6 +44,14 @@ class AddPeopleGroupVC: RootBaseVC {
             self.peopleCountLabel.text =  self.allFollwedUser.count > 9 ? (self.allFollwedUser.count).toString() + " Peoples" : "0"+(self.allFollwedUser.count).toString() + " Peoples"
             self.tableView.reloadData()
         }
+        if self.addMember == true{
+            APIManager.sharedInstance.getGroupMembers(vc: self, groupId: self.groupId) { (addedMember) in
+                self.addedMember = addedMember
+                self.tableView.reloadData()
+            }
+        }
+        
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -49,6 +60,7 @@ class AddPeopleGroupVC: RootBaseVC {
                 peopleGroup.allUser = allFollwedUser
                 peopleGroup.selectedMember = selectedMember
                 peopleGroup.selectedUser = self.selectedUser
+                peopleGroup.addMember = addMember
         }
     }
 
@@ -84,10 +96,14 @@ extension AddPeopleGroupVC: UITableViewDelegate,UITableViewDataSource{
         cell.chatHeadsImageView.kf.setImage(with: URL(string: allUser.displayPicture))
         cell.names.text = allUser.firstName + " " + allUser.lastName
         
-        if selectedUser.contains(where: { $0 === allUser}){
-            cell.buttonImageView.setImage(UIImage(named: "CircleRight")!)
-        }else{
-            cell.buttonImageView.setImage(UIImage(named: "AddPeople")!)
+        cell.buttonImageView.setImage(UIImage(named: "AddPeople")!)
+        if addMember == true{
+        for i in addedMember{
+            if allUser.id == i.userid{
+                cell.buttonImageView.setImage(UIImage(named: "CircleRight")!)
+                selectedUser.append(allUser)
+            }
+        }
         }
         return cell
     }
@@ -133,3 +149,4 @@ extension AddPeopleGroupVC: AddPeopleDelegate{
     }
     
 }
+

@@ -34,6 +34,10 @@ class mainChatVC: RootBaseVC {
     @IBOutlet var typingLabel: UILabel!
     @IBOutlet weak var settingHeaderButton: UIButton!
     
+    @IBOutlet weak var searchView: UIView!
+    @IBOutlet weak var searchTextField: UITextField!
+    @IBOutlet weak var closeButton: UIButton!
+    
 //    var isSent:Bool = false
     var numberOfRecords = 0
     var pageNumberToBeLoad = 1
@@ -45,6 +49,7 @@ class mainChatVC: RootBaseVC {
     var toUser:ChatHeads?
     var messages = [MockMessage]()
     var lastData = [MockMessage]()
+    var searchCopy = [MockMessage]()
     var groupHead: groupHeads?
     var isGroup: Bool?
     var socket:SocketIOClient!
@@ -67,8 +72,10 @@ class mainChatVC: RootBaseVC {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.socket =  SocketSessionHandler.manager.defaultSocket
-
+        
         self.addHandler()
+        self.searchView.isHidden = true
+        self.searchTextField.delegate = self
         self.tableView.becomeFirstResponder()
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapBtnAction(_:)))
         recognizer.delegate = self
@@ -182,18 +189,19 @@ class mainChatVC: RootBaseVC {
         groupSettingVC?.modalTransitionStyle = .crossDissolve
         groupSettingVC?.groupImage = self.img.image
         groupSettingVC?.groupName = self.nameLbl.text ?? ""
-//        groupSettingVC?.allChatMessage = messages
-//        groupSettingVC?.deleagte = self
-        
-//        if isGroup == true{
-//            multiOptionVC?.isFromGroup = true
-//        }else{
-//            multiOptionVC?.isFromGroup = false
-//        }
+        groupSettingVC?.groupId = groupHead?.id ?? ""
         self.present(groupSettingVC!, animated: true, completion: nil)
         }
         
     }
+    @IBAction func searchCloseButtonAction(_ sender: UIButton){
+        self.searchView.isHidden = true
+        searchCopy = messages
+        self.searchTextField.text = ""
+        self.searchTextField.resignFirstResponder()
+        self.tableView.becomeFirstResponder()
+    }
+    
     @IBAction func callButtonAction(_ sender:UIButton) {
        
         self.tableView.becomeFirstResponder()
@@ -221,6 +229,11 @@ class mainChatVC: RootBaseVC {
         self.present(multiOptionVC!, animated: true) {
             
         }
+        
+        multiOptionVC?.searchChatCompletion = {
+            self.searchView.isHidden = false
+            self.searchTextField.becomeFirstResponder()
+        }
     }
     @IBAction func sendmsg(_ sender:UIButton) {
        
@@ -238,7 +251,7 @@ class mainChatVC: RootBaseVC {
         self.socket.on("deletedMessage") { data, ack in
             print(data)
             if let val = self.selectedCell?.row{
-                let data = self.messages[val]
+                let data = self.searchCopy[val]
                 if data.status == 1 {
                     let cell = self.tableView.cellForRow(at: self.selectedCell!)
                     if let cell = cell as? msgSenderCell{
@@ -250,8 +263,8 @@ class mainChatVC: RootBaseVC {
                         cell.txt1.textColor = UIColor.lightGray
                         cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
                     }
-                    self.messages[val].msg = "@This message was deleted"
-                    self.messages[val].status = 0
+                    self.searchCopy[val].msg = "@This message was deleted"
+                    self.searchCopy[val].status = 0
                 }
             }
         }
@@ -308,7 +321,7 @@ class mainChatVC: RootBaseVC {
             self.tableView.insertRows(at: [indexPath], with: .automatic)
             self.tableView.endUpdates()
             self.numberOfRecords = self.messages.count
-
+            self.searchCopy = self.messages
 //            self.isSent = true
 //            self.getHistorySocketCall(pageNumber: 1)
         }
@@ -353,6 +366,7 @@ class mainChatVC: RootBaseVC {
             self.tableView.insertRows(at: [indexPath], with: .automatic)
             self.tableView.endUpdates()
             self.numberOfRecords = self.messages.count
+            self.searchCopy = self.messages
         }
         
         self.socket.on("chat_history") { (dataa, ack) in
@@ -401,6 +415,7 @@ class mainChatVC: RootBaseVC {
 //            }else{
             self.messages.insert(contentsOf: self.lastData, at: 0)
 //            }
+            self.searchCopy = self.messages
             self.numberOfRecords = self.messages.count
             self.tableView.reloadData()
         }
@@ -516,14 +531,14 @@ func reloadData(completion:@escaping ()->()) {
 extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.messages.count
+        return self.searchCopy.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if self.messages[indexPath.row].sent {
+        if self.searchCopy[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
             cell.selectionStyle = .none
             cell.delegate = self
-            let ind = self.messages[indexPath.row]
+            let ind = self.searchCopy[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
             if toUser?.isOnline == true{
@@ -603,7 +618,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                 cell.chatNameView.isHidden = true
                 cell.view1.cornerRadius(radius: 13)
             }
-            let ind = self.messages[indexPath.row]
+            let ind = self.searchCopy[indexPath.row]
             cell.chatNameLabel.text = ind.senderData["username"] as? String ?? ""
             cell.txt1.text = ind.msg
             cell.view1.backgroundColor = UIColor.init(hex: 0xECF7FE)
@@ -666,8 +681,8 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if self.messages.count > 0, self.messages[indexPath.row].attachment == 1{
-            if self.messages[indexPath.row].attachmentType != "Audio"{
+        if self.searchCopy.count > 0, self.searchCopy[indexPath.row].attachment == 1{
+            if self.searchCopy[indexPath.row].attachmentType != "Audio"{
             return 250
             }
         }
@@ -812,7 +827,7 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
     
     func videoPlaySelect(indexPath: IndexPath ) {
         print("\(String(describing: indexPath.row)) Tapped")
-        let data = self.messages[indexPath.row]
+        let data = self.searchCopy[indexPath.row]
             if data.attachment == 1{
                 if data.attachmentType == "Video"{
                     if !data.fileURL.isEmpty{
@@ -822,10 +837,12 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
                     if !data.fileURL.isEmpty{
                         let cell = self.tableView.cellForRow(at: indexPath)
                         if let cell = cell as? msgReceiverCell{
+                            self.showImageToImageView(image: cell.img.image ?? UIImage())
                             cell.downloadBackGroundi.backgroundColor = .clear
                             cell.playImageView.image = nil
                         }
                         if let cell = cell as? msgSenderCell{
+                            self.showImageToImageView(image: cell.img.image ?? UIImage())
                             cell.downloadBackGroundi.backgroundColor = .clear
                             cell.playImageView.image = nil
                         }
@@ -913,13 +930,13 @@ extension mainChatVC{
             self?.present(deleteEveryoneVC!, animated: true, completion: nil)
             
             deleteEveryoneVC?.deleteForEveryOneCompletion = {
-                let data = self?.messages[(self?.selectedCell!.row)!]
+                let data = self?.searchCopy[(self?.selectedCell!.row)!]
                 let payload = ["messageId": data?.id, "userId": data?.userID]
                 self?.socket.emit("deleteChat", payload)
             }
             
             deleteEveryoneVC?.deletedCompletion = {
-                let data = self?.messages[(self?.selectedCell!.row)!]
+                let data = self?.searchCopy[(self?.selectedCell!.row)!]
                 let payload = ["messageId": data?.id, "userId": data?.userID]
                 self?.socket.emit("deleteChat", payload)
             }
@@ -931,7 +948,7 @@ extension mainChatVC{
         
         deleteOptionVC?.copyCompletion = { [weak self] in
            
-            let data = self?.messages[(self?.selectedCell!.row)!]
+            let data = self?.searchCopy[(self?.selectedCell!.row)!]
             UIPasteboard.general.string = data?.msg
             print("Copy Called \(String(describing: data?.msg))")
         }
@@ -1100,7 +1117,7 @@ extension mainChatVC{
 
 extension mainChatVC: MultiOptionVCDelegate{
     func clearChatCompleted() {
-        self.messages.removeAll()
+        self.searchCopy.removeAll()
         self.tableView.reloadData()
     }
     
@@ -1153,6 +1170,14 @@ extension mainChatVC: MultiOptionVCDelegate{
         self.removeImageFromDB()
     }
     
+    func showImageToImageView(image: UIImage){
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let imageVC = stoaryboard.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
+        imageVC?.modalPresentationStyle = .overCurrentContext
+        imageVC?.modalTransitionStyle = .crossDissolve
+        imageVC?.imageToShow = image
+        self.present(imageVC!, animated: true, completion: nil)
+    }
     
 }
 
@@ -1162,4 +1187,35 @@ extension mainChatVC: ViewContactVCDeleagte{
     }
     
     
+}
+
+extension mainChatVC: UITextFieldDelegate{
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        print(range)
+        if range.location > 0{
+            self.search(text: self.searchTextField.text ?? "")
+
+        }else{
+            self.search(text: "")
+        }
+        return true
+    }
+    
+    func search(text: String){
+        print(text)
+        
+        guard !text.isEmpty else {
+            searchCopy = messages
+            tableView.reloadData()
+            return
+        }
+        
+        searchCopy =  messages.filter({ (message) -> Bool in
+            message.msg.lowercased().contains(text.lowercased())
+        })
+        self.tableView.reloadData()
+    }
+
 }

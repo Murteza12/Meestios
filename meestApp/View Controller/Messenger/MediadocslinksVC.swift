@@ -19,11 +19,13 @@ class MediadocslinksVC: RootBaseVC {
     @IBOutlet weak var searchTextField: UITextField!
     let arr = ["Media","Docs","Links"]
     var selected = 0
+    var controller: UIViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.topCollection.delegate = self
         self.topCollection.dataSource = self
+        self.searchTextField.delegate = self
         
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -45,14 +47,14 @@ class MediadocslinksVC: RootBaseVC {
                 for i in self.contentView.subviews {
                     i.removeFromSuperview()
                 }
-                let controller = self.storyboard!.instantiateViewController(withIdentifier: "MediaViewController") as! MediaViewController
+                controller = self.storyboard!.instantiateViewController(withIdentifier: "MediaViewController") as! MediaViewController
                 addChild(controller)
                 self.contentView.addSubview(controller.view)
                 controller.view.frame = self.contentView.bounds
                 controller.view.layoutIfNeeded()
                 controller.didMove(toParent: self)
             } else {
-                let controller = self.storyboard!.instantiateViewController(withIdentifier: "MediaViewController") as! MediaViewController
+                controller = self.storyboard!.instantiateViewController(withIdentifier: "MediaViewController") as! MediaViewController
                 addChild(controller)
                 self.contentView.addSubview(controller.view)
                 controller.view.frame = self.contentView.bounds
@@ -64,16 +66,21 @@ class MediadocslinksVC: RootBaseVC {
                 for i in self.contentView.subviews {
                     i.removeFromSuperview()
                 }
-                let controller = self.storyboard!.instantiateViewController(withIdentifier: "DocsViewController") as! DocsViewController
-                controller.isDoc = true
+                if let controller = self.storyboard!.instantiateViewController(withIdentifier: "DocsViewController") as? DocsViewController{
+                    self.controller = controller
+                    controller.isDoc = true
+                }
+                
                 addChild(controller)
                 self.contentView.addSubview(controller.view)
                 controller.view.frame = self.contentView.bounds
                 controller.view.layoutIfNeeded()
                 controller.didMove(toParent: self)
             } else {
-                let controller = self.storyboard!.instantiateViewController(withIdentifier: "DocsViewController") as! DocsViewController
-                controller.isDoc = true
+                if let controller = self.storyboard!.instantiateViewController(withIdentifier: "DocsViewController") as? DocsViewController{
+                    self.controller = controller
+                    controller.isDoc = true
+                }
                 addChild(controller)
                 self.contentView.addSubview(controller.view)
                 controller.view.frame = self.contentView.bounds
@@ -85,16 +92,20 @@ class MediadocslinksVC: RootBaseVC {
                 for i in self.contentView.subviews {
                     i.removeFromSuperview()
                 }
-                let controller = self.storyboard!.instantiateViewController(withIdentifier: "DocsViewController") as! DocsViewController
-                controller.isDoc = false
+                if let controller = self.storyboard!.instantiateViewController(withIdentifier: "DocsViewController") as? DocsViewController{
+                    self.controller = controller
+                    controller.isDoc = false
+                }
                 addChild(controller)
                 self.contentView.addSubview(controller.view)
                 controller.view.frame = self.contentView.bounds
                 controller.view.layoutIfNeeded()
                 controller.didMove(toParent: self)
             } else {
-                let controller = self.storyboard!.instantiateViewController(withIdentifier: "DocsViewController") as! DocsViewController
-                controller.isDoc = false
+                if let controller = self.storyboard!.instantiateViewController(withIdentifier: "DocsViewController") as? DocsViewController{
+                    self.controller = controller
+                    controller.isDoc = false
+                }
                 addChild(controller)
                 self.contentView.addSubview(controller.view)
                 controller.view.frame = self.contentView.bounds
@@ -104,16 +115,30 @@ class MediadocslinksVC: RootBaseVC {
         }
     }
     @IBAction func backAni(_ sender:UIButton) {
-//        let redVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "customTabbarVC") as! customTabbarVC
-//        redVC.isHeroEnabled = true
-//        redVC.modalPresentationStyle = .fullScreen
-//        redVC.heroModalAnimationType = .zoomSlide(direction: HeroDefaultAnimationType.Direction.right)
-//        self.hero_replaceViewController(with: redVC)
         self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func searchAction(_ sender:UIButton) {
-
+        if searchButton.image(for: .normal) == UIImage(named: "search"){
+            self.showSearchView()
+        }else{
+            self.hideSearchView()
+        }
+    }
+    
+    func hideSearchView(){
+        searchButton.setImage(UIImage(named: "search"), for: .normal)
+        searchTextField.isHidden = true
+        if let controller = self.controller as? MediaViewController{
+            controller.search(text: "")
+            self.searchTextField.text = ""
+        }
+    }
+    
+    func showSearchView(){
+        searchTextField.isHidden = false
+        searchTextField.becomeFirstResponder()
+        searchButton.setImage(UIImage(named: "close"), for: .normal)
     }
 }
 extension MediadocslinksVC:UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
@@ -140,6 +165,29 @@ extension MediadocslinksVC:UICollectionViewDelegate, UICollectionViewDataSource,
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize.init(width: self.view.frame.width / 3, height: self.topCollection.frame.height)
     }
+}
+
+extension MediadocslinksVC: UITextFieldDelegate{
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        print(range)
+        if range.location > 0{
+            if let controller = self.controller as? MediaViewController{
+                controller.search(text: searchTextField.text ?? "")
+            } else if let controller = self.controller as? DocsViewController{
+                controller.search(text: searchTextField.text ?? "")
+            }
+        }else{
+            if let controller = self.controller as? MediaViewController{
+                controller.search(text: "")
+            }else if let controller = self.controller as? DocsViewController{
+                controller.search(text: "")
+            }
+        }
+        return true
+    }
+    
 }
 class MediadocslinksVCCell:UICollectionViewCell {
     

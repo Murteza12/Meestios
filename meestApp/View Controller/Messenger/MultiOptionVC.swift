@@ -24,7 +24,9 @@ class MultiOptionVC: RootBaseVC, UIGestureRecognizerDelegate {
     var isFirstOption: Bool = true
     var isGroup: Bool?
     var isFromGroup: Bool?
+    var groupId = ""
     var openChatCompletion: (()->())?
+    var searchChatCompletion: (()->())?
     var firstOptions = ["View Contact","Media, links, and docs", "Search", "Mute Notification", "Wallpaper", "More"]
     var secondOptions = ["Report","Block", "Clear Chat", "Export Chat", "Add Shortcut"]
     var groupOption = ["Open Conversation", "Snooze Conversation", "Archive Conversation", "Mark as priority", "Share Conversation", "Add a member"]
@@ -55,6 +57,7 @@ class MultiOptionVC: RootBaseVC, UIGestureRecognizerDelegate {
         recongnizer.delegate = self
         self.view.addGestureRecognizer(recongnizer)
     }
+        
     @objc func tapAction(){
         self.dismiss(animated: true, completion: nil)
     }
@@ -200,6 +203,9 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
     }
     
     func search(){
+        self.dismiss(animated: true) {
+            self.searchChatCompletion?()
+        }
     }
     
     func muteNotification(isTrue: Bool){
@@ -406,7 +412,13 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
         
     }
     func addaMember(){
-        
+        let stoaryboard = UIStoryboard(name: "Main", bundle: nil)
+        let addPeopleVC = stoaryboard.instantiateViewController(withIdentifier: "AddPeopleGroupVC") as? AddPeopleGroupVC
+        addPeopleVC?.modalPresentationStyle = .overCurrentContext
+        addPeopleVC?.modalTransitionStyle = .crossDissolve
+        addPeopleVC?.addMember = true
+        addPeopleVC?.groupId = groupId
+        self.present(addPeopleVC!, animated: true, completion: nil)
     }
     
 }

@@ -66,3 +66,21 @@ class SuggestedUser {
     }
 }
 
+class GroupMember{
+    var groupId: String
+    var id: String
+    var displayPicture: String
+    var firstName: String
+    var userid, lastName, username: String
+    
+    init(groupId: String, id: String, displayPicture: String, firstName: String, userid: String, lastName: String, username: String) {
+        self.id = id
+        self.groupId = groupId
+        self.displayPicture = displayPicture
+        self.firstName = firstName
+        self.userid = userid
+        self.lastName = lastName
+        self.username = username
+    }
+    
+}

@@ -12,6 +12,7 @@ class DocsViewController: RootBaseVC {
     
     @IBOutlet weak var tableView: UITableView!
     var docData = [MockMessage]()
+    var searchCopy = [MockMessage]()
     var isDoc: Bool?
     var chatHeadImage = ""
     override func viewDidLoad() {
@@ -42,20 +43,35 @@ class DocsViewController: RootBaseVC {
             self.present(act, animated: true, completion: nil)
         }
     }
+    
+    func search(text: String){
+        print(text)
+        
+        guard !text.isEmpty else {
+            searchCopy = docData
+            tableView.reloadData()
+            return
+        }
+        
+        searchCopy =  docData.filter({ (fileName) -> Bool in
+            fileName.fileURL.lowercased().contains(text.lowercased())
+        })
+        self.tableView.reloadData()
+    }
 
 }
 
 extension DocsViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return docData.count
+        return searchCopy.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! DocsViewControllerCell
         cell.selectionStyle = .none
-        cell.docNameLabel.text = docData[indexPath.row].fileURL
+        cell.docNameLabel.text = searchCopy[indexPath.row].fileURL
         cell.sizeLabel.text = ""
-        cell.timeLabel.text = ""
+        cell.timeLabel.text = searchCopy[indexPath.row].createdAt
         
         return cell
     }

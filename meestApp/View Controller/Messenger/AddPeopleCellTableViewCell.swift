@@ -24,7 +24,7 @@ class AddPeopleCellTableViewCell: UITableViewCell {
     var isButtonSelected:Bool = false
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.buttonImageView.setImage(UIImage(named: "AddPeople")!)
+//        self.buttonImageView.setImage(UIImage(named: "AddPeople")!)
         self.chatHeadsImageView.cornerRadius(radius: self.chatHeadsImageView.frame.height / 2)
     }
 

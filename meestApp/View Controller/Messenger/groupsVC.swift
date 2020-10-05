@@ -15,7 +15,7 @@ class groupsVC: RootBaseVC {
     var socket:SocketIOClient!
     var allUser = [groupHeads]()
     var groupChat: groupHeads?
-    var selectedUser = [SuggestedUser]()
+//    var selectedUser = [SuggestedUser]()
     var chatHeadId = ""
     var searchCopy = [groupHeads]()
     
@@ -43,7 +43,7 @@ class groupsVC: RootBaseVC {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "addPeopleGroup" {
             let peopleGroup = segue.destination as! AddPeopleGroupVC
-            peopleGroup.selectedUser = self.selectedUser
+//            peopleGroup.selectedUser = self.selectedUser
 
         }else if segue.identifier == "mainChatVC" {
             let group = segue.destination as! mainChatVC
@@ -189,13 +189,15 @@ extension groupsVC: GroupCellDelegate{
         let multiOptionVC = stoaryboard.instantiateViewController(withIdentifier: "MultiOptionVC") as? MultiOptionVC
         multiOptionVC?.modalPresentationStyle = .overCurrentContext
         multiOptionVC?.modalTransitionStyle = .crossDissolve
+        let indexPath = self.tableVIew.indexPath(for: cell)
 //        multiOptionVC?.allChatMessage = messages
 //        multiOptionVC?.deleagte = self
+        multiOptionVC?.groupId = self.allUser[indexPath!.row - 1].id
         multiOptionVC?.isGroup = true
         self.present(multiOptionVC!, animated: true) {}
         multiOptionVC?.openChatCompletion = {
             
-            let indexPath = self.tableVIew.indexPath(for: cell)
+            
             self.groupChat = self.allUser[indexPath!.row - 1]
             self.performSegue(withIdentifier: "mainChatVC", sender: self)
         }

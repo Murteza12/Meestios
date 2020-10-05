@@ -21,6 +21,7 @@ class CreateGroupVC: RootBaseVC, UINavigationControllerDelegate {
     var selectedMember = [String]()
     var selectedUser = [SuggestedUser]()
     var imageURL: String?
+    var addMember: Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         cameraView.cornerRadiuss = (self.cameraView.frame.height / 2)
@@ -57,11 +58,30 @@ class CreateGroupVC: RootBaseVC, UINavigationControllerDelegate {
     }
     @IBAction func createGroup(_ sender: Any) {
         
-        APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
-            if self.groupNameTextField.text != ""{
-                let groupName = self.groupNameTextField.text
-                let para = ["userId":user.id, "groupAdmin": user.id, "isGroup": "true", "groupMembers" : self.selectedUser, "groupName":groupName ?? "", "files":self.imageURL ?? ""] as [String : Any]
-                self.createGroups(para: para)
+        if addMember == true{
+            APIManager.sharedInstance.updateGroup(vc: self, para: [:]) { (str) in
+                if str == "success"{
+                    
+                    let act = UIAlertController.init(title: "Success", message: "Member Added", preferredStyle: .alert)
+                    act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                        self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                    }))
+                    self.present(act, animated: true, completion: nil)
+                }else{
+                    let act = UIAlertController.init(title: "Error", message: "Error while Add Member", preferredStyle: .alert)
+                    act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                        
+                    }))
+                    self.present(act, animated: true, completion: nil)
+                }
+            }
+        }else{
+            APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
+                if self.groupNameTextField.text != ""{
+                    let groupName = self.groupNameTextField.text
+                    let para = ["userId":user.id, "groupAdmin": user.id, "isGroup": "true", "groupMembers" : self.selectedUser, "groupName":groupName ?? "", "files":self.imageURL ?? ""] as [String : Any]
+                    self.createGroups(para: para)
+                }
             }
         }
     }

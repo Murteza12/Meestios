@@ -38,6 +38,7 @@ class GroupSeettingViewController: RootBaseVC {
     var groupName = ""
     var groupImage: UIImage?
     var chatHeadID = ""
+    var groupId = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -125,7 +126,13 @@ class GroupSeettingViewController: RootBaseVC {
     }
     
     @IBAction func addParticipantsButtonAction(_ sender: UIButton){
-        
+        let stoaryboard = UIStoryboard(name: "Main", bundle: nil)
+        let addPeopleVC = stoaryboard.instantiateViewController(withIdentifier: "AddPeopleGroupVC") as? AddPeopleGroupVC
+        addPeopleVC?.modalPresentationStyle = .overCurrentContext
+        addPeopleVC?.modalTransitionStyle = .crossDissolve
+        addPeopleVC?.addMember = true
+        addPeopleVC?.groupId = groupId
+        self.present(addPeopleVC!, animated: true, completion: nil)
     }
     
     @IBAction func groupSettingButtonAction(_ sender: UIButton){
