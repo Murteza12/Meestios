@@ -251,7 +251,7 @@ class mainChatVC: RootBaseVC {
         self.socket.on("deletedMessage") { data, ack in
             print(data)
             if let val = self.selectedCell?.row{
-                let data = self.searchCopy[val]
+                let data = self.messages[val]
                 if data.status == 1 {
                     let cell = self.tableView.cellForRow(at: self.selectedCell!)
                     if let cell = cell as? msgSenderCell{
@@ -263,8 +263,8 @@ class mainChatVC: RootBaseVC {
                         cell.txt1.textColor = UIColor.lightGray
                         cell.txt1.font = UIFont.italicSystemFont(ofSize: 15.0)
                     }
-                    self.searchCopy[val].msg = "@This message was deleted"
-                    self.searchCopy[val].status = 0
+                    self.messages[val].msg = "@This message was deleted"
+                    self.messages[val].status = 0
                 }
             }
         }
@@ -321,7 +321,7 @@ class mainChatVC: RootBaseVC {
             self.tableView.insertRows(at: [indexPath], with: .automatic)
             self.tableView.endUpdates()
             self.numberOfRecords = self.messages.count
-            self.searchCopy = self.messages
+//            self.searchCopy = self.messages
 //            self.isSent = true
 //            self.getHistorySocketCall(pageNumber: 1)
         }
@@ -366,7 +366,7 @@ class mainChatVC: RootBaseVC {
             self.tableView.insertRows(at: [indexPath], with: .automatic)
             self.tableView.endUpdates()
             self.numberOfRecords = self.messages.count
-            self.searchCopy = self.messages
+//            self.searchCopy = self.messages
         }
         
         self.socket.on("chat_history") { (dataa, ack) in
@@ -415,7 +415,7 @@ class mainChatVC: RootBaseVC {
 //            }else{
             self.messages.insert(contentsOf: self.lastData, at: 0)
 //            }
-            self.searchCopy = self.messages
+//            self.searchCopy = self.messages
             self.numberOfRecords = self.messages.count
             self.tableView.reloadData()
         }
@@ -531,14 +531,14 @@ func reloadData(completion:@escaping ()->()) {
 extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.searchCopy.count
+        return self.messages.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if self.searchCopy[indexPath.row].sent {
+        if self.messages[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
             cell.selectionStyle = .none
             cell.delegate = self
-            let ind = self.searchCopy[indexPath.row]
+            let ind = self.messages[indexPath.row]
             cell.view1.cornerRadius(radius: 13)
             cell.txt1.text = ind.msg
             if toUser?.isOnline == true{
@@ -583,13 +583,9 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                             cell.img.kf.setImage(with: URL(string: ind.fileURL))
                         }else{
                             cell.img.kf.setImage(with: URL(string: ind.fileURL))
-                            cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
-                            cell.playImageView.setImage(UIImage(named: "Download")!)
+//                            cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
+//                            cell.playImageView.setImage(UIImage(named: "Download")!)
                         }
-//                        KingfisherManager.shared.retrieveImage(with: URL(string: ind.fileURL)!, options: nil, progressBlock: nil, completionHandler: { image, error, cacheType, imageURL in
-//                            UIImageWriteToSavedPhotosAlbum((image ?? UIImage(named: "Play"))!, self, nil, nil)
-//                        })
-
                         cell.img.tag = indexPath.row
                     }else{
                         cell.img.image = nil
@@ -618,7 +614,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                 cell.chatNameView.isHidden = true
                 cell.view1.cornerRadius(radius: 13)
             }
-            let ind = self.searchCopy[indexPath.row]
+            let ind = self.messages[indexPath.row]
             cell.chatNameLabel.text = ind.senderData["username"] as? String ?? ""
             cell.txt1.text = ind.msg
             cell.view1.backgroundColor = UIColor.init(hex: 0xECF7FE)
@@ -654,8 +650,8 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                             cell.img.kf.setImage(with: URL(string: ind.fileURL))
                         }else{
                             cell.img.kf.setImage(with: URL(string: ind.fileURL))
-                            cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
-                            cell.playImageView.setImage(UIImage(named: "Download")!)
+//                            cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
+//                            cell.playImageView.setImage(UIImage(named: "Download")!)
                         }
                         cell.img.tag = indexPath.row
                     }else{
@@ -681,8 +677,8 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if self.searchCopy.count > 0, self.searchCopy[indexPath.row].attachment == 1{
-            if self.searchCopy[indexPath.row].attachmentType != "Audio"{
+        if self.messages.count > 0, self.messages[indexPath.row].attachment == 1{
+            if self.messages[indexPath.row].attachmentType != "Audio"{
             return 250
             }
         }
@@ -827,7 +823,7 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
     
     func videoPlaySelect(indexPath: IndexPath ) {
         print("\(String(describing: indexPath.row)) Tapped")
-        let data = self.searchCopy[indexPath.row]
+        let data = self.messages[indexPath.row]
             if data.attachment == 1{
                 if data.attachmentType == "Video"{
                     if !data.fileURL.isEmpty{
@@ -930,13 +926,13 @@ extension mainChatVC{
             self?.present(deleteEveryoneVC!, animated: true, completion: nil)
             
             deleteEveryoneVC?.deleteForEveryOneCompletion = {
-                let data = self?.searchCopy[(self?.selectedCell!.row)!]
+                let data = self?.messages[(self?.selectedCell!.row)!]
                 let payload = ["messageId": data?.id, "userId": data?.userID]
                 self?.socket.emit("deleteChat", payload)
             }
             
             deleteEveryoneVC?.deletedCompletion = {
-                let data = self?.searchCopy[(self?.selectedCell!.row)!]
+                let data = self?.messages[(self?.selectedCell!.row)!]
                 let payload = ["messageId": data?.id, "userId": data?.userID]
                 self?.socket.emit("deleteChat", payload)
             }
@@ -948,7 +944,7 @@ extension mainChatVC{
         
         deleteOptionVC?.copyCompletion = { [weak self] in
            
-            let data = self?.searchCopy[(self?.selectedCell!.row)!]
+            let data = self?.messages[(self?.selectedCell!.row)!]
             UIPasteboard.general.string = data?.msg
             print("Copy Called \(String(describing: data?.msg))")
         }
@@ -1117,7 +1113,7 @@ extension mainChatVC{
 
 extension mainChatVC: MultiOptionVCDelegate{
     func clearChatCompleted() {
-        self.searchCopy.removeAll()
+        self.messages.removeAll()
         self.tableView.reloadData()
     }
     
