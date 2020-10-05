@@ -171,7 +171,7 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
         let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
         let viewContactVC = stoaryboard.instantiateViewController(withIdentifier: "ViewContactVC") as? ViewContactVC
         viewContactVC?.modalPresentationStyle = .overCurrentContext
-//        viewContactVC?.allChatMessage = self.allChatMessage
+        viewContactVC?.isFromGroup = isFromGroup ?? false
         viewContactVC?.delegate = self.delegateViewContact
         self.present(viewContactVC!, animated: true) {
         }
@@ -253,7 +253,7 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
         self.present(multiOptionVC!, animated: true) {
             
         }
-        multiOptionVC?.deleteCompletion = {
+        multiOptionVC?.blockCompletion = {
             var type = ""
             if self.isFromGroup == true{
                 type = "group"

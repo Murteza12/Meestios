@@ -32,12 +32,9 @@ class mainChatVC: RootBaseVC {
     @IBOutlet weak var msgTxtView:UITextView!
     @IBOutlet weak var tableView:chatTblView!
     @IBOutlet var typingLabel: UILabel!
-    @IBOutlet weak var audioPlayer:UIView!
-    @IBOutlet weak var audiaPlayButton:UIButton!
-    @IBOutlet weak var audioTimerLabel:UILabel!
-    @IBOutlet weak var progressBar: UIProgressView!
+    @IBOutlet weak var settingHeaderButton: UIButton!
     
-    var isSent:Bool = false
+//    var isSent:Bool = false
     var numberOfRecords = 0
     var pageNumberToBeLoad = 1
     var blurView: UIView?
@@ -52,7 +49,7 @@ class mainChatVC: RootBaseVC {
     var isGroup: Bool?
     var socket:SocketIOClient!
     var playerController : AVPlayerViewController!
-    var isScrollToTop: Bool = false
+//    var isScrollToTop: Bool = false
     var offsetObservation: NSKeyValueObservation?
     var isWallpaperOption:Bool = false
     var wallpaperImageView: UIImageView?
@@ -170,15 +167,31 @@ class mainChatVC: RootBaseVC {
         self.messages.removeAll()
         self.lastData.removeAll()
         if player != nil{
-            player?.pause() // 1. pause the player to stop it
-//        playerLayer?.player = nil // 2. set the playerLayer's player to nil
-//        playerLayer?.removeFromSuperlayer() // 3 remove the playerLayer from its superLayer
+            player?.pause()
         }
     }
     
-    @IBAction func playAudioButtonAction(_ sender:UIButton) {
+    @IBAction func settingHeaderButtonAction(_ sender:UIButton) {
        
         self.tableView.becomeFirstResponder()
+        
+        if isGroup == true{
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let groupSettingVC = stoaryboard.instantiateViewController(withIdentifier: "GroupSeettingViewController") as? GroupSeettingViewController
+        groupSettingVC?.modalPresentationStyle = .overCurrentContext
+        groupSettingVC?.modalTransitionStyle = .crossDissolve
+        groupSettingVC?.groupImage = self.img.image
+        groupSettingVC?.groupName = self.nameLbl.text ?? ""
+//        groupSettingVC?.allChatMessage = messages
+//        groupSettingVC?.deleagte = self
+        
+//        if isGroup == true{
+//            multiOptionVC?.isFromGroup = true
+//        }else{
+//            multiOptionVC?.isFromGroup = false
+//        }
+        self.present(groupSettingVC!, animated: true, completion: nil)
+        }
         
     }
     @IBAction func callButtonAction(_ sender:UIButton) {
@@ -264,11 +277,40 @@ class mainChatVC: RootBaseVC {
             }else{
                 chatID = self.toUser?.chatHeadId ?? ""
             }
-            let data = ["userId":self.userid,"chatHeadId":chatID]
-            self.socket.emit("readMessage", data)
-            self.isSent = true
-            self.scrollToBottom()
-            self.getHistorySocketCall(pageNumber: 1)
+            let dataa = ["userId":self.userid,"chatHeadId":chatID]
+            self.socket.emit("readMessage", dataa)
+            
+            let val =  data[0] as? [String:Any] ?? [:]
+            let ii =  val["msg"] as? [String:Any] ?? [:]
+            let ChatUserID = ""
+            let ChatUserName = ""
+            let attachment = ii["attachment"] as? Int ?? 0
+            let attachmentType = ii["attachmentType"] as? String ?? ""
+            let fileURL = ii["fileURL"] as? String ?? ""
+            let createdAt = ii["createdAt"] as? String ?? ""
+            let deletedAt = ii["deletedAt"] as? String ?? ""
+            let id = ii["id"] as? String ?? ""
+            let msg = ii["msg"] as? String ?? ""
+            let status = ii["status"] as? Int ?? 1
+            let toUserId = ii["chatHeadId"] as? String ?? ""
+            let updatedAt = ii["updatedAt"] as? String ?? ""
+            let userId = ii["userId"] as? String ?? ""
+            let sent = ii["sent"] as? Bool ?? false
+            let senderData = ii["senderData"] as? [String: Any] ?? [:]
+            let videothumbnail = ii["thumbnail"] as? String ?? ""
+            let read = ii["read"] as? Int ?? 0
+            
+             let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent, senderData: senderData, fileURL:fileURL, attachmentType: attachmentType, videothumbnail: videothumbnail, read: read )
+            self.messages.append(temp)
+            let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+            
+            self.tableView.beginUpdates()
+            self.tableView.insertRows(at: [indexPath], with: .automatic)
+            self.tableView.endUpdates()
+            self.numberOfRecords = self.messages.count
+
+//            self.isSent = true
+//            self.getHistorySocketCall(pageNumber: 1)
         }
         
         self.socket.on("sent_ios") { data, ack in
@@ -279,11 +321,38 @@ class mainChatVC: RootBaseVC {
             }else{
                 chatID = self.toUser?.chatHeadId ?? ""
             }
-            let data = ["userId":self.userid,"chatHeadId":chatID]
-            self.socket.emit("readMessage", data)
-            self.isSent = true
-            self.scrollToBottom()
-            self.getHistorySocketCall(pageNumber: 1)
+            let dataa = ["userId":self.userid,"chatHeadId":chatID]
+            self.socket.emit("readMessage", dataa)
+//            self.isSent = true
+            
+            let val =  data[0] as? [String:Any] ?? [:]
+            let ii =  val["msg"] as? [String:Any] ?? [:]
+            var ChatUserID = ""
+            let ChatUserName = ""
+            let attachment = ii["attachment"] as? Int ?? 0
+            let attachmentType = ii["attachmentType"] as? String ?? ""
+            let fileURL = ii["fileURL"] as? String ?? ""
+            let createdAt = ii["createdAt"] as? String ?? ""
+            let deletedAt = ii["deletedAt"] as? String ?? ""
+            let id = ii["id"] as? String ?? ""
+            let msg = ii["msg"] as? String ?? ""
+            let status = ii["status"] as? Int ?? 1
+            let toUserId = ii["chatHeadId"] as? String ?? ""
+            let updatedAt = ii["updatedAt"] as? String ?? ""
+            let userId = ii["userId"] as? String ?? ""
+            let sent = ii["sender"] as? Bool ?? true
+            let senderData = ii["senderData"] as? [String: Any] ?? [:]
+            let videothumbnail = ii["thumbnail"] as? String ?? ""
+            let read = ii["read"] as? Int ?? 0
+            
+             let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: true, senderData: senderData, fileURL:fileURL, attachmentType: attachmentType, videothumbnail: videothumbnail, read: read )
+            self.messages.append(temp)
+            let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+            
+            self.tableView.beginUpdates()
+            self.tableView.insertRows(at: [indexPath], with: .automatic)
+            self.tableView.endUpdates()
+            self.numberOfRecords = self.messages.count
         }
         
         self.socket.on("chat_history") { (dataa, ack) in
@@ -319,37 +388,30 @@ class mainChatVC: RootBaseVC {
                 self.lastData.append(temp)
                
             }
-            if self.isSent  {
-                if self.messages.count > 10{
-                    for _ in 0...9 {
-                        self.messages.removeLast()
-                    }
-                }else{
-                    self.messages.removeAll()
-                }
-                self.messages.append(contentsOf: self.lastData)
-                self.isSent = false
-            }else{
-                self.messages.insert(contentsOf: self.lastData, at: 0)
-            }
+//            if self.isSent  {
+//                if self.messages.count > 10{
+//                    for _ in 0...9 {
+//                        self.messages.removeLast()
+//                    }
+//                }else{
+//                    self.messages.removeAll()
+//                }
+//                self.messages.append(contentsOf: self.lastData)
+//                self.isSent = false
+//            }else{
+            self.messages.insert(contentsOf: self.lastData, at: 0)
+//            }
             self.numberOfRecords = self.messages.count
-            self.tableView.reloadData {
-        
-            }
-            if !self.isScrollToTop{
-            self.scrollToBottom()
-            }
+            self.tableView.reloadData()
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if (scrollView.contentOffset.y <= 0){
             self.loadMore()
-            self.isScrollToTop = true
         }
         
         if (scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) {
-            self.isScrollToTop = false
         }
     }
     
@@ -381,7 +443,7 @@ class mainChatVC: RootBaseVC {
                         chatID = self.toUser?.chatHeadId ?? ""
                     }
                     let neww = ["userId":user.id,"chatHeadId":chatID ?? "","page":self.pageNumberToBeLoad] as [String : Any]
-                    self.isSent = false
+//                    self.isSent = false
                     self.socket.emit("get_history", neww)
                 }
             }
@@ -403,14 +465,19 @@ extension mainChatVC: AVAudioPlayerDelegate{
         player = AVPlayer(url: URL(string: url)!)
         player?.play()
         player?.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: .main) { time in
-
+                
             let fraction = CMTimeGetSeconds(time)  / CMTimeGetSeconds((self.player?.currentItem!.duration)!)
             if let cell = cell as? msgSenderCell{
-                cell.progressBar.progress = Float(fraction)
-                self.timeCount += 1
-                cell.audioTimerLabel.text = String(format: "%02d:%02d",(self.timeCount/60)%60,self.timeCount%60)
+                cell.progressBar.layoutIfNeeded()
+                DispatchQueue.main.async {
+                    cell.progressBar.progress = Float(fraction)
+                    print(Float(fraction), time, self.player?.currentItem?.duration)
+                    self.timeCount += 1
+                    cell.audioTimerLabel.text = String(format: "%02d:%02d",(self.timeCount/60)%60,self.timeCount%60)
+                }
             }
             if let cell = cell as? msgReceiverCell{
+                cell.progressBar.layoutIfNeeded()
                 cell.progressBar.progress = Float(fraction)
                 self.timeCount += 1
                 cell.audioTimerLabel.text = String(format: "%02d:%02d",(self.timeCount/60)%60,self.timeCount%60)
@@ -475,6 +542,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.img.image = nil
             cell.playImageView.image = nil
             cell.audioPlayer.isHidden = true
+            cell.downloadBackGroundi.backgroundColor = .clear
             if ind.status == 0{
                 cell.txt1.text = "@This message was deleted."
                 cell.txt1.textColor = UIColor.lightGray
@@ -486,6 +554,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
+                        cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
                         cell.playImageView.image = UIImage(named: "Play")
 //                        addBlurEffectToImageView(imageView: cell.img)
                         cell.img.tag = indexPath.row
@@ -494,7 +563,14 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                 }else if ind.attachmentType == "Image"{
                     if !ind.fileURL.isEmpty{
                         cell.img.kf.indicatorType = .activity
-                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        
+                        if self.isMediaAutoDowload == true{
+                            cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        }else{
+                            cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                            cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
+                            cell.playImageView.setImage(UIImage(named: "Download")!)
+                        }
 //                        KingfisherManager.shared.retrieveImage(with: URL(string: ind.fileURL)!, options: nil, progressBlock: nil, completionHandler: { image, error, cacheType, imageURL in
 //                            UIImageWriteToSavedPhotosAlbum((image ?? UIImage(named: "Play"))!, self, nil, nil)
 //                        })
@@ -537,6 +613,8 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.img.image = nil
             cell.playImageView.image = nil
             cell.audioPlayer.isHidden = true
+            cell.downloadBackGroundi.backgroundColor = .clear
+            cell.sentimg.image = UIImage.init(named: "Recievechat")
             if ind.status == 0{
                 cell.txt1.text = "@This message was deleted."
                 cell.txt1.textColor = UIColor.lightGray
@@ -548,6 +626,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
+                        cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
                         cell.playImageView.image = UIImage(named: "Play")
 //                        addBlurEffectToImageView(imageView: cell.img)
                         cell.img.tag = indexPath.row
@@ -556,7 +635,13 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                 }else if ind.attachmentType == "Image"{
                     if !ind.fileURL.isEmpty{
                         cell.img.kf.indicatorType = .activity
-                        cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        if self.isMediaAutoDowload == true{
+                            cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                        }else{
+                            cell.img.kf.setImage(with: URL(string: ind.fileURL))
+                            cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
+                            cell.playImageView.setImage(UIImage(named: "Download")!)
+                        }
                         cell.img.tag = indexPath.row
                     }else{
                         cell.img.image = nil
@@ -596,6 +681,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         self.selectedCell = indexPath
         tableView.becomeFirstResponder()
     }
+    
     func scrollToBottom(){
         
         if self.messages.count > 0{
@@ -636,6 +722,7 @@ protocol MsgSenderDelegate {
 }
 class msgSenderCell:UITableViewCell {
     
+    @IBOutlet weak var downloadBackGroundi:UIView!
     @IBOutlet weak var view1:UIView!
     @IBOutlet weak var txt1:UITextView!
     @IBOutlet weak var img:UIImageView!
@@ -661,6 +748,7 @@ class msgSenderCell:UITableViewCell {
 }
 class msgReceiverCell:UITableViewCell {
     
+    @IBOutlet weak var downloadBackGroundi:UIView!
     @IBOutlet weak var chatNameLabel: UILabel!
     @IBOutlet weak var chatNameView: UIView!
     @IBOutlet weak var view1:UIView!
@@ -732,8 +820,18 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
                     }
                 }else if data.attachmentType == "Image"{
                     if !data.fileURL.isEmpty{
-                        
-                    }
+                        let cell = self.tableView.cellForRow(at: indexPath)
+                        if let cell = cell as? msgReceiverCell{
+                            cell.downloadBackGroundi.backgroundColor = .clear
+                            cell.playImageView.image = nil
+                        }
+                        if let cell = cell as? msgSenderCell{
+                            cell.downloadBackGroundi.backgroundColor = .clear
+                            cell.playImageView.image = nil
+                        }
+
+                        }
+                    
                 }else if data.attachmentType == "Audio"{
                     if !data.fileURL.isEmpty{
 //                        let audioFilename = getDocumentsDirectory().appending("/audio.aac")

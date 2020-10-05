@@ -19,6 +19,7 @@ class callsVC: RootBaseVC {
     var socket:SocketIOClient!
     var senduser:ChatHeads?
     fileprivate var jitsiMeetView: JitsiMeetView?
+    var searchCopy = [ChatHeads]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +40,21 @@ class callsVC: RootBaseVC {
         super.viewDidAppear(animated)
         
     }
+    func search(text: String){
+        print(text)
+        
+        guard !text.isEmpty else {
+            searchCopy = allUser
+            tableView.reloadData()
+            return
+        }
+        
+        searchCopy =  allUser.filter({ (userName) -> Bool in
+            userName.username.lowercased().contains(text.lowercased())
+        })
+        self.tableView.reloadData()
+    }
+
     
     func getAll() {
 //        APIManager.sharedInstance.getAllConversation(vc: self) { (all) in

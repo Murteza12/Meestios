@@ -58,13 +58,9 @@ struct APIS {
     static let hardDelete =  BASEURL.baseurl + "/chat/hardDelete/group"
     static let getGroupChatHeads = BASEURL.baseurl + "/chat/chatHeads"
     static let followGetFriends = BASEURL.baseurl + "/follows/get/friends"
-    static let clearChat = BASEURL.baseurl + ""
-    static let blockContact = BASEURL.baseurl + ""
+    
     static let deleteChatHeads = BASEURL.baseurl + ""
-    static let reportUser = BASEURL.baseurl + ""
     static let mediaLinksDocs = BASEURL.baseurl + "/chat/getDocsMedia"
-    static let exportChat = BASEURL.baseurl + ""
-    static let muteNotification = BASEURL.baseurl + ""
     static let chatSetting = BASEURL.baseurl + "/chatSetting/update"
     static let getChatSetting = BASEURL.baseurl + "/chatSetting/get"
     

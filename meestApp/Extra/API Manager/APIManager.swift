@@ -790,66 +790,6 @@ class APIManager {
         }
     }
     
-    func clearChat(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
-        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
-        APICall.sharedInstance.alamofireCall(url: APIS.clearChat, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
-            if statusCode == 200 {
-                let data = responseData.value as? [String:Any] ?? [:]
-                let code = data["code"] as! Int
-                if code == 1 {
-                    completion("success")
-                }else{
-                    completion("failure")
-                }
-            }
-        }
-    }
-    
-    func exportChat(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
-        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
-        APICall.sharedInstance.alamofireCall(url: APIS.exportChat, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
-            if statusCode == 200 {
-                let data = responseData.value as? [String:Any] ?? [:]
-                let code = data["code"] as! Int
-                if code == 1 {
-                    completion("success")
-                }else{
-                    completion("failure")
-                }
-            }
-        }
-    }
-    
-    func reportUser(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
-        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
-        APICall.sharedInstance.alamofireCall(url: APIS.reportUser, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
-            if statusCode == 200 {
-                let data = responseData.value as? [String:Any] ?? [:]
-                let code = data["code"] as! Int
-                if code == 1 {
-                    completion("success")
-                }else{
-                    completion("failure")
-                }
-            }
-        }
-    }
-    
-    func blockUser(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
-        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
-        APICall.sharedInstance.alamofireCall(url: APIS.blockContact, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
-            if statusCode == 200 {
-                let data = responseData.value as? [String:Any] ?? [:]
-                let code = data["code"] as! Int
-                if code == 1 {
-                    completion("success")
-                }else{
-                    completion("failure")
-                }
-            }
-        }
-    }
-    
     func chatSetting(vc:RootBaseVC, para: [String:Any],completion:@escaping (String) -> Void) {
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
         APICall.sharedInstance.alamofireCall(url: APIS.chatSetting, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in

@@ -13,6 +13,8 @@
 		5A5C444C2520887C00C01782 /* AddPeopleGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */; };
 		5A5C448A2520889F00C01782 /* AddPeopleCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */; };
 		5A5C448F252091C600C01782 /* CreateGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C448E252091C600C01782 /* CreateGroupVC.swift */; };
+		5A62CCC5252A1BBE00ED6B1D /* MediaAutodownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62CCC4252A1BBD00ED6B1D /* MediaAutodownloadViewController.swift */; };
+		5A62CCCA252A277300ED6B1D /* GroupSeettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62CCC9252A277300ED6B1D /* GroupSeettingViewController.swift */; };
 		5A71028E252625FD00FBF5D3 /* ChatSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A71028D252625FD00FBF5D3 /* ChatSetting.swift */; };
 		5A71029325265A9800FBF5D3 /* MediadocslinksVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A71029225265A9700FBF5D3 /* MediadocslinksVC.swift */; };
 		5A710298252660D800FBF5D3 /* DocsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A710297252660D800FBF5D3 /* DocsViewController.swift */; };
@@ -201,6 +203,8 @@
 		5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPeopleGroupVC.swift; sourceTree = "<group>"; };
 		5A5C44892520889F00C01782 /* AddPeopleCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPeopleCellTableViewCell.swift; sourceTree = "<group>"; };
 		5A5C448E252091C600C01782 /* CreateGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupVC.swift; sourceTree = "<group>"; };
+		5A62CCC4252A1BBD00ED6B1D /* MediaAutodownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAutodownloadViewController.swift; sourceTree = "<group>"; };
+		5A62CCC9252A277300ED6B1D /* GroupSeettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSeettingViewController.swift; sourceTree = "<group>"; };
 		5A71028D252625FD00FBF5D3 /* ChatSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSetting.swift; sourceTree = "<group>"; };
 		5A71029225265A9700FBF5D3 /* MediadocslinksVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediadocslinksVC.swift; sourceTree = "<group>"; };
 		5A710297252660D800FBF5D3 /* DocsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocsViewController.swift; sourceTree = "<group>"; };
@@ -930,6 +934,8 @@
 				5AABEA622524F7F000AB6637 /* ClearChatVC.swift */,
 				5A710297252660D800FBF5D3 /* DocsViewController.swift */,
 				5A71029C2526645900FBF5D3 /* MediaViewController.swift */,
+				5A62CCC4252A1BBD00ED6B1D /* MediaAutodownloadViewController.swift */,
+				5A62CCC9252A277300ED6B1D /* GroupSeettingViewController.swift */,
 			);
 			path = Messenger;
 			sourceTree = "<group>";
@@ -1311,12 +1317,14 @@
 				D35FDC7D24EF0B40007B589D /* Message.swift in Sources */,
 				D36014262508120D00391004 /* inviteFrndVC.swift in Sources */,
 				D3C703DF24DC8EA80001E220 /* Token.swift in Sources */,
+				5A62CCC5252A1BBE00ED6B1D /* MediaAutodownloadViewController.swift in Sources */,
 				D37C4E1224E33F6A007A4DD3 /* User.swift in Sources */,
 				D37AA1B5250303E000E574D2 /* adsPreviewVC2.swift in Sources */,
 				D324FEF724EC9B8F00ABAE9F /* Comment.swift in Sources */,
 				D308E82824DAB6A70061B793 /* splashVC.swift in Sources */,
 				D360142225080D4600391004 /* aboutUsVC.swift in Sources */,
 				D31BEC4324FF051C0074110A /* videoViewerVC.swift in Sources */,
+				5A62CCCA252A277300ED6B1D /* GroupSeettingViewController.swift in Sources */,
 				5A82D471251E7BFF007E402A /* MultiOptionVC.swift in Sources */,
 				D308E7F524D9D7850061B793 /* AppDelegate.swift in Sources */,
 				D37AA1A92502DCD000E574D2 /* profileViewerVC.swift in Sources */,

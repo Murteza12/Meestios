@@ -15,15 +15,22 @@ class mssengerHomeVC: RootBaseVC {
     @IBOutlet weak var topCollection:UICollectionView!
     @IBOutlet weak var contentView:UIView!
     
+    @IBOutlet weak var searchButton: UIButton!
+    @IBOutlet weak var searchTextField: UITextField!
+    @IBOutlet weak var imageView: UIImageView!
     let arr = ["PEOPLES","GROUPS","CALLS"]
     var selected = 0
+    var controller: UIViewController!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
        // self.topCollection.delegate = self
       //  self.topCollection.dataSource = self
         UserDefaults.standard.setValue(0, forKey: "SelectedIndex")
-        
+        self.searchTextField.delegate = self
+        self.searchTextField.isHidden = true
+        searchButton.setImage(UIImage(named: "search"), for: .normal)
         
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -46,14 +53,14 @@ class mssengerHomeVC: RootBaseVC {
                 for i in self.contentView.subviews {
                     i.removeFromSuperview()
                 }
-                let controller = self.storyboard!.instantiateViewController(withIdentifier: "peoplesVC") as! peoplesVC
+                 controller = self.storyboard!.instantiateViewController(withIdentifier: "peoplesVC") as! peoplesVC
                 addChild(controller)
                 self.contentView.addSubview(controller.view)
                 controller.view.frame = self.contentView.bounds
                 controller.view.layoutIfNeeded()
                 controller.didMove(toParent: self)
             } else {
-                let controller = self.storyboard!.instantiateViewController(withIdentifier: "peoplesVC") as! peoplesVC
+                 controller = self.storyboard!.instantiateViewController(withIdentifier: "peoplesVC") as! peoplesVC
                 addChild(controller)
                 self.contentView.addSubview(controller.view)
                 controller.view.frame = self.contentView.bounds
@@ -107,6 +114,31 @@ class mssengerHomeVC: RootBaseVC {
         redVC.heroModalAnimationType = .zoomSlide(direction: HeroDefaultAnimationType.Direction.right)
         self.hero_replaceViewController(with: redVC)
     }
+    
+    @IBAction func searchButton(_ sender:UIButton) {
+        
+        if searchButton.image(for: .normal) == UIImage(named: "search"){
+            self.showSearchView()
+        }else{
+            self.hideSearchView()
+        }
+        
+    }
+    
+    func hideSearchView(){
+        searchButton.setImage(UIImage(named: "search"), for: .normal)
+        searchTextField.isHidden = true
+        if let controller = self.controller as? peoplesVC{
+            controller.search(text: "")
+            self.searchTextField.text = ""
+        }
+    }
+    
+    func showSearchView(){
+        searchTextField.isHidden = false
+        searchTextField.becomeFirstResponder()
+        searchButton.setImage(UIImage(named: "close"), for: .normal)
+    }
 }
 extension mssengerHomeVC:UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
     
@@ -128,10 +160,38 @@ extension mssengerHomeVC:UICollectionViewDelegate, UICollectionViewDataSource,UI
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.setSelected(index: indexPath.row)
         UserDefaults.standard.setValue(indexPath.row, forKey: "SelectedIndex")
+        self.hideSearchView()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize.init(width: self.view.frame.width / 3, height: self.topCollection.frame.height)
+    }
+}
+
+extension mssengerHomeVC: UITextFieldDelegate{
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        print(range)
+        if range.location > 0{
+            if let controller = self.controller as? peoplesVC{
+                controller.search(text: searchTextField.text ?? "")
+            } else if let controller = self.controller as? groupsVC{
+                controller.search(text: searchTextField.text ?? "")
+            }else if let controller = self.controller as? callsVC{
+                controller.search(text: searchTextField.text ?? "")
+            }
+
+        }else{
+            if let controller = self.controller as? peoplesVC{
+                controller.search(text: "")
+            }else if let controller = self.controller as? groupsVC{
+                controller.search(text: "")
+            }else if let controller = self.controller as? callsVC{
+                controller.search(text: "")
+            }
+        }
+        return true
     }
 }
 class messagehomeCell:UICollectionViewCell {

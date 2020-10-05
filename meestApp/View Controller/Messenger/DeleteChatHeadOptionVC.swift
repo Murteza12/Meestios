@@ -21,6 +21,7 @@ class DeleteChatHeadOptionVC: RootBaseVC {
     var chatHeadID = ""
     
     var deleteCompletion : (()->())?
+    var blockCompletion: (()->())?
     override func viewDidLoad() {
         super.viewDidLoad()
         descriptionLabel.font = UIFont.init(name: APPFont.regular, size: 22)
@@ -52,7 +53,9 @@ class DeleteChatHeadOptionVC: RootBaseVC {
     @IBAction func confirmButtonAction(_ sender: Any) {
         
         if isBlock == true{
-            
+            self.dismiss(animated: true) {
+                self.blockCompletion?()
+            }
         }else{
         self.dismiss(animated: true) {
             self.deleteCompletion?()
@@ -65,18 +68,18 @@ class DeleteChatHeadOptionVC: RootBaseVC {
     }
     
     func blockContact(){
-        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
-        APIManager.sharedInstance.blockUser(vc: self, para: parameter) { (str) in
-            if str == "success"{
-                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-            }else{
-                let act = UIAlertController.init(title: "Error", message: "Error while blocking user", preferredStyle: .alert)
-                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
-                    
-                }))
-                self.present(act, animated: true, completion: nil)
-            }
-        }
+//        let parameter = ["chatHeadID": self.chatHeadID, "isBlock"]
+//        APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
+//            if str == "success"{
+//                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+//            }else{
+//                let act = UIAlertController.init(title: "Error", message: "Error while blocking user", preferredStyle: .alert)
+//                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+//
+//                }))
+//                self.present(act, animated: true, completion: nil)
+//            }
+//        }
     }
     
 }

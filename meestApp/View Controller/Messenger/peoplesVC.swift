@@ -14,10 +14,13 @@ class peoplesVC: RootBaseVC {
     
     @IBOutlet weak var tableView:UITableView!
     var allUser = [ChatHeads]()
+    var searchCopy = [ChatHeads]()
     var chatUser = [[String:Any]]()
 //    let manager = SocketManager.init(socketURL: URL.init(string: BASEURL.socketURL)!, config: [.compress,.log(true)])
     var socket:SocketIOClient!
     var senduser:ChatHeads?
+    var chatHeadID = ""
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,13 +38,27 @@ class peoplesVC: RootBaseVC {
         if self.allUser.count == 0{
             self.tableView.isHidden = true
         }
-
+        self.chatHeadID = UserDefaults.standard.string(forKey: "ChatHeadId") ?? ""
         
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
+    func search(text: String){
+        print(text)
+        
+        guard !text.isEmpty else {
+            searchCopy = allUser
+            tableView.reloadData()
+            return
+        }
+        
+        searchCopy =  allUser.filter({ (userName) -> Bool in
+            userName.firstName.lowercased().contains(text.lowercased()) ||  userName.lastName.lowercased().contains(text.lowercased())
+        })
+        self.tableView.reloadData()
+    }
     func getAll() {
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             let payload = ["userId":user.id]
@@ -74,6 +91,7 @@ class peoplesVC: RootBaseVC {
             all.append(temp)
         }
         self.allUser = all
+        self.searchCopy = self.allUser
     }
     
     func addHandler() {
@@ -111,6 +129,24 @@ class peoplesVC: RootBaseVC {
         }
         multiOptionVC?.deleteCompletion = {
             print("Delete API Called")
+
+            let parameter = ["chatHeadId": self.chatHeadID, "settingType": "chat", "isDelete": true] as [String : Any]
+            APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
+                if str == "success"{
+                    //self.dismiss(animated: true, completion: nil)
+                    let act = UIAlertController.init(title: "Success", message: "Chat is Deleted", preferredStyle: .alert)
+                    act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                        
+                    }))
+                    self.present(act, animated: true, completion: nil)
+                }else{
+                    let act = UIAlertController.init(title: "Error", message: "Error while block user", preferredStyle: .alert)
+                    act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                        
+                    }))
+                    self.present(act, animated: true, completion: nil)
+                }
+            }
         }
     }
     
@@ -121,11 +157,11 @@ class peoplesVC: RootBaseVC {
 extension peoplesVC:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.allUser.count
+        return self.searchCopy.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! peoplesCell
-        let ind = self.allUser[indexPath.row]
+        let ind = self.searchCopy[indexPath.row]
 //        let ind = self.chatUser[indexPath.row]
         cell.onlineView.cornerRadius(radius: cell.onlineView.frame.height / 2)
         cell.unreadView2.cornerRadius(radius: cell.unreadView2.frame.height / 2)
@@ -161,7 +197,7 @@ extension peoplesVC:UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.senduser = self.allUser[indexPath.row]
+        self.senduser = self.searchCopy[indexPath.row]
         self.performSegue(withIdentifier: "proceed", sender: self)
     }
     

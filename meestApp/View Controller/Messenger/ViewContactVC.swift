@@ -23,6 +23,7 @@ class ViewContactVC: RootBaseVC {
     var allChatMessage = [MockMessage]()
     var chatHeadImage = ""
     var isMuted: Bool = false
+    var isFromGroup: Bool = false
     var isMediaAutodownload: Bool?
     var options = ["Change Wallpaper", "Mute Notification", "Media Autodownload", "Block Contact"]
     var delegate: ViewContactVCDeleagte?
@@ -133,21 +134,47 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
     
     func blockContact(){
         
-        self.presentingViewController?.presentingViewController?.dismiss(animated: true) {
-            //self.delegate?.showWallpaperOptions()
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "blockContact"), object: nil)
+//        self.presentingViewController?.presentingViewController?.dismiss(animated: true) {
+//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "blockContact"), object: nil)
+//        }
+        
+        let stoaryboard = UIStoryboard(name: "Messenger", bundle: nil)
+        let multiOptionVC = stoaryboard.instantiateViewController(withIdentifier: "DeleteChatHeadOptionVC") as? DeleteChatHeadOptionVC
+        multiOptionVC?.modalPresentationStyle = .overCurrentContext
+        multiOptionVC?.modalTransitionStyle = .crossDissolve
+        multiOptionVC?.isBlock = true
+        self.present(multiOptionVC!, animated: true) {
+            
         }
+        multiOptionVC?.blockCompletion = {
+            var type = ""
+            if self.isFromGroup == true{
+                type = "group"
+            }else{
+                type = "chat"
+            }
+            let parameter = ["chatHeadId": self.chatHeadImage,"settingType": type, "isBlocked": true] as [String : Any]
+            APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
+                if str == "success"{
+                    //self.dismiss(animated: true, completion: nil)
+                    let act = UIAlertController.init(title: "Error", message: "User is Blocked", preferredStyle: .alert)
+                    act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                        
+                    }))
+                    self.present(act, animated: true, completion: nil)
+                }else{
+                    let act = UIAlertController.init(title: "Error", message: "Error while block user", preferredStyle: .alert)
+                    act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                        
+                    }))
+                    self.present(act, animated: true, completion: nil)
+                }
+            }
+        }
+        
     }
     
     func muteNotification(isTrue: Bool, sender: UISwitch){
-        /*{
-            "chatHeadId": "ae382bba-10d3-42e5-a4be-b53584fe5aec",
-            "settingType": "aaaaaa",
-            "isNotificationMute": false,
-            "isReported": false,
-            "reportText": "aa",
-            "markPriority": true
-        }*/
         let parameter = ["chatHeadId": self.chatHeadImage, "isNotificationMute": isTrue] as [String : Any]
         APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
             if str == "success"{

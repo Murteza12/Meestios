@@ -62,27 +62,9 @@ class ClearChatVC: RootBaseVC {
     
     @IBAction func clearButtonAction(_ sender: Any) {
             self.clearCompletion?()
-        self.clearChat()
     }
     
     @IBAction func cancelButtonAction(_ sender: Any) {
         self.dismissView()
-    }
-    
-    func clearChat(){
-        let parameter = ["userID": self.userID, "chatHeadID": self.chatHeadID]
-        APIManager.sharedInstance.clearChat(vc: self, para: parameter) { (str) in
-            if str == "success"{
-                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-            }else{
-                let act = UIAlertController.init(title: "Error", message: "Error while clearing chat", preferredStyle: .alert)
-                act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
-                    
-                }))
-                self.present(act, animated: true, completion: nil)
-            }
-        }
-        
-        self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 }

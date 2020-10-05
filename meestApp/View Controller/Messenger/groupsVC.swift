@@ -17,7 +17,7 @@ class groupsVC: RootBaseVC {
     var groupChat: groupHeads?
     var selectedUser = [SuggestedUser]()
     var chatHeadId = ""
-    
+    var searchCopy = [groupHeads]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +33,11 @@ class groupsVC: RootBaseVC {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.chatHeadId = UserDefaults.standard.string(forKey: "ChatHeadId") ?? ""
+        if self.allUser.count == 0{
+            self.tableVIew.isHidden = true
+        }else{
+            self.tableVIew.isHidden = false
+        }
         
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -47,6 +52,22 @@ class groupsVC: RootBaseVC {
             
         }
     }
+    
+    func search(text: String){
+        print(text)
+        
+        guard !text.isEmpty else {
+            searchCopy = allUser
+            tableVIew.reloadData()
+            return
+        }
+        
+        searchCopy =  allUser.filter({ (userName) -> Bool in
+            userName.groupIcon.lowercased().contains(text.lowercased())
+        })
+        self.tableVIew.reloadData()
+    }
+    
     func getAllGroupHeads(){
         APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
             let payload = ["userId":user.id]
