@@ -204,7 +204,7 @@ extension MultiOptionVC: UITableViewDelegate, UITableViewDataSource{
     
     func search(){
         self.dismiss(animated: true) {
-            self.searchChatCompletion?()
+            //self.searchChatCompletion?()
         }
     }
     

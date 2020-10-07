@@ -482,7 +482,7 @@ extension mainChatVC: AVAudioPlayerDelegate{
         player?.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: .main) { time in
                 
             let fraction = CMTimeGetSeconds(time)  / CMTimeGetSeconds((self.player?.currentItem!.duration)!)
-            if let cell = cell as? msgSenderCell{
+            if let cell = cell as? AudioMsgSenderCell{
                 cell.progressBar.layoutIfNeeded()
                 DispatchQueue.main.async {
                     cell.progressBar.progress = Float(fraction)
@@ -491,7 +491,7 @@ extension mainChatVC: AVAudioPlayerDelegate{
                     cell.audioTimerLabel.text = String(format: "%02d:%02d",(self.timeCount/60)%60,self.timeCount%60)
                 }
             }
-            if let cell = cell as? msgReceiverCell{
+            if let cell = cell as? AudioMsgReceiverCell{
                 cell.progressBar.layoutIfNeeded()
                 cell.progressBar.progress = Float(fraction)
                 self.timeCount += 1
@@ -534,7 +534,56 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         return self.messages.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if self.messages[indexPath.row].sent {
+        
+        if self.messages[indexPath.row].sent && self.messages[indexPath.row].attachment == 1 && self.messages[indexPath.row].attachmentType == "Audio"{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell3") as! AudioMsgSenderCell
+            if !self.messages[indexPath.row].fileURL.isEmpty{
+                cell.progressBar.progress = 0.0
+            }
+            if toUser?.isOnline == true{
+                if self.messages[indexPath.row].read == 1{
+                    cell.sentimg.image = UIImage.init(named: "ReadChat")
+                }else{
+                    cell.sentimg.image = UIImage.init(named: "sent")
+                }
+            }else{
+                cell.sentimg.image = UIImage.init(named: "SingleTick")
+            }
+            cell.timelbl.text = self.messages[indexPath.row].createdAt
+            return cell
+            
+        }else if self.messages[indexPath.row].sent == false && self.messages[indexPath.row].attachment == 1 && self.messages[indexPath.row].attachmentType == "Audio"{
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell4") as! AudioMsgReceiverCell
+            if !self.messages[indexPath.row].fileURL.isEmpty{
+                cell.progressBar.progress = 0.0
+            }
+            cell.timelbl.text = self.messages[indexPath.row].createdAt
+            cell.sentimg.image = UIImage.init(named: "Recievechat")
+            if isGroup == true{
+                cell.chatNameView.isHidden = false
+//                cell.chatNameView.cornerRadius(radius: 13)
+                cell.chatNameView.backgroundColor = UIColor.init(hex: 0xE0F3FF )
+                cell.chatUserName.textColor = UIColor.init(hex: 0x3B5998)
+                cell.chatUserName.font = UIFont.init(name: APPFont.regular, size: 10)
+               cell.chatNameView.roundCorners(corners: [.topLeft, .topRight], radius: 13.0)
+                cell.view1.roundCorners(corners: [.bottomLeft, .bottomRight], radius: 13.0)
+            }else{
+                cell.chatNameView.isHidden = true
+                cell.view1.cornerRadius(radius: 13)
+            }
+            if let url = self.messages[indexPath.row].senderData["displayPicture"] as? String{
+                cell.proImg.applyRoundedView()
+            cell.proImg.image = UIImage(named: "img")
+            cell.proImg.kf.indicatorType = .activity
+            cell.proImg.kf.setImage(with: URL(string: url))
+            }else{
+                cell.proImg.image = nil
+            }
+            
+            return cell
+            
+        }else if self.messages[indexPath.row].sent {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! msgSenderCell
             cell.selectionStyle = .none
             cell.delegate = self
@@ -556,7 +605,6 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.timelbl.text = ind.createdAt
             cell.img.image = nil
             cell.playImageView.image = nil
-            cell.audioPlayer.isHidden = true
             cell.downloadBackGroundi.backgroundColor = .clear
             if ind.status == 0{
                 cell.txt1.text = "@This message was deleted."
@@ -571,7 +619,6 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
                         cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
                         cell.playImageView.image = UIImage(named: "Play")
-//                        addBlurEffectToImageView(imageView: cell.img)
                         cell.img.tag = indexPath.row
                         cell.img.isUserInteractionEnabled = true
                     }
@@ -583,17 +630,10 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                             cell.img.kf.setImage(with: URL(string: ind.fileURL))
                         }else{
                             cell.img.kf.setImage(with: URL(string: ind.fileURL))
-//                            cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
-//                            cell.playImageView.setImage(UIImage(named: "Download")!)
                         }
                         cell.img.tag = indexPath.row
                     }else{
                         cell.img.image = nil
-                    }
-                }else if ind.attachmentType == "Audio"{
-                    if !ind.fileURL.isEmpty{
-                        cell.audioPlayer.isHidden = false
-                        cell.progressBar.progress = 0.0
                     }
                 }
 
@@ -623,7 +663,6 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
             cell.timelbl.text = ind.createdAt
             cell.img.image = nil
             cell.playImageView.image = nil
-            cell.audioPlayer.isHidden = true
             cell.downloadBackGroundi.backgroundColor = .clear
             cell.sentimg.image = UIImage.init(named: "Recievechat")
             if ind.status == 0{
@@ -658,11 +697,7 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                         cell.img.image = nil
                     }
                 }else if ind.attachmentType == "Audio"{
-                    if !ind.fileURL.isEmpty{
-                        cell.audioPlayer.isHidden = false
-                        cell.txt1.text = "                           "
-                        cell.progressBar.progress = 0.0
-                    }
+                    
                 }
             }
             if let url = ind.senderData["displayPicture"] as? String{
@@ -679,7 +714,9 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if self.messages.count > 0, self.messages[indexPath.row].attachment == 1{
             if self.messages[indexPath.row].attachmentType != "Audio"{
-            return 250
+                return 250
+            }else{
+                return 85
             }
         }
         return UITableView.automaticDimension
@@ -722,6 +759,48 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+class AudioMsgReceiverCell: UITableViewCell {
+    @IBOutlet weak var audioPlayer:UIView!
+    @IBOutlet weak var audiaPlayButton:UIButton!
+    @IBOutlet weak var audioTimerLabel:UILabel!
+    @IBOutlet var audiaPlayButtonImageView: UIImageView!
+    @IBOutlet weak var progressBar: UIProgressView!
+    @IBOutlet weak var chatUserName: UILabel!
+    @IBOutlet weak var chatNameView:UIView!
+    @IBOutlet weak var view1:UIView!
+    @IBOutlet weak var proImg:UIImageView!
+    @IBOutlet weak var sentimg:UIImageView!
+    @IBOutlet weak var timelbl:UILabel!
+    
+    
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.backgroundColor = .clear
+        self.audioPlayer.cornerRadius(radius: 13)
+        self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
+    }
+}
+
+class AudioMsgSenderCell: UITableViewCell {
+    @IBOutlet weak var audioPlayer:UIView!
+    @IBOutlet weak var audiaPlayButton:UIButton!
+    @IBOutlet weak var audioTimerLabel:UILabel!
+    @IBOutlet var audiaPlayButtonImageView: UIImageView!
+    @IBOutlet weak var progressBar: UIProgressView!
+    @IBOutlet weak var view1:UIView!
+    @IBOutlet weak var sentimg:UIImageView!
+    @IBOutlet weak var timelbl:UILabel!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.backgroundColor = .clear
+        self.audioPlayer.cornerRadius(radius: 13)
+        self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
+    }
+}
+
+
 extension mainChatVC: MsgSenderDelegate{
     func playAudiosender(cell: msgSenderCell) {
         
@@ -740,17 +819,11 @@ class msgSenderCell:UITableViewCell {
     @IBOutlet weak var sentimg:UIImageView!
     @IBOutlet weak var timelbl:UILabel!
     @IBOutlet var playImageView: UIImageView!
-    @IBOutlet weak var audioPlayer:UIView!
-    @IBOutlet weak var audiaPlayButton:UIButton!
-    @IBOutlet weak var audioTimerLabel:UILabel!
-    @IBOutlet var audiaPlayButtonImageView: UIImageView!
-    @IBOutlet weak var progressBar: UIProgressView!
+
     var delegate: MsgSenderDelegate?
     override func awakeFromNib() {
         super.awakeFromNib()
         self.backgroundColor = .clear
-        self.audioPlayer.cornerRadius(radius: 13)
-        self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
     }
     
     @IBAction func playAudioAction(_ sender:UIButton) {
@@ -769,17 +842,10 @@ class msgReceiverCell:UITableViewCell {
     @IBOutlet weak var timelbl:UILabel!
     @IBOutlet weak var proImg:UIImageView!
     @IBOutlet var playImageView: UIImageView!
-    @IBOutlet weak var audioPlayer:UIView!
-    @IBOutlet weak var audiaPlayButton:UIButton!
-    @IBOutlet weak var audioTimerLabel:UILabel!
-    @IBOutlet var audiaPlayButtonImageView: UIImageView!
-    @IBOutlet weak var progressBar: UIProgressView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         self.backgroundColor = .clear
-        self.audioPlayer.cornerRadius(radius: 13)
-        self.audioPlayer.backgroundColor = UIColor.init(hex: 0x3B5998)
         
     }
     
