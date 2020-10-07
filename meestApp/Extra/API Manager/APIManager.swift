@@ -835,25 +835,55 @@ class APIManager {
     }
 
     
-    func getMediaLinksAndDocs(vc:RootBaseVC, para: [String:Any],completion:@escaping ([MockMessage], String) -> Void) {
+    func getMediaLinksAndDocs(vc:RootBaseVC, para: [String:Any],completion:@escaping ([[MockMessage]], String) -> Void) {
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
         APICall.sharedInstance.alamofireCall(url: APIS.mediaLinksDocs, method: .post, para: para, header: header, vc: vc) { (url, responseData, statusCode) in
-            var message = [MockMessage]()
+            var message = [[MockMessage]]()
             if statusCode == 200 {
                 let data = responseData.value as? [String:Any] ?? [:]
                 let code = data["code"] as! Int
                 if code == 1 {
-                    let innerData = data["data"] as? [[String:Any]] ?? [[:]]
-                    
-                    for i in innerData{
-                    let attachment =    i["attachment"] as? Int ?? 0
-                    let fileURL =       i["fileURL"] as? String ?? ""
-                    let attachmentType = i["attachmentType"] as? String ?? ""
-                    
-                    let temp = MockMessage.init(text: "", user: MockUser.init(senderId: "", displayName: ""), messageId: "", date: Date(), attachment: attachment, createdAt: "", deletedAt: "", id: "", msg: "", status: 0, toUserID: "", updatedAt: "", userID: "", sent: false, senderData: [:], fileURL: fileURL, attachmentType: attachmentType, videothumbnail: "", read: 0)
-                        
-                        message.append(temp)
-                    }
+                    let innerData = data["data"] as? [String:Any] ?? [:]
+                        var localmessage = [MockMessage]()
+                        let allData = innerData["all"] as? [[String:Any]] ?? [[:]]
+                        for all in allData{
+                            let attachment =    all["attachment"] as? Int ?? 0
+                            let fileURL =       all["fileURL"] as? String ?? ""
+                            let attachmentType = all["attachmentType"] as? String ?? ""
+                            
+                            let temp = MockMessage.init(text: "", user: MockUser.init(senderId: "", displayName: ""), messageId: "", date: Date(), attachment: attachment, createdAt: "", deletedAt: "", id: "", msg: "", status: 0, toUserID: "", updatedAt: "", userID: "", sent: false, senderData: [:], fileURL: fileURL, attachmentType: attachmentType, videothumbnail: "", read: 0, category: "All")
+                                
+                            localmessage.append(temp)
+                        }
+                        message.append(localmessage)
+                    var localmessage1 = [MockMessage]()
+                        let lastMonth = innerData["lastMonth"] as? [[String:Any]] ?? [[:]]
+                        for all in lastMonth{
+                            let attachment =    all["attachment"] as? Int ?? 0
+                            let fileURL =       all["fileURL"] as? String ?? ""
+                            let attachmentType = all["attachmentType"] as? String ?? ""
+
+                            let temp = MockMessage.init(text: "", user: MockUser.init(senderId: "", displayName: ""), messageId: "", date: Date(), attachment: attachment, createdAt: "", deletedAt: "", id: "", msg: "", status: 0, toUserID: "", updatedAt: "", userID: "", sent: false, senderData: [:], fileURL: fileURL, attachmentType: attachmentType, videothumbnail: "", read: 0, category: "Last Month")
+
+                                localmessage1.append(temp)
+                        }
+                        message.append(localmessage1)
+                   
+
+                    var localmessage2 = [MockMessage]()
+                        let lastWeek = innerData["lastWeek"] as? [[String:Any]] ?? [[:]]
+                        for all in lastWeek{
+                            let attachment =    all["attachment"] as? Int ?? 0
+                            let fileURL =       all["fileURL"] as? String ?? ""
+                            let attachmentType = all["attachmentType"] as? String ?? ""
+                            
+                            let temp = MockMessage.init(text: "", user: MockUser.init(senderId: "", displayName: ""), messageId: "", date: Date(), attachment: attachment, createdAt: "", deletedAt: "", id: "", msg: "", status: 0, toUserID: "", updatedAt: "", userID: "", sent: false, senderData: [:], fileURL: fileURL, attachmentType: attachmentType, videothumbnail: "", read: 0, category: "Last Week")
+                                
+                            localmessage2.append(temp)
+                        }
+                    message.append(localmessage2)
+
+
                     completion(message, "success")
                 }else{
                     completion(message, "failure")

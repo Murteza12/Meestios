@@ -11,8 +11,8 @@ import UIKit
 class DocsViewController: RootBaseVC {
     
     @IBOutlet weak var tableView: UITableView!
-    var docData = [MockMessage]()
-    var searchCopy = [MockMessage]()
+    var docData = [[MockMessage]]()
+    var searchCopy = [[MockMessage]]()
     var isDoc: Bool?
     var chatHeadImage = ""
     override func viewDidLoad() {
@@ -54,24 +54,46 @@ class DocsViewController: RootBaseVC {
         }
         
         searchCopy =  docData.filter({ (fileName) -> Bool in
-            fileName.fileURL.lowercased().contains(text.lowercased())
-        })
+        var value: Bool?
+        for i in fileName{
+            value = i.fileURL.lowercased().contains(text.lowercased())
+        }
+        return value!
+    })
         self.tableView.reloadData()
     }
 
 }
 
 extension DocsViewController: UITableViewDelegate, UITableViewDataSource{
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        searchCopy.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchCopy.count
+        return searchCopy[section].count
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+                let headerView = UIView()
+               headerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30)
+                
+                headerView.backgroundColor = UIColor.init(red: 0.667, green: 0.667, blue: 0.667, alpha: 0.2)
+                let rect = CGRect(x: 28, y: 0, width: tableView.frame.width, height: 20)
+                let sectionName = UILabel(frame: rect)
+                sectionName.text = self.searchCopy[section][0].category
+                sectionName.font = UIFont.init(name: APPFont.regular, size: 16)
+                headerView.addSubview(sectionName)
+        return headerView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! DocsViewControllerCell
         cell.selectionStyle = .none
-        cell.docNameLabel.text = searchCopy[indexPath.row].fileURL
+        cell.docNameLabel.text = searchCopy[indexPath.section][indexPath.row].fileURL
         cell.sizeLabel.text = ""
-        cell.timeLabel.text = searchCopy[indexPath.row].createdAt
+        cell.timeLabel.text = searchCopy[indexPath.section][indexPath.row].createdAt
         
         return cell
     }

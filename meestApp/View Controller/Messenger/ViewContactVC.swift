@@ -20,7 +20,7 @@ class ViewContactVC: RootBaseVC {
     @IBOutlet weak var viewContactCollectionView: UICollectionView!
     @IBOutlet weak var viewContactTableView: UITableView!
     @IBOutlet weak var mediaLinkLabel: UILabel!
-    var allChatMessage = [MockMessage]()
+    var allChatMessage = [[MockMessage]]()
     var chatHeadImage = ""
     var isMuted: Bool = false
     var isFromGroup: Bool = false
@@ -225,27 +225,27 @@ extension ViewContactVC: UICollectionViewDelegate, UICollectionViewDataSource, U
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewContactCollectionViewCell", for: indexPath) as! ViewContactCollectionViewCell
         let message = allChatMessage[indexPath.row]
-        if message.attachment == 1{
-            if message.attachmentType == "Image"{
-                cell.imageView.kf.indicatorType = .activity
-                cell.imageView.kf.setImage(with: URL(string: message.fileURL),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
-                    switch result {
-                    case .success(let value):
-                        print("Task done for: \(value.source.url?.absoluteString ?? "")")
-                        
-                    case .failure(let error):
-                        print(message.fileURL)
-                        print("Job failed: \(error.localizedDescription)")
-                        
-                    }
-                }
-
-            }else if message.attachmentType == "Video"{
-                cell.imageView.kf.setImage(with: URL(string: message.videothumbnail))
-            }else if message.attachmentType == "Audio"{
-                cell.imageView.image = UIImage(named: "Headphone")
-            }
-        }
+//        if message.attachment == 1{
+//            if message.attachmentType == "Image"{
+//                cell.imageView.kf.indicatorType = .activity
+//                cell.imageView.kf.setImage(with: URL(string: message.fileURL),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
+//                    switch result {
+//                    case .success(let value):
+//                        print("Task done for: \(value.source.url?.absoluteString ?? "")")
+//                        
+//                    case .failure(let error):
+//                        print(message.fileURL)
+//                        print("Job failed: \(error.localizedDescription)")
+//                        
+//                    }
+//                }
+//
+//            }else if message.attachmentType == "Video"{
+//                cell.imageView.kf.setImage(with: URL(string: message.videothumbnail))
+//            }else if message.attachmentType == "Audio"{
+//                cell.imageView.image = UIImage(named: "Headphone")
+//            }
+//        }
         
         return cell
     }

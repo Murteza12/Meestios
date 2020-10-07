@@ -141,7 +141,7 @@ class singleChatVC:MessagesViewController {
         
         let new = ["msg":info["msg"] as! String ,"toUserId":self.toUser?.id ?? "","type":0,"userId":self.userid] as [String : Any]
         
-        self.messages.append(MockMessage.init(text: self.messageInputBar.inputTextView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.messageInputBar.inputTextView.text, status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true, senderData: [ : ], fileURL:"", attachmentType: "", videothumbnail: "", read: 0))
+        self.messages.append(MockMessage.init(text: self.messageInputBar.inputTextView.text ?? "", user: MockUser.init(senderId: self.toUser?.id ?? "", displayName: ""), messageId: "", date: Date(), attachment: 0, createdAt: "", deletedAt: "", id: "", msg: self.messageInputBar.inputTextView.text, status: 0, toUserID: self.toUser?.id ?? "", updatedAt: "", userID: "", sent: true, senderData: [ : ], fileURL:"", attachmentType: "", videothumbnail: "", read: 0, category: ""))
         self.messageInputBar.inputTextView.text = ""
         self.messagesCollectionView.reloadData()
         self.socket.emitWithAck("send", new).timingOut(after: 20) {data in
@@ -185,7 +185,7 @@ class singleChatVC:MessagesViewController {
                 ChatUserID = self.userid
                 
             }
-            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent,senderData: senderData, fileURL:"", attachmentType: "", videothumbnail: "", read: 0)
+            let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent,senderData: senderData, fileURL:"", attachmentType: "", videothumbnail: "", read: 0, category: "")
             
             self.messages.append(temp)
             
@@ -219,7 +219,7 @@ class singleChatVC:MessagesViewController {
                 } else {
                     ChatUserID = self.toUser?.id ?? ""
                 }
-                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent,senderData: senderData, fileURL:"", attachmentType: "",videothumbnail: "", read: 0)
+                let temp = MockMessage.init(text: self.decode(msg) ?? "", user: MockUser.init(senderId: ChatUserID, displayName: ChatUserName), messageId: "", date: Date(), attachment: attachment, createdAt: createdAt, deletedAt: deletedAt, id: id, msg: self.decode(msg) ?? "", status: status, toUserID: toUserId, updatedAt: updatedAt, userID: userId, sent: sent,senderData: senderData, fileURL:"", attachmentType: "",videothumbnail: "", read: 0, category: "")
                 
                 self.messages.append(temp)
             }
