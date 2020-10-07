@@ -479,6 +479,7 @@ extension mainChatVC: AVAudioPlayerDelegate{
         self.timeCount = 0
         player = AVPlayer(url: URL(string: url)!)
         player?.play()
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didPlayToEnd), name: .AVPlayerItemDidPlayToEndTime, object: nil)
         player?.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: .main) { time in
                 
             let fraction = CMTimeGetSeconds(time)  / CMTimeGetSeconds((self.player?.currentItem!.duration)!)
@@ -500,8 +501,22 @@ extension mainChatVC: AVAudioPlayerDelegate{
         }
     }
     
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-            
+    @objc
+    func didPlayToEnd(){
+        let cell = self.tableView.cellForRow(at: selectedCell ?? [0,0])
+        
+        if let cell = cell as? AudioMsgSenderCell{
+            cell.progressBar.layoutIfNeeded()
+            DispatchQueue.main.async {
+                cell.progressBar.progress = Float(1.0)
+            }
+        }
+        if let cell = cell as? AudioMsgReceiverCell{
+            cell.progressBar.layoutIfNeeded()
+            DispatchQueue.main.async {
+                cell.progressBar.progress = Float(1.0)
+            }
+        }
     }
 }
 extension mainChatVC: UITextViewDelegate {
@@ -867,6 +882,11 @@ class msgReceiverCell:UITableViewCell {
         super.layoutSubviews()
         
         layoutIfNeeded()
+    }
+    
+    override func draw(_ rect: CGRect) {
+            self.chatNameView.roundCorners(corners: [.topLeft, .topRight], radius: 13.0)
+            self.view1.roundCorners(corners: [.bottomLeft, .bottomRight], radius: 13.0)
     }
     
 }

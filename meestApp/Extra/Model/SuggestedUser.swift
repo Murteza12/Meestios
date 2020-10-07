@@ -72,8 +72,9 @@ class GroupMember{
     var displayPicture: String
     var firstName: String
     var userid, lastName, username: String
+    var chatHead : [String: String]
     
-    init(groupId: String, id: String, displayPicture: String, firstName: String, userid: String, lastName: String, username: String) {
+    init(groupId: String, id: String, displayPicture: String, firstName: String, userid: String, lastName: String, username: String, chatHead : [String: String]) {
         self.id = id
         self.groupId = groupId
         self.displayPicture = displayPicture
@@ -81,6 +82,7 @@ class GroupMember{
         self.userid = userid
         self.lastName = lastName
         self.username = username
+        self.chatHead = chatHead
     }
     
 }

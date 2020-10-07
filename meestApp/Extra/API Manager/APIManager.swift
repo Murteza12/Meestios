@@ -1451,14 +1451,16 @@ class APIManager {
                     for i in innerData {
                         let id = i["id"] as? String ?? ""
                         let groupId = i["groupId"] as? String ?? ""
+                        let chatHead = i["chatHead"] as? [String: String] ?? [:]
                         let user = i["user"] as? [String: Any] ?? [:]
                             let lastName = user["lastName"] as? String ?? ""
                             let displayPicture = user["displayPicture"] as? String ?? ""
                             let firstName = user["firstName"] as? String ?? ""
                             let username = user["username"] as? String ?? ""
                             let userid = user["id"] as? String ?? ""
+                            
                                                 
-                        all.append(GroupMember.init(groupId: groupId, id: id, displayPicture: displayPicture, firstName: firstName, userid: userid, lastName: lastName, username: username))
+                        all.append(GroupMember.init(groupId: groupId, id: id, displayPicture: displayPicture, firstName: firstName, userid: userid, lastName: lastName, username: username, chatHead: chatHead))
                     }
                     completion(all)
                 } else {

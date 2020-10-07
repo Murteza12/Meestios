@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class CreateGroupVC: RootBaseVC, UINavigationControllerDelegate {
 
@@ -21,7 +22,10 @@ class CreateGroupVC: RootBaseVC, UINavigationControllerDelegate {
     var selectedMember = [String]()
     var selectedUser = [SuggestedUser]()
     var imageURL: String?
+    var groupName: String?
     var addMember: Bool = false
+    var groupId: String?
+    var userToadd = [String]()
     override func viewDidLoad() {
         super.viewDidLoad()
         cameraView.cornerRadiuss = (self.cameraView.frame.height / 2)
@@ -30,6 +34,23 @@ class CreateGroupVC: RootBaseVC, UINavigationControllerDelegate {
         self.participantTableView.delegate = self
         self.participantTableView.dataSource = self
         self.participantTableView.separatorStyle = .none
+        
+        if addMember == true{
+            self.groupNameTextField.text = groupName
+            guard let url = URL.init(string: imageURL) else {
+                    return
+                }
+                let resource = ImageResource(downloadURL: url)
+            KingfisherManager.shared.retrieveImage(with: resource, options: nil, progressBlock: nil, completionHandler: { image, error, cacheType, imageURL in
+                self.cameraButton.setImage(image, for: .normal)
+            })
+            self.cameraButton.isUserInteractionEnabled = false
+            self.groupNameTextField.isUserInteractionEnabled = false
+            
+        }else{
+            self.cameraButton.isUserInteractionEnabled = true
+            self.groupNameTextField.isUserInteractionEnabled = true
+        }
     }
     
 
@@ -59,7 +80,8 @@ class CreateGroupVC: RootBaseVC, UINavigationControllerDelegate {
     @IBAction func createGroup(_ sender: Any) {
         
         if addMember == true{
-            APIManager.sharedInstance.updateGroup(vc: self, para: [:]) { (str) in
+            let para = ["id": groupId ?? "", "isGroup": "true", "groupMembers" : self.userToadd ] as [String : Any]
+            APIManager.sharedInstance.updateGroup(vc: self, para: para) { (str) in
                 if str == "success"{
                     
                     let act = UIAlertController.init(title: "Success", message: "Member Added", preferredStyle: .alert)
@@ -79,7 +101,7 @@ class CreateGroupVC: RootBaseVC, UINavigationControllerDelegate {
             APIManager.sharedInstance.getCurrentUser(vc: self) { (user) in
                 if self.groupNameTextField.text != ""{
                     let groupName = self.groupNameTextField.text
-                    let para = ["userId":user.id, "groupAdmin": user.id, "isGroup": "true", "groupMembers" : self.selectedUser, "groupName":groupName ?? "", "files":self.imageURL ?? ""] as [String : Any]
+                    let para = ["userId":user.id, "groupAdmin": user.id, "isGroup": "true", "groupMembers" : self.userToadd, "groupName":groupName ?? "", "files":self.imageURL ?? ""] as [String : Any]
                     self.createGroups(para: para)
                 }
             }
@@ -161,6 +183,7 @@ extension CreateGroupVC: UITableViewDelegate, UITableViewDataSource{
         cell.nameLabel.text = data.firstName + " " + data.lastName
         cell.nameLabel.font = UIFont.init(name: APPFont.regular, size: 16)
         cell.nameLabel.textColor = UIColor.init(hex: 0x151624)
+        self.userToadd.append(data.id)
         return cell
     }
     

@@ -7019,6 +7019,7 @@ text-align: left;
                                                         <constraint firstAttribute="height" constant="14" id="XDC-vV-7dz"/>
                                                         <constraint firstItem="WXY-J1-EIX" firstAttribute="leading" secondItem="688-v1-yCe" secondAttribute="leading" constant="16" id="eQB-05-Di5"/>
                                                         <constraint firstItem="WXY-J1-EIX" firstAttribute="centerY" secondItem="688-v1-yCe" secondAttribute="centerY" id="qaB-Ph-c62"/>
+                                                        <constraint firstAttribute="trailing" secondItem="WXY-J1-EIX" secondAttribute="trailing" constant="24.5" id="zCk-ps-YMD"/>
                                                     </constraints>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yuP-uh-gpR">
@@ -7099,6 +7100,7 @@ text-align: left;
                                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="nX4-Av-ZAl" secondAttribute="bottom" constant="11" id="Bg3-eF-GwF"/>
                                                 <constraint firstItem="EZB-IR-SD0" firstAttribute="top" secondItem="yuP-uh-gpR" secondAttribute="bottom" constant="5" id="HW2-OE-9fx"/>
                                                 <constraint firstItem="8In-4R-Xyo" firstAttribute="top" secondItem="yuP-uh-gpR" secondAttribute="bottom" constant="6" id="Jj0-eG-gt5"/>
+                                                <constraint firstItem="yuP-uh-gpR" firstAttribute="width" secondItem="688-v1-yCe" secondAttribute="width" id="Jux-ug-CaE"/>
                                                 <constraint firstItem="8In-4R-Xyo" firstAttribute="leading" secondItem="yuP-uh-gpR" secondAttribute="leading" id="OBT-Qe-VDA"/>
                                                 <constraint firstItem="nX4-Av-ZAl" firstAttribute="leading" secondItem="m9v-TC-vc8" secondAttribute="leadingMargin" id="UBA-r4-953"/>
                                                 <constraint firstItem="688-v1-yCe" firstAttribute="leading" secondItem="yuP-uh-gpR" secondAttribute="leading" id="VA7-Fo-4Cl"/>
@@ -7108,7 +7110,6 @@ text-align: left;
                                                 <constraint firstItem="nX4-Av-ZAl" firstAttribute="top" secondItem="m9v-TC-vc8" secondAttribute="topMargin" id="mEP-Dg-kh7"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="yuP-uh-gpR" secondAttribute="trailing" constant="20" id="pTH-Io-rRk"/>
                                                 <constraint firstAttribute="bottom" secondItem="8In-4R-Xyo" secondAttribute="bottom" constant="6" id="sho-jU-FAs"/>
-                                                <constraint firstItem="688-v1-yCe" firstAttribute="trailing" secondItem="yuP-uh-gpR" secondAttribute="trailing" id="vq7-Gf-Ya6"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>

@@ -157,7 +157,7 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
             APIManager.sharedInstance.chatSetting(vc: self, para: parameter) { (str) in
                 if str == "success"{
                     //self.dismiss(animated: true, completion: nil)
-                    let act = UIAlertController.init(title: "Error", message: "User is Blocked", preferredStyle: .alert)
+                    let act = UIAlertController.init(title: "Success", message: "User is Blocked", preferredStyle: .alert)
                     act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
                         
                     }))
@@ -218,40 +218,45 @@ extension ViewContactVC: UITableViewDelegate, UITableViewDataSource{
 }
 
 extension ViewContactVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return allChatMessage.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return allChatMessage[section].count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ViewContactCollectionViewCell", for: indexPath) as! ViewContactCollectionViewCell
-        let message = allChatMessage[indexPath.row]
-//        if message.attachment == 1{
-//            if message.attachmentType == "Image"{
-//                cell.imageView.kf.indicatorType = .activity
-//                cell.imageView.kf.setImage(with: URL(string: message.fileURL),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
-//                    switch result {
-//                    case .success(let value):
-//                        print("Task done for: \(value.source.url?.absoluteString ?? "")")
-//                        
-//                    case .failure(let error):
-//                        print(message.fileURL)
-//                        print("Job failed: \(error.localizedDescription)")
-//                        
-//                    }
-//                }
-//
-//            }else if message.attachmentType == "Video"{
-//                cell.imageView.kf.setImage(with: URL(string: message.videothumbnail))
-//            }else if message.attachmentType == "Audio"{
-//                cell.imageView.image = UIImage(named: "Headphone")
-//            }
-//        }
+        let message = allChatMessage[indexPath.section][indexPath.row]
+        if message.attachment == 1{
+            if message.attachmentType == "Image"{
+                cell.imageView.kf.indicatorType = .activity
+                cell.imageView.kf.setImage(with: URL(string: message.fileURL),placeholder: UIImage.init(named: "placeholder"),options: [.scaleFactor(UIScreen.main.scale),.transition(.fade(1))]) { result in
+                    switch result {
+                    case .success(let value):
+                        print("Task done for: \(value.source.url?.absoluteString ?? "")")
+                        
+                    case .failure(let error):
+                        print(message.fileURL)
+                        print("Job failed: \(error.localizedDescription)")
+                        
+                    }
+                }
+
+            }else if message.attachmentType == "Video"{
+                cell.imageView.kf.setImage(with: URL(string: message.videothumbnail))
+            }else if message.attachmentType == "Audio"{
+                cell.imageView.image = UIImage(named: "Headphone")
+            }
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize.init(width: self.view.frame.width/3, height:self.viewContactCollectionView.frame.height)
+        return CGSize.init(width: self.view.frame.width/5, height:self.viewContactCollectionView.frame.height)
     }
     
 }

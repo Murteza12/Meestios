@@ -57,10 +57,16 @@ class AddPeopleGroupVC: RootBaseVC {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "createGroupVC" {
             let peopleGroup = segue.destination as! CreateGroupVC
-                peopleGroup.allUser = allFollwedUser
-                peopleGroup.selectedMember = selectedMember
-                peopleGroup.selectedUser = self.selectedUser
-                peopleGroup.addMember = addMember
+            peopleGroup.allUser = allFollwedUser
+            peopleGroup.selectedMember = selectedMember
+            peopleGroup.selectedUser = self.selectedUser
+            peopleGroup.addMember = addMember
+            peopleGroup.groupId = groupId
+            if addMember == true{
+                peopleGroup.imageURL = addedMember[0].chatHead["groupIcon"]
+                peopleGroup.groupName = addedMember[0].chatHead["groupName"]
+            }
+            
         }
     }
 
@@ -97,10 +103,14 @@ extension AddPeopleGroupVC: UITableViewDelegate,UITableViewDataSource{
         cell.names.text = allUser.firstName + " " + allUser.lastName
         
         cell.buttonImageView.setImage(UIImage(named: "AddPeople")!)
+        cell.heightConstraintsConstant.constant = 10
+        cell.widthConstraintsConstant.constant = 14
         if addMember == true{
         for i in addedMember{
             if allUser.id == i.userid{
                 cell.buttonImageView.setImage(UIImage(named: "CircleRight")!)
+                cell.heightConstraintsConstant.constant = 18
+                cell.widthConstraintsConstant.constant = 18
                 selectedUser.append(allUser)
             }
         }

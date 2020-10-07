@@ -7,192 +7,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7540BB31-B2CD-4165-9147-924F744F619C"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/Extra/API Manager/APIManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1444"
-            endingLineNumber = "1444"
-            landmarkName = "getGroupMembers(vc:groupId:completion:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "7540BB31-B2CD-4165-9147-924F744F619C - 8377fec93959d3d8"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Demo.APIManager.getGroupMembers(vc: Demo.RootBaseVC, groupId: Swift.String, completion: (Swift.Array&lt;Demo.GroupMember&gt;) -&gt; ()) -&gt; ()"
-                  moduleName = "Demo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/Extra/API%20Manager/APIManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1449"
-                  endingLineNumber = "1449"
-                  offsetFromSymbolStart = "607">
-               </Location>
-               <Location
-                  uuid = "7540BB31-B2CD-4165-9147-924F744F619C - 8ed86ac79f41db66"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.String, Alamofire.DataResponse&lt;Any, Alamofire.AFError&gt;, Swift.Int) -&gt; () in Demo.APIManager.getGroupMembers(vc: Demo.RootBaseVC, groupId: Swift.String, completion: (Swift.Array&lt;Demo.GroupMember&gt;) -&gt; ()) -&gt; ()"
-                  moduleName = "Demo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/Extra/API%20Manager/APIManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1450"
-                  endingLineNumber = "1450"
-                  offsetFromSymbolStart = "317">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "CE89CFFF-F751-495A-BBC9-651F6132F761"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/Extra/API Manager/APIManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1445"
-            endingLineNumber = "1445"
-            landmarkName = "getGroupMembers(vc:groupId:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "05199B37-3DD5-4611-A78D-45A7CCCD5F54"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/Extra/API Manager/APIManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "308"
-            endingLineNumber = "308"
-            landmarkName = "uploadImage(vc:img:completion:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "05199B37-3DD5-4611-A78D-45A7CCCD5F54 - ceb1552735140c7c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Demo.APIManager.uploadImage(vc: __C.UIViewController, img: __C.UIImage, completion: (Swift.String) -&gt; ()) -&gt; ()"
-                  moduleName = "Demo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/Extra/API%20Manager/APIManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "308"
-                  endingLineNumber = "308"
-                  offsetFromSymbolStart = "909">
-               </Location>
-               <Location
-                  uuid = "05199B37-3DD5-4611-A78D-45A7CCCD5F54 - 2d30240005b1f6e3"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Alamofire.MultipartFormData) -&gt; () in Demo.APIManager.uploadImage(vc: __C.UIViewController, img: __C.UIImage, completion: (Swift.String) -&gt; ()) -&gt; ()"
-                  moduleName = "Demo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rahul.kashyap02/Documents/meestApp/meestApp/Extra/API%20Manager/APIManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "310"
-                  endingLineNumber = "310"
-                  offsetFromSymbolStart = "96">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "11B05231-33F3-41F7-B088-7607DCE5567C"
+            uuid = "D3E26327-554D-423E-900E-2FDF44FAA140"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "362"
-            endingLineNumber = "362"
-            landmarkName = "addHandler()"
+            startingLineNumber = "511"
+            endingLineNumber = "511"
+            landmarkName = "didPlayToEnd()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6C736616-6257-4281-9D4C-F534BC836F3B"
+            uuid = "B2334E7E-91D0-479E-A78F-7F25B338BEC4"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/MediaViewController.swift"
+            filePath = "meestApp/View Controller/Messenger/mainChatVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
-            landmarkName = "collectionView(_:cellForItemAt:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "722C76CF-80F1-4439-A6BF-448B1092B245"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/Extra/API Manager/APIManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "858"
-            endingLineNumber = "858"
-            landmarkName = "getMediaLinksAndDocs(vc:para:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A1EB2AD0-1AB8-4401-A7B5-953A837DFAAC"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/MediaViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "numberOfSections(in:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A5732D1C-9686-44AF-8980-E641487D3B15"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "meestApp/View Controller/Messenger/MediaViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
-            landmarkName = "collectionView(_:numberOfItemsInSection:)"
+            startingLineNumber = "517"
+            endingLineNumber = "517"
+            landmarkName = "didPlayToEnd()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
