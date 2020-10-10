@@ -63,6 +63,18 @@ class mainChatVC: RootBaseVC {
     var sendImageChange = 0
     var isMediaAutoDowload: Bool = false
     var player: AVPlayer?
+    var isVideo: Bool = false
+    var videoData = Data()
+    var isPlaying: Bool = false
+    
+    lazy var mmPlayerLayer: MMPlayerLayer = {
+        let l = MMPlayerLayer()
+        l.cacheType = .memory(count: 5)
+        l.coverFitType = .fitToPlayerView
+        l.videoGravity = AVLayerVideoGravity.resizeAspect
+        l.replace(cover: CoverA.instantiateFromNib())
+        return l
+    }()
             
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,12 +89,38 @@ class mainChatVC: RootBaseVC {
         self.searchView.isHidden = true
         self.searchTextField.delegate = self
         self.tableView.becomeFirstResponder()
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapBtnAction(_:)))
-        recognizer.delegate = self
-        self.view.addGestureRecognizer(recognizer)
+//        let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapBtnAction(_:)))
+//        recognizer.delegate = self
+//        self.view.addGestureRecognizer(recognizer)
         NotificationCenter.default.addObserver(self, selector: #selector(attachmentButtonClicked), name: Notification.Name.init(rawValue: "attachmentButtonClicked"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showBlockContact), name: Notification.Name.init(rawValue: "blockContact"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showWallpaper), name: Notification.Name.init(rawValue: "showWallpaper"), object: nil)
+        
+        self.navigationController?.mmPlayerTransition.push.pass(setting: { (_) in
+            
+        })
+        offsetObservation = tableView.observe(\.contentOffset, options: [.new]) { [weak self] (_, value) in
+            guard let self = self, self.presentedViewController == nil else {return}
+            NSObject.cancelPreviousPerformRequests(withTarget: self)
+        }
+        
+//        mmPlayerLayer.getStatusBlock { [weak self] (status) in
+//            switch status {
+//            case .failed(let err):
+//                let alert = UIAlertController(title: "err", message: err.description, preferredStyle: .alert)
+//                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+//                self?.present(alert, animated: true, completion: nil)
+//            case .ready:
+//                print("Ready to Play")
+//            case .playing:
+//                print("Playing")
+//            case .pause:
+//                print("Pause")
+//            case .end:
+//                print("End")
+//            default: break
+//            }
+//        }
         
     }
 
@@ -175,6 +213,9 @@ class mainChatVC: RootBaseVC {
         self.lastData.removeAll()
         if player != nil{
             player?.pause()
+        }
+        if mmPlayerLayer != nil{
+            mmPlayerLayer.player?.pause()
         }
     }
     
@@ -321,9 +362,6 @@ class mainChatVC: RootBaseVC {
             self.tableView.insertRows(at: [indexPath], with: .automatic)
             self.tableView.endUpdates()
             self.numberOfRecords = self.messages.count
-//            self.searchCopy = self.messages
-//            self.isSent = true
-//            self.getHistorySocketCall(pageNumber: 1)
         }
         
         self.socket.on("sent_ios") { data, ack in
@@ -402,20 +440,7 @@ class mainChatVC: RootBaseVC {
                 self.lastData.append(temp)
                
             }
-//            if self.isSent  {
-//                if self.messages.count > 10{
-//                    for _ in 0...9 {
-//                        self.messages.removeLast()
-//                    }
-//                }else{
-//                    self.messages.removeAll()
-//                }
-//                self.messages.append(contentsOf: self.lastData)
-//                self.isSent = false
-//            }else{
             self.messages.insert(contentsOf: self.lastData, at: 0)
-//            }
-//            self.searchCopy = self.messages
             self.numberOfRecords = self.messages.count
             self.tableView.reloadData()
         }
@@ -632,10 +657,16 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
-                        cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
-                        cell.playImageView.image = UIImage(named: "Play")
+//                        cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
+//                        cell.playImageView.image = UIImage(named: "Play")
                         cell.img.tag = indexPath.row
                         cell.img.isUserInteractionEnabled = true
+                        mmPlayerLayer.thumbImageView.image = cell.img.image
+                        mmPlayerLayer.playView = cell.img
+                        if !ind.fileURL.isEmpty{
+                            mmPlayerLayer.set(url: URL(string: ind.fileURL))
+                            mmPlayerLayer.resume()
+                        }
                     }
                 }else if ind.attachmentType == "Image"{
                     if !ind.fileURL.isEmpty{
@@ -691,11 +722,16 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                     if !ind.videothumbnail.isEmpty{
                         cell.img.kf.indicatorType = .activity
                         cell.img.kf.setImage(with: URL(string: ind.videothumbnail))
-                        cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
-                        cell.playImageView.image = UIImage(named: "Play")
-//                        addBlurEffectToImageView(imageView: cell.img)
+//                        cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
+//                        cell.playImageView.image = UIImage(named: "Play")
                         cell.img.tag = indexPath.row
                         cell.img.isUserInteractionEnabled = true
+                        mmPlayerLayer.thumbImageView.image = cell.img.image
+                        mmPlayerLayer.playView = cell.img
+                        if !ind.fileURL.isEmpty{
+                            mmPlayerLayer.set(url: URL(string: ind.fileURL))
+                            mmPlayerLayer.resume()
+                        }
                     }
                 }else if ind.attachmentType == "Image"{
                     if !ind.fileURL.isEmpty{
@@ -704,8 +740,6 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
                             cell.img.kf.setImage(with: URL(string: ind.fileURL))
                         }else{
                             cell.img.kf.setImage(with: URL(string: ind.fileURL))
-//                            cell.downloadBackGroundi.backgroundColor = UIColor.init(red: 0.22, green: 0.22, blue: 0.22, alpha: 0.6)
-//                            cell.playImageView.setImage(UIImage(named: "Download")!)
                         }
                         cell.img.tag = indexPath.row
                     }else{
@@ -745,6 +779,10 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         tableView.becomeFirstResponder()
     }
     
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        self.showShrinkView(indexPath: indexPath)
+    }
+    
     func scrollToBottom(){
         
         if self.messages.count > 0{
@@ -755,22 +793,26 @@ extension mainChatVC:UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    func videoPreviewImage(url: URL) -> UIImage? {
-        let asset = AVURLAsset(url: url)
-        let generator = AVAssetImageGenerator(asset: asset)
-        generator.appliesPreferredTrackTransform = true
-        let timestamp = CMTime(seconds: 1, preferredTimescale: 60)
+    func showShrinkView(indexPath: IndexPath ){
+        self.mmPlayerLayer.shrinkView(onVC: self, isHiddenVC: false) { [weak self] () -> UIView? in
+            guard let self = self else {return nil}
+            let data = self.messages[indexPath.row]
+            let cell = self.tableView.cellForRow(at: indexPath)
+            if let cell = cell as? msgReceiverCell{
+                
+                self.mmPlayerLayer.set(url: URL(string: data.fileURL))
+                self.mmPlayerLayer.resume()
+                return cell.img
+            }
+            if let cell = cell as? msgSenderCell{
+                self.mmPlayerLayer.set(url: URL(string: data.fileURL))
+                self.mmPlayerLayer.resume()
+                return cell.img
+            }
+            return UIView()
+            
+        }
 
-        do {
-            let imageRef = try generator.copyCGImage(at: timestamp, actualTime: nil)
-            return UIImage(cgImage: imageRef)
-        }
-        catch let error as NSError
-        {
-            print("Image generation failed with error \(error)")
-            return nil
-        }
-        
     }
 }
 
@@ -892,17 +934,17 @@ class msgReceiverCell:UITableViewCell {
 }
 
 extension mainChatVC: UIGestureRecognizerDelegate{
-    @objc func tapBtnAction(_ sender: UITapGestureRecognizer) {
-        self.tableView.becomeFirstResponder()
-        }
-    
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        if touch.view?.isDescendant(of: self.tableView) == true{
-            return false
-        }else{
-            return true
-        }
-    }
+//    @objc func tapBtnAction(_ sender: UITapGestureRecognizer) {
+//        self.tableView.becomeFirstResponder()
+//        }
+//
+//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+//        if touch.view?.isDescendant(of: self.tableView) == true{
+//            return false
+//        }else{
+//            return true
+//        }
+//    }
 }
 
 extension mainChatVC : AVPlayerViewControllerDelegate {
@@ -913,8 +955,16 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
             if data.attachment == 1{
                 if data.attachmentType == "Video"{
                     if !data.fileURL.isEmpty{
-                        play(url1: data.fileURL)
+                        if isPlaying == true{
+                            self.mmPlayerLayer.player?.play()
+                            self.isPlaying = false
+                        }else{
+                            self.isPlaying = true
+                            mmPlayerLayer.player?.pause()
+                        }
                     }
+                   let status =  mmPlayerLayer.player?.status
+                    print(status)
                 }else if data.attachmentType == "Image"{
                     if !data.fileURL.isEmpty{
                         let cell = self.tableView.cellForRow(at: indexPath)
@@ -931,16 +981,13 @@ extension mainChatVC : AVPlayerViewControllerDelegate {
 
                         }
                     
-                }else if data.attachmentType == "Audio"{
-                    if !data.fileURL.isEmpty{
-//                        let audioFilename = getDocumentsDirectory().appending("/audio.aac")
-                        let cell = self.tableView.cellForRow(at: indexPath)
-                        playAudio(url: data.fileURL, cell: cell!)
-//                            let audioURL = URL(fileURLWithPath: audioFilename)
-//                            let strURL = audioURL.absoluteString
-//                            playAudio(url: strURL, cell: cell!)
-                    }
                 }
+//                else if data.attachmentType == "Audio"{
+//                    if !data.fileURL.isEmpty{
+//                        let cell = self.tableView.cellForRow(at: indexPath)
+//                        playAudio(url: data.fileURL, cell: cell!)
+//                    }
+//                }
             }
         }
     
@@ -1118,6 +1165,35 @@ extension mainChatVC{
             }
         }
     }
+    
+    func uploadVideo(data: Data) {
+       self.loadAnimation()
+        APIManager.sharedInstance.uploadVideo(vc: self, data: data) { (str) in
+           if str == "success" {
+               self.removeAnimation()
+               let videoURL = UserDefaults.standard.string(forKey: "VIDEO")
+            let thumbnail = UserDefaults.standard.string(forKey: "THUMB")
+               var chatID: String?
+               if self.isGroup == true{
+                   chatID = self.groupHead?.id ?? ""
+               }else{
+                   chatID = self.toUser?.chatHeadId ?? ""
+               }
+               let new = ["msg" : "",
+                          "chatHeadId" : chatID ?? "",
+                          "userId": self.userid ,
+                          "attachment":true,"attachmentType":"Video","fileURL":videoURL ?? "", "thumbnail":thumbnail] as [String : Any]
+               print(new)
+               self.socket.emit("send", new)
+           }else{
+               let act = UIAlertController.init(title: "Error", message: "Error in uploading image", preferredStyle: .alert)
+               act.addAction(UIAlertAction.init(title: "OK", style: .cancel, handler: { (_) in
+                   
+               }))
+               self.present(act, animated: true, completion: nil)
+           }
+       }
+   }
 }
 extension mainChatVC:UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
@@ -1126,32 +1202,70 @@ extension mainChatVC:UINavigationControllerDelegate, UIImagePickerControllerDele
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let img = info[.editedImage] as! UIImage
-        self.uploadImage = img
+        if let img = info[.editedImage] as? UIImage{
+            self.uploadImage = img
+            self.isVideo = false
+        }
+        
+        if let videoURL = info[.mediaURL] as? URL {
+            let video = try? Data(contentsOf: videoURL)
+            print("File size before compression: \(Double(video!.count / 1048576)) mb")
+            let compressedURL = URL.init(fileURLWithPath: NSTemporaryDirectory() + NSUUID().uuidString + ".mov")
+            compressVideo(inputURL: videoURL , outputURL: compressedURL) { (exportSession) in
+                            guard let session = exportSession else {
+                                return
+                            }
+                            switch session.status {
+                            case .unknown:
+                                break
+                            case .waiting:
+                                break
+                            case .exporting:
+                                break
+                            case .completed:
+                                guard let compressedData = try? Data(contentsOf: compressedURL) else {
+                                    return
+                                }
+                                self.videoData = compressedData
+                               print("File size after compression: \(Double(compressedData.count / 1048576)) mb")
+                            case .failed:
+                                break
+                            case .cancelled:
+                                break
+                            @unknown default:
+                                print("Fatal Error")
+                            }
+                        }
+            self.isVideo = true
+            }
+        
         picker.dismiss(animated: true) {
             if self.isWallpaperOption == false{
-                self.uploadImg()
+                if self.isVideo == true{
+                    self.uploadVideo(data: self.videoData)
+                }else{
+                    self.uploadImg()
+                }
             }else{
-                self.saveImage(image: img)
+                self.saveImage(image: self.uploadImage ?? UIImage())
             }
         }
     }
-}
-
-extension mainChatVC{
     
-    func addBlurEffectToImageView(imageView: UIImageView){
-        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = imageView.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        imageView.addSubview(blurEffectView)
-        imageView.insertSubview(blurEffectView, at: 0)
-//        self.blurView = blurEffectView
-    }
-    
-    func removeBlurEffect(imageView: UIImageView){
-        self.blurView?.removeFromSuperview()
+    func compressVideo(inputURL: URL, outputURL: URL, handler:@escaping (_ exportSession: AVAssetExportSession?)-> Void) {
+        let urlAsset = AVURLAsset(url: inputURL, options: nil)
+        guard let exportSession = AVAssetExportSession(asset: urlAsset, presetName: AVAssetExportPresetLowQuality) else {
+            handler(nil)
+            
+            return
+        }
+        
+        exportSession.outputURL = outputURL
+        exportSession.outputFileType = AVFileType.mov
+        exportSession.shouldOptimizeForNetworkUse = true
+        exportSession.exportAsynchronously { () -> Void in
+            handler(exportSession)
+        }
     }
 }
 
@@ -1267,14 +1381,11 @@ extension mainChatVC: ViewContactVCDeleagte{
     func showWallpaperOptions() {
         openWallpaper()
     }
-    
-    
 }
 
 extension mainChatVC: UITextFieldDelegate{
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
         print(range)
         if range.location > 0{
             self.search(text: self.searchTextField.text ?? "")

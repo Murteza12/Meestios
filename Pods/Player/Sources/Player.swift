@@ -29,57 +29,6 @@ import Foundation
 import AVFoundation
 import CoreGraphics
 
-// MARK: - types
-
-/// Video fill mode options for `Player.fillMode`.
-///
-/// - resize: Stretch to fill.
-/// - resizeAspectFill: Preserve aspect ratio, filling bounds.
-/// - resizeAspectFit: Preserve aspect ratio, fill within bounds.
-public typealias PlayerFillMode = AVLayerVideoGravity
-
-/// Asset playback states.
-public enum PlaybackState: Int, CustomStringConvertible {
-    case stopped = 0
-    case playing
-    case paused
-    case failed
-
-    public var description: String {
-        get {
-            switch self {
-            case .stopped:
-                return "Stopped"
-            case .playing:
-                return "Playing"
-            case .failed:
-                return "Failed"
-            case .paused:
-                return "Paused"
-            }
-        }
-    }
-}
-
-/// Asset buffering states.
-public enum BufferingState: Int, CustomStringConvertible {
-    case unknown = 0
-    case ready
-    case delayed
-
-    public var description: String {
-        get {
-            switch self {
-            case .unknown:
-                return "Unknown"
-            case .ready:
-                return "Ready"
-            case .delayed:
-                return "Delayed"
-            }
-        }
-    }
-}
 // MARK: - error types
 
 /// Error domain for all Player errors.
@@ -129,6 +78,60 @@ public protocol PlayerPlaybackDelegate: AnyObject {
 /// ▶️ Player, simple way to play and stream media
 open class Player: UIViewController {
 
+    // types
+    
+    /// Video fill mode options for `Player.fillMode`.
+    ///
+    /// - resize: Stretch to fill.
+    /// - resizeAspectFill: Preserve aspect ratio, filling bounds.
+    /// - resizeAspectFit: Preserve aspect ratio, fill within bounds.
+    public typealias FillMode = AVLayerVideoGravity
+
+    /// Asset playback states.
+    public enum PlaybackState: Int, CustomStringConvertible {
+        case stopped = 0
+        case playing
+        case paused
+        case failed
+
+        public var description: String {
+            get {
+                switch self {
+                case .stopped:
+                    return "Stopped"
+                case .playing:
+                    return "Playing"
+                case .failed:
+                    return "Failed"
+                case .paused:
+                    return "Paused"
+                }
+            }
+        }
+    }
+
+    /// Asset buffering states.
+    public enum BufferingState: Int, CustomStringConvertible {
+        case unknown = 0
+        case ready
+        case delayed
+
+        public var description: String {
+            get {
+                switch self {
+                case .unknown:
+                    return "Unknown"
+                case .ready:
+                    return "Ready"
+                case .delayed:
+                    return "Delayed"
+                }
+            }
+        }
+    }
+    
+    // properties
+    
     /// Player delegate.
     open weak var playerDelegate: PlayerDelegate?
 
@@ -149,7 +152,7 @@ open class Player: UIViewController {
     }
 
     /// For setting up with AVAsset instead of URL
-    /// Note: Resets URL (cannot set both)
+    /// Note: This will reset the `url` property. (cannot set both)
     open var asset: AVAsset? {
         get { return _asset }
         set { _ = newValue.map { setupAsset($0) } }
@@ -157,7 +160,7 @@ open class Player: UIViewController {
 
     /// Specifies how the video is displayed within a player layer’s bounds.
     /// The default value is `AVLayerVideoGravityResizeAspect`. See `PlayerFillMode`.
-    open var fillMode: PlayerFillMode {
+    open var fillMode: Player.FillMode {
         get {
             return self._playerView.playerFillMode
         }
@@ -166,9 +169,7 @@ open class Player: UIViewController {
         }
     }
 
-    /// Determines if the video should autoplay when a url is set
-    ///
-    /// - Parameter bool: defaults to true
+    /// Determines if the video should autoplay when streaming a URL.
     open var autoplay: Bool = true
 
     /// Mutes audio playback when true.
@@ -204,6 +205,15 @@ open class Player: UIViewController {
     open var playbackResumesWhenEnteringForeground: Bool = true
 
     // state
+    
+    open var isPlayingVideo: Bool {
+        get {
+            guard let asset = self._asset else {
+                return false
+            }
+            return asset.tracks(withMediaType: .video).count != 0
+        }
+    }
 
     /// Playback automatically loops continuously when true.
     open var playbackLoops: Bool {
@@ -219,7 +229,7 @@ open class Player: UIViewController {
         }
     }
 
-    /// Playback freezes on last frame frame at end when true.
+    /// Playback freezes on last frame frame when true and does not reset seek position timestamp..
     open var playbackFreezesAtEnd: Bool = false
 
     /// Current playback state of the Player.
@@ -261,13 +271,24 @@ open class Player: UIViewController {
         }
     }
 
-    /// Media playback's current time.
-    open var currentTime: TimeInterval {
+    /// Media playback's current time interval in seconds.
+    open var currentTimeInterval: TimeInterval {
         get {
             if let playerItem = self._playerItem {
                 return CMTimeGetSeconds(playerItem.currentTime())
             } else {
                 return CMTimeGetSeconds(CMTime.indefinite)
+            }
+        }
+    }
+    
+    /// Media playback's current time.
+    open var currentTime: CMTime {
+        get {
+            if let playerItem = self._playerItem {
+                return playerItem.currentTime()
+            } else {
+                return CMTime.indefinite
             }
         }
     }
@@ -326,7 +347,11 @@ open class Player: UIViewController {
             }
         }
     }
-    internal var _avplayer: AVPlayer = AVPlayer()
+    internal lazy var _avplayer: AVPlayer = {
+        let avplayer = AVPlayer()
+        avplayer.actionAtItemEnd = .pause
+        return avplayer
+    }()
     internal var _playerItem: AVPlayerItem?
 
     internal var _playerObservers = [NSKeyValueObservation]()
@@ -381,8 +406,7 @@ open class Player: UIViewController {
 
     open override func viewDidLoad() {
         super.viewDidLoad()
-
-        self._avplayer.actionAtItemEnd = .pause
+        self._playerView.player = self._avplayer
 
         if let url = self.url {
             setup(url: url)
@@ -466,7 +490,7 @@ extension Player {
     /// Begins playback of the media from the current time.
     open func playFromCurrentTime() {
         if !self.autoplay {
-            //external call to this method with auto play off.  activate it before calling play
+            // External call to this method with autoplay disabled. Re-activate it before calling play.
             self._hasAutoplayActivated = true
         }
         self.play()
@@ -543,28 +567,27 @@ extension Player {
         let currentTime = self._playerItem?.currentTime() ?? CMTime.zero
 
         imageGenerator.generateCGImagesAsynchronously(forTimes: [NSValue(time: currentTime)]) { (requestedTime, image, actualTime, result, error) in
-            if let image = image {
-                switch result {
-                case .succeeded:
-                    let uiimage = UIImage(cgImage: image)
-                    DispatchQueue.main.async {
-                        completionHandler?(uiimage, nil)
-                    }
-                    break
-                case .failed:
-                    fallthrough
-                case .cancelled:
-                    fallthrough
-                @unknown default:
-                    DispatchQueue.main.async {
-                        completionHandler?(nil, nil)
-                    }
-                    break
-                }
-            } else {
+            guard let image = image else {
                 DispatchQueue.main.async {
                     completionHandler?(nil, error)
                 }
+                return
+            }
+            
+            switch result {
+            case .succeeded:
+                let uiimage = UIImage(cgImage: image)
+                DispatchQueue.main.async {
+                    completionHandler?(uiimage, nil)
+                }
+                break
+            case .failed, .cancelled:
+                fallthrough
+            @unknown default:
+                DispatchQueue.main.async {
+                    completionHandler?(nil, nil)
+                }
+                break
             }
         }
     }
@@ -583,7 +606,7 @@ extension Player {
             self.pause()
         }
 
-        //Reset autoplay flag since a new url is set.
+        // Reset autoplay flag since a new url is set.
         self._hasAutoplayActivated = false
         if self.autoplay {
             self.playbackState = .playing
@@ -609,30 +632,32 @@ extension Player {
         self._asset = asset
 
         self._asset?.loadValuesAsynchronously(forKeys: loadableKeys, completionHandler: { () -> Void in
-            if let asset = self._asset {
-                for key in loadableKeys {
-                    var error: NSError? = nil
-                    let status = asset.statusOfValue(forKey: key, error: &error)
-                    if status == .failed {
-                        self.playbackState = .failed
-                        self.executeClosureOnMainQueueIfNecessary {
-                            self.playerDelegate?.player(self, didFailWithError: PlayerError.failed)
-                        }
-                        return
-                    }
-                }
-
-                if !asset.isPlayable {
+            guard let asset = self._asset else {
+                return
+            }
+            
+            for key in loadableKeys {
+                var error: NSError? = nil
+                let status = asset.statusOfValue(forKey: key, error: &error)
+                if status == .failed {
                     self.playbackState = .failed
                     self.executeClosureOnMainQueueIfNecessary {
-                        self.playerDelegate?.player(self, didFailWithError: PlayerError.failed)
+                        self.playerDelegate?.player(self, didFailWithError: error)
                     }
                     return
                 }
-
-                let playerItem = AVPlayerItem(asset:asset)
-                self.setupPlayerItem(playerItem)
             }
+
+            if !asset.isPlayable {
+                self.playbackState = .failed
+                self.executeClosureOnMainQueueIfNecessary {
+                    self.playerDelegate?.player(self, didFailWithError: PlayerError.failed)
+                }
+                return
+            }
+
+            let playerItem = AVPlayerItem(asset:asset)
+            self.setupPlayerItem(playerItem)
         })
     }
 
@@ -760,8 +785,6 @@ extension Player {
             }
 
             switch object.status {
-            case .readyToPlay:
-                self?._playerView.player = self?._avplayer
             case .failed:
                 self?.playbackState = PlaybackState.failed
             default:
@@ -785,12 +808,7 @@ extension Player {
             case .failed:
                 strongSelf.playbackState = PlaybackState.failed
                 break
-            case .unknown:
-                fallthrough
-            case .readyToPlay:
-                fallthrough
-            @unknown default:
-                strongSelf._playerView.player = self?._avplayer
+            default:
                 break
             }
         })
@@ -944,7 +962,7 @@ public class PlayerView: UIView {
         }
     }
 
-    public var playerFillMode: PlayerFillMode {
+    public var playerFillMode: Player.FillMode {
         get {
             return self.playerLayer.videoGravity
         }

@@ -7008,7 +7008,7 @@ text-align: left;
                                                     <rect key="frame" x="59" y="0.0" width="67" height="14"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WXY-J1-EIX">
-                                                            <rect key="frame" x="16" y="1" width="26.5" height="12"/>
+                                                            <rect key="frame" x="16" y="1" width="51" height="12"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                                             <color key="textColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
@@ -7019,7 +7019,7 @@ text-align: left;
                                                         <constraint firstAttribute="height" constant="14" id="XDC-vV-7dz"/>
                                                         <constraint firstItem="WXY-J1-EIX" firstAttribute="leading" secondItem="688-v1-yCe" secondAttribute="leading" constant="16" id="eQB-05-Di5"/>
                                                         <constraint firstItem="WXY-J1-EIX" firstAttribute="centerY" secondItem="688-v1-yCe" secondAttribute="centerY" id="qaB-Ph-c62"/>
-                                                        <constraint firstAttribute="trailing" secondItem="WXY-J1-EIX" secondAttribute="trailing" constant="24.5" id="zCk-ps-YMD"/>
+                                                        <constraint firstAttribute="trailing" secondItem="WXY-J1-EIX" secondAttribute="trailing" id="zCk-ps-YMD"/>
                                                     </constraints>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yuP-uh-gpR">

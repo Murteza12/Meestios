@@ -33,7 +33,7 @@ target 'meestApp' do
    pod 'GrowingTextView', '0.7.2'
    pod 'Hero'
    pod 'SwiftVideoBackground', '~> 3.0'
-   pod 'MMPlayerView', '~> 4.2.4'
+   pod 'MMPlayerView'
    pod 'SwiftyCam'
    pod 'YPImagePicker'
    pod 'RangeSeekSlider'

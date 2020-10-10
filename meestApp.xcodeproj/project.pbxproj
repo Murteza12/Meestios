@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4D7A875E372CB9F0E230C83C /* Pods_meestApp_meestAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8032127A2C34F134B094C29 /* Pods_meestApp_meestAppUITests.framework */; };
+		5A2BAD0E252F814400A79CFA /* CoverA.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5A2BAD0C252F814400A79CFA /* CoverA.xib */; };
+		5A2BAD0F252F814400A79CFA /* CoverA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A2BAD0D252F814400A79CFA /* CoverA.swift */; };
 		5A44AB27251B774000D4570A /* AttachmentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A44AB26251B774000D4570A /* AttachmentVC.swift */; };
 		5A5C443D251F58FA00C01782 /* CertificatePinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C443C251F58FA00C01782 /* CertificatePinner.swift */; };
 		5A5C444C2520887C00C01782 /* AddPeopleGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */; };
@@ -199,6 +201,8 @@
 
 /* Begin PBXFileReference section */
 		558EB1D3B39902B8AFCAB39F /* Pods-meestApp-meestAppUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meestApp-meestAppUITests.release.xcconfig"; path = "Target Support Files/Pods-meestApp-meestAppUITests/Pods-meestApp-meestAppUITests.release.xcconfig"; sourceTree = "<group>"; };
+		5A2BAD0C252F814400A79CFA /* CoverA.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CoverA.xib; sourceTree = "<group>"; };
+		5A2BAD0D252F814400A79CFA /* CoverA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverA.swift; sourceTree = "<group>"; };
 		5A44AB26251B774000D4570A /* AttachmentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentVC.swift; sourceTree = "<group>"; };
 		5A5C443C251F58FA00C01782 /* CertificatePinner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CertificatePinner.swift; sourceTree = "<group>"; };
 		5A5C444B2520887C00C01782 /* AddPeopleGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPeopleGroupVC.swift; sourceTree = "<group>"; };
@@ -441,6 +445,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		5A2BAD0A252F7FE700A79CFA /* PlayerView */ = {
+			isa = PBXGroup;
+			children = (
+				5A2BAD0B252F814400A79CFA /* CoverView */,
+			);
+			path = PlayerView;
+			sourceTree = "<group>";
+		};
+		5A2BAD0B252F814400A79CFA /* CoverView */ = {
+			isa = PBXGroup;
+			children = (
+				5A2BAD0C252F814400A79CFA /* CoverA.xib */,
+				5A2BAD0D252F814400A79CFA /* CoverA.swift */,
+			);
+			path = CoverView;
+			sourceTree = "<group>";
+		};
 		A63CDAC96ED62EDB19296A85 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -518,6 +539,7 @@
 		D308E82624D9D8A30061B793 /* Extra */ = {
 			isa = PBXGroup;
 			children = (
+				5A2BAD0A252F7FE700A79CFA /* PlayerView */,
 				D393365F24F844470040A8F9 /* Side Menu */,
 				D393366024F8445C0040A8F9 /* ChatView */,
 				D393366124F844770040A8F9 /* RootBase */,
@@ -1094,6 +1116,7 @@
 				D380CC192500FA6100D852B9 /* fa-regular-400.ttf in Resources */,
 				D308E7FC24D9D7850061B793 /* Main.storyboard in Resources */,
 				D308E84224DAEC6E0061B793 /* NunitoSans-Light.ttf in Resources */,
+				5A2BAD0E252F814400A79CFA /* CoverA.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1313,6 +1336,7 @@
 				D3DB8D7424DDD60F00865971 /* homeVC.swift in Sources */,
 				D308E82A24DAB6C20061B793 /* RootBaseVC.swift in Sources */,
 				D356ADC924E2A7EE0096E74E /* setPasswordVC.swift in Sources */,
+				5A2BAD0F252F814400A79CFA /* CoverA.swift in Sources */,
 				D3D7B0F2250AC3D20022B790 /* boostPostVC.swift in Sources */,
 				D3DB8D7124DDD39E00865971 /* customTabbarVC.swift in Sources */,
 				D37AA1AB2502E30400E574D2 /* discoverPeopleVC.swift in Sources */,

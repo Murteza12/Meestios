@@ -355,6 +355,37 @@ class APIManager {
         }
     }
     
+    func uploadVideo(vc:UIViewController,data:Data, completion:@escaping(String) -> Void) {
+        let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]
+        
+        AF.upload(multipartFormData: { multipartFormData in
+            
+            multipartFormData.append(data, withName: "video", fileName: "fileName" + ".mov",mimeType: "video/mov")
+            
+            print(multipartFormData.contentType)
+        }, to: APIS.uploadVideo, method: .post,headers: header).responseJSON { response in
+            print(response)
+            if response.response?.statusCode == 200 {
+                let data = response.value as! [String:Any]
+                let innerData = data["data"] as! [String:Any]
+                let url = innerData["url"] as? String ?? ""
+                let thumbnail = innerData["thumbnail"] as? String ?? ""
+                UserDefaults.standard.set(url, forKey: "VIDEO")
+                UserDefaults.standard.set(thumbnail, forKey: "THUMB")
+                
+                self.submitURL(vc: vc, displayPicture: url) { (str) in
+                    if str == "success" {
+                        completion("success")
+                    }
+                }
+            } else if response.response?.statusCode == 503 {
+                
+            } else {
+                completion("failure")
+            }
+        }
+    }
+    
     func submitTopic(vc:RootBaseVC,topic:[String],completion:@escaping (String) -> Void) {
         let para = ["topic":topic]
         let header:HTTPHeaders = ["x-token":Token.sharedInstance.getToken()]

@@ -29,6 +29,7 @@ struct APIS {
     static let onboard = BASEURL.baseurl + "/pub/onBoard"
     static let update = BASEURL.baseurl + "/user/update"
     static let profilePic = BASEURL.baseurl + "/media/insert"
+    static let uploadVideo = BASEURL.baseurl + "/video/add"
     static let submitTopic = BASEURL.baseurl + "/userTopics/insert"
     static let currentuser = BASEURL.baseurl + "/user/me"
     static let landing = BASEURL.baseurl + "/pub/afterSIgnup"

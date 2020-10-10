@@ -7,13 +7,12 @@
 
 import UIKit
 import AVFoundation
-
+import Combine
 protocol MMPlayerItemProtocol: class {
     func status(change: AVPlayerItem.Status)
     func isPlaybackKeepUp(isKeepUp: Bool)
     func isPlaybackEmpty(isEmpty: Bool)
 }
-
 class MMPlayerItem: AVPlayerItem {
     var statusObservation: NSKeyValueObservation?
     var keepUpObservation: NSKeyValueObservation?
@@ -23,7 +22,10 @@ class MMPlayerItem: AVPlayerItem {
     convenience init(asset: AVAsset, delegate: MMPlayerItemProtocol?) {
         self.init(asset: asset, automaticallyLoadedAssetKeys: nil)
         self.delegate = delegate
-      
+        self.setup()
+    }
+    
+    func setup() {
         statusObservation = self.observe(\.status, changeHandler: { [weak self] (item, _) in
             self?.delegate?.status(change: item.status)
         })
@@ -36,20 +38,51 @@ class MMPlayerItem: AVPlayerItem {
     }
     
     deinit {
-        if let observer = statusObservation {
-            observer.invalidate()
-            self.removeObserver(observer, forKeyPath: "status")
-            self.statusObservation = nil
-        }
-        if let observer = keepUpObservation {
-            observer.invalidate()
-            self.removeObserver(observer, forKeyPath: "playbackLikelyToKeepUp")
-            self.keepUpObservation = nil
-        }
-        if let observer = emptyObservation {
-            observer.invalidate()
-            self.removeObserver(observer, forKeyPath: "playbackBufferEmpty")
-            self.emptyObservation = nil
-        }
+        statusObservation?.invalidate()
+        keepUpObservation?.invalidate()
+        emptyObservation?.invalidate()
+        self.statusObservation = nil
+        self.keepUpObservation = nil
+        self.emptyObservation = nil
+    }
+}
+
+@available(iOS 13.0.0, *)
+class MMPlayerItemUI: AVPlayerItem, ObservableObject {
+    
+    var statusObservation: NSKeyValueObservation?
+    var keepUpObservation: NSKeyValueObservation?
+    var emptyObservation: NSKeyValueObservation?
+    
+    
+    var statusObserver = PassthroughSubject<AVPlayerItem.Status, Never>()
+    var isKeepUpObserver = PassthroughSubject<Bool, Never>()
+    var isEmptyObserver = PassthroughSubject<Bool, Never>()
+
+    convenience init(asset: AVAsset) {
+        self.init(asset: asset, automaticallyLoadedAssetKeys: nil)
+        self.setup()
+    
+    }
+    
+    func setup() {
+        statusObservation = self.observe(\.status, changeHandler: { [weak self] (item, _) in
+            self?.statusObserver.send(item.status)
+        })
+        keepUpObservation = self.observe(\.isPlaybackLikelyToKeepUp, changeHandler: { [weak self] (item, change) in
+            self?.isKeepUpObserver.send(item.isPlaybackLikelyToKeepUp)
+        })
+        emptyObservation = self.observe(\.isPlaybackBufferEmpty, changeHandler: { [weak self] (item, change) in
+            self?.isEmptyObserver.send(item.isPlaybackBufferEmpty)
+        })
+    }
+    
+    deinit {
+        statusObservation?.invalidate()
+        keepUpObservation?.invalidate()
+        emptyObservation?.invalidate()
+        self.statusObservation = nil
+        self.keepUpObservation = nil
+        self.emptyObservation = nil
     }
 }

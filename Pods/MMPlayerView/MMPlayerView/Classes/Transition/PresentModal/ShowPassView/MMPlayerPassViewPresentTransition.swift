@@ -17,8 +17,9 @@ class MMPlayerPassViewPresentTransition: MMPlayerBasePresentTransition, UIViewCo
         let container = transitionContext.containerView
         if self.isPresent {
             let toVC = transitionContext.viewController(forKey: .to)!
-            toVC.view.layoutIfNeeded()
             container.addSubview(toVC.view)
+
+            toVC.view.layoutIfNeeded()
             guard let fromProtocol = config.source?.fromProtocolVC else {
                     print("Need Called setView")
                     transitionContext.completeTransition(true)
@@ -38,7 +39,8 @@ class MMPlayerPassViewPresentTransition: MMPlayerBasePresentTransition, UIViewCo
                 c.playLayer = passLayer
             }
             fromProtocol.transitionWillStart()
-            let convertRect:CGRect = passLayer.superlayer?.convert(passLayer.superlayer!.frame, to: nil) ?? .zero
+
+            let convertRect:CGRect = passLayer.superlayer?.convert(passLayer.frame, to: nil) ?? .zero
             let convertTo = passContainer.superview?.convert(passContainer.frame, to: container) ?? .zero
 
             let finalFrame = transitionContext.finalFrame(for: toVC)
@@ -86,24 +88,11 @@ class MMPlayerPassViewPresentTransition: MMPlayerBasePresentTransition, UIViewCo
                 return
             }
             pass.translatesAutoresizingMaskIntoConstraints = true
-            let original:CGRect = pass.convert(pass.frame, to: nil)
+            let original:CGRect = pass.superview?.convert(pass.frame, to: nil) ?? .zero
             let convertRect: CGRect = superV.superview?.convert(superV.frame, to: container) ?? .zero
 
             pass.removeFromSuperview()
             container.addSubview(pass)
-            
-            if config.dismissGesture {
-                pass.removeFromSuperview()
-                from?.view.removeFromSuperview()                
-                config.playLayer?.playView = nil
-                CATransaction.setDisableActions(true)
-                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-                source.dismissViewFromGesture?()
-                source.transitionCompleted()
-                CATransaction.setDisableActions(false)
-                return
-            }
-            
             pass.frame = original
             UIView.animate(withDuration: self.config.duration, animations: {
                 from?.view.alpha = 0.0

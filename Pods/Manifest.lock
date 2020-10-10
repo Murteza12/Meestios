@@ -5,38 +5,38 @@ PODS:
     - Extended (~> 1.0.4)
   - DropDown (2.3.13)
   - Extended (1.0.5)
-  - Firebase/Analytics (6.32.2):
+  - Firebase/Analytics (6.34.0):
     - Firebase/Core
-  - Firebase/Core (6.32.2):
+  - Firebase/Core (6.34.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (= 6.8.2)
-  - Firebase/CoreOnly (6.32.2):
-    - FirebaseCore (= 6.10.2)
-  - Firebase/Crashlytics (6.32.2):
+    - FirebaseAnalytics (= 6.9.0)
+  - Firebase/CoreOnly (6.34.0):
+    - FirebaseCore (= 6.10.4)
+  - Firebase/Crashlytics (6.34.0):
     - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 4.6.0)
-  - Firebase/Messaging (6.32.2):
+    - FirebaseCrashlytics (~> 4.6.2)
+  - Firebase/Messaging (6.34.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 4.6.2)
-  - FirebaseAnalytics (6.8.2):
+    - FirebaseMessaging (~> 4.7.1)
+  - FirebaseAnalytics (6.9.0):
     - FirebaseCore (~> 6.10)
-    - FirebaseInstallations (~> 1.6)
-    - GoogleAppMeasurement (= 6.8.2)
+    - FirebaseInstallations (~> 1.7)
+    - GoogleAppMeasurement (= 6.9.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
     - GoogleUtilities/MethodSwizzler (~> 6.7)
     - GoogleUtilities/Network (~> 6.7)
     - "GoogleUtilities/NSData+zlib (~> 6.7)"
     - nanopb (~> 1.30906.0)
-  - FirebaseCore (6.10.2):
+  - FirebaseCore (6.10.4):
     - FirebaseCoreDiagnostics (~> 1.6)
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/Logger (~> 6.7)
-  - FirebaseCoreDiagnostics (1.6.0):
-    - GoogleDataTransport (~> 7.2)
+  - FirebaseCoreDiagnostics (1.7.0):
+    - GoogleDataTransport (~> 7.4)
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/Logger (~> 6.7)
     - nanopb (~> 1.30906.0)
-  - FirebaseCrashlytics (4.6.0):
+  - FirebaseCrashlytics (4.6.2):
     - FirebaseCore (~> 6.10)
     - FirebaseInstallations (~> 1.6)
     - GoogleDataTransport (~> 7.2)
@@ -47,26 +47,26 @@ PODS:
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/UserDefaults (~> 6.7)
     - PromisesObjC (~> 1.2)
-  - FirebaseInstanceID (4.6.0):
+  - FirebaseInstanceID (4.8.0):
     - FirebaseCore (~> 6.10)
     - FirebaseInstallations (~> 1.6)
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/UserDefaults (~> 6.7)
-  - FirebaseMessaging (4.6.2):
+  - FirebaseMessaging (4.7.1):
     - FirebaseCore (~> 6.10)
-    - FirebaseInstanceID (~> 4.6)
+    - FirebaseInstanceID (~> 4.7)
     - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/Reachability (~> 6.7)
     - GoogleUtilities/UserDefaults (~> 6.7)
     - Protobuf (>= 3.9.2, ~> 3.9)
-  - GoogleAppMeasurement (6.8.2):
+  - GoogleAppMeasurement (6.9.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
     - GoogleUtilities/MethodSwizzler (~> 6.7)
     - GoogleUtilities/Network (~> 6.7)
     - "GoogleUtilities/NSData+zlib (~> 6.7)"
     - nanopb (~> 1.30906.0)
-  - GoogleDataTransport (7.3.0):
+  - GoogleDataTransport (7.5.0):
     - nanopb (~> 1.30906.0)
   - GoogleUtilities/AppDelegateSwizzler (6.7.2):
     - GoogleUtilities/Environment
@@ -90,16 +90,16 @@ PODS:
   - GrowingTextView (0.7.2)
   - Hero (1.5.0)
   - IHKeyboardAvoiding (4.7)
-  - InputBarAccessoryView (5.2.0):
-    - InputBarAccessoryView/Core (= 5.2.0)
-  - InputBarAccessoryView/Core (5.2.0)
+  - InputBarAccessoryView (5.2.1):
+    - InputBarAccessoryView/Core (= 5.2.1)
+  - InputBarAccessoryView/Core (5.2.1)
   - iOSPhotoEditor (1.0.0)
   - JitsiMeetSDK (2.10.2)
   - KeyboardAvoidingView (5.0.1):
     - ViewState (>= 1.0.0)
-  - Kingfisher (5.15.2):
-    - Kingfisher/Core (= 5.15.2)
-  - Kingfisher/Core (5.15.2)
+  - Kingfisher (5.15.5):
+    - Kingfisher/Core (= 5.15.5)
+  - Kingfisher/Core (5.15.5)
   - KWVerificationCodeView (0.4.0)
   - LGSideMenuController (2.1.1)
   - lottie-ios (3.1.8)
@@ -107,9 +107,9 @@ PODS:
     - Material/Core (= 3.1.8)
   - Material/Core (3.1.8):
     - Motion (~> 3.1.1)
-  - MessageKit (3.4.1):
-    - InputBarAccessoryView (~> 5.2.0)
-  - MMPlayerView (4.2.4)
+  - MessageKit (3.4.2):
+    - InputBarAccessoryView (~> 5.2.1)
+  - MMPlayerView (6.0.2)
   - Motion (3.1.3):
     - Motion/Core (= 3.1.3)
   - Motion/Core (3.1.3)
@@ -121,17 +121,17 @@ PODS:
   - PeekPop (1.0.0)
   - PixelSDK (10.1.1):
     - PixelSDK-GPUImage3 (~> 1.1.1)
-  - PixelSDK-GPUImage3 (1.1.12)
-  - Player (0.13.2)
-  - PromisesObjC (1.2.10)
+  - PixelSDK-GPUImage3 (1.1.13)
+  - Player (0.13.3)
+  - PromisesObjC (1.2.11)
   - Protobuf (3.13.0)
   - PryntTrimmerView (4.0.2)
   - RangeSeekSlider (1.8.0)
-  - Realm (5.4.2):
-    - Realm/Headers (= 5.4.2)
-  - Realm/Headers (5.4.2)
-  - RealmSwift (5.4.2):
-    - Realm (= 5.4.2)
+  - Realm (5.4.8):
+    - Realm/Headers (= 5.4.8)
+  - Realm/Headers (5.4.8)
+  - RealmSwift (5.4.8):
+    - Realm (= 5.4.8)
   - SimpleAnimation (0.4.2)
   - Socket.IO-Client-Swift (15.2.0):
     - Starscream (~> 3.1)
@@ -142,8 +142,8 @@ PODS:
   - SwiftyCam (4.0.0)
   - SwiftyGif (5.3.0)
   - ViewState (1.0.0)
-  - YPImagePicker (4.3.1):
-    - PryntTrimmerView (~> 4.0.0)
+  - YPImagePicker (4.4.0):
+    - PryntTrimmerView (~> 4.0.2)
     - SteviaLayout (~> 4.7.3)
 
 DEPENDENCIES:
@@ -166,7 +166,7 @@ DEPENDENCIES:
   - lottie-ios
   - Material
   - MessageKit
-  - MMPlayerView (~> 4.2.4)
+  - MMPlayerView
   - PeekPop (~> 1.0)
   - PixelSDK
   - Player (~> 0.13.2)
@@ -241,43 +241,43 @@ SPEC CHECKSUMS:
   DatePicker: 7eb10cf9d75d2ff975e3724763d4df8f2cf96ce1
   DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
   Extended: c463225e0c29b2823847866c1b106827772ac678
-  Firebase: 47176280bfba198e531f909cfb1612dad216cb96
-  FirebaseAnalytics: 3c2fee6a922023ccfda7af87e4e641bad1fc11ba
-  FirebaseCore: 1d697bb944bf2af5fc248f1a66e165c9dd88bf97
-  FirebaseCoreDiagnostics: 7415bfb3883b3500c5a95c42b6ba66baae78f600
-  FirebaseCrashlytics: eea40d2a33f01b927b9f6f00ef305baa22a6a58e
+  Firebase: c23a36d9e4cdf7877dfcba8dd0c58add66358999
+  FirebaseAnalytics: 3bb096873ee0d7fa4b6c70f5e9166b6da413cc7f
+  FirebaseCore: d3a978a3cfa3240bf7e4ba7d137fdf5b22b628ec
+  FirebaseCoreDiagnostics: 770ac5958e1372ce67959ae4b4f31d8e127c3ac1
+  FirebaseCrashlytics: 1a747c9cc084a24dc6d9511c991db1cd078154eb
   FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
-  FirebaseInstanceID: 84f5f5762f1bee94ca2254f693bbf5aec6666504
-  FirebaseMessaging: 82d75b3770a78bbce470769a6980429608b4c407
-  GoogleAppMeasurement: 1a66f478c68ecd6c16ee63ee60c7c3a648e6b337
-  GoogleDataTransport: e85fb700c9b027079ce182c3d08e12e0f9618bb4
+  FirebaseInstanceID: bd3ffc24367f901a43c063b36c640b345a4a5dd1
+  FirebaseMessaging: 5eca4ef173de76253352511aafef774caa1cba2a
+  GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
+  GoogleDataTransport: 445302b7da4216da63071a4c29e7023f47192e5a
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   GrowingTextView: 876bf42005b5e4a4fd740597db12caaf41f0fe6c
   Hero: b7385b75e7259da62f4f85462f59a5082d66b058
   IHKeyboardAvoiding: 4cae0880c3975feffa278495df894c5166e71ad0
-  InputBarAccessoryView: ac1bc2a11508fc2490c2322beb1d4c9f05c8e634
+  InputBarAccessoryView: 39a7ed22727baf3b8550ecdf6c8a4d28b2c6aa91
   iOSPhotoEditor: 2951f35246a31dcb428b6292248a9c065582d03e
   JitsiMeetSDK: d7612d73befd3f7f51f989458a816bbd05d0bc8e
   KeyboardAvoidingView: ef26d0d7e55ae412e9ef6e02ba84e7540af0ce4e
-  Kingfisher: 1f60394409c6b916ce31474bcf73fdde6f3b9a7b
+  Kingfisher: e3ec347a5ab8817b7585ef46923a2d2b9a7d8fbe
   KWVerificationCodeView: 92cca6ad028546d3232fa75cda3a40d00109a1a2
   LGSideMenuController: ae40c80983ab8b8801c7cef0a6804d43aaa72d45
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   Material: a2a3f400a3b549d53ef89e56c58c4535b29db387
-  MessageKit: aa047ad093f022189ed5a0d1cea04fc59f064c93
-  MMPlayerView: 91e93d3fa6f74655dbd87df6dcf9308f7430cd13
+  MessageKit: 5ff0908bce5a7b6e11bd0b60e13a33e03697d161
+  MMPlayerView: e28bace82369bcfbfbe29f9dcd30eeb641a46754
   Motion: cf1e060e489f6661126374d5c60dbd2ed991605c
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   PeekPop: dcac0f339476b99eb50f8e3bc584f332c744ecf1
   PixelSDK: b09c9125f4163addb6d8687703e96ebfbcfaac5e
-  PixelSDK-GPUImage3: c24001c47a79c1ecdf589fe705e7f1bdb0eaa33c
-  Player: 7a2bcad3631034fa47d4b6fdedf7c4075fc236fe
-  PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
+  PixelSDK-GPUImage3: 739e8363b869501fbb9cd3e4230755798e4609cb
+  Player: e1889a481f14b3bc4065b62bed304c3de3b47dfe
+  PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
   PryntTrimmerView: 6a43cc90df5d99addeabd33d4ba09b1365322130
   RangeSeekSlider: 650b11fa1edcb92e1e0ede797669d98622570fb5
-  Realm: ced868eb0254f8d33a21c06981355e5aa33bc005
-  RealmSwift: aedc4363150f3c61f91ae0537ed116d2d080a4dd
+  Realm: 042bbb59227a0159eda397b8a5a49fbd67495ce7
+  RealmSwift: 15ddd6b3398ebfc99810811c44f095df1313adb3
   SimpleAnimation: 5430010b9548f392e7459290acce01c9ceba7171
   Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
@@ -287,8 +287,8 @@ SPEC CHECKSUMS:
   SwiftyCam: 6e57914771d972fbe508e759dc9d0150a44a93fd
   SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
   ViewState: 78aa77483e74e592c22e841619b853bc686843be
-  YPImagePicker: 08bbb809ed62bf4149fc015c97249eb4b9463ff9
+  YPImagePicker: 15aed8bcaa4dad976e11b6114126d731a2f9f3c9
 
-PODFILE CHECKSUM: 5b8ee563b3f227afa106ca39d20c2a16921f26a5
+PODFILE CHECKSUM: 1c14b9f721bd73c0aeee6219939a47a28f9f54fe
 
 COCOAPODS: 1.9.3

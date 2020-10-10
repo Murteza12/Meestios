@@ -9,19 +9,19 @@ import Foundation
 import AVFoundation
 class MMPlayerDownloadRequest {
     let asset: AVURLAsset
-    fileprivate var timer: Timer?
+    private var timer: Timer?
     var statusBlock: ((_ status: MMPlayerDownloader.DownloadStatus)->Void)?
     let videoPath: (current: URL, hide: URL)
     let pathInfo: DownloaderPath
     let fileName: String
     
     let manager: MMPlayerDownloadManager
-    public init(url: URL, pathInfo: DownloaderPath, fileName: String?, manager: MMPlayerDownloadManager) {
-        self.asset = AVURLAsset.init(url: url)
+    public init(asset: AVURLAsset, pathInfo: DownloaderPath, fileName: String?, manager: MMPlayerDownloadManager) {
+        self.asset = asset
         self.pathInfo =  pathInfo
         self.fileName = fileName ?? ""
         
-        let lastPath = fileName ?? url.absoluteString.base64
+        let lastPath = fileName ?? asset.url.absoluteString.base64
         self.videoPath = (pathInfo.fullPath.appendingPathComponent(lastPath),
                           pathInfo.fullPath.appendingPathComponent(".\(lastPath)"))
         self.manager = manager

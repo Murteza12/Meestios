@@ -46,47 +46,24 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
         settings.isHighResolutionPhotoEnabled = true
         
         // Set flash mode.
-        /*if let deviceInput = deviceInput {
+        if let deviceInput = deviceInput {
             if deviceInput.device.isFlashAvailable {
                 switch currentFlashMode {
                 case .auto:
-                    if photoOutput.supportedFlashModes.contains(.auto) {
+                    if photoOutput.__supportedFlashModes.contains(NSNumber(value: AVCaptureDevice.FlashMode.auto.rawValue)) {
                         settings.flashMode = .auto
                     }
                 case .off:
-                    if photoOutput.supportedFlashModes.contains(.off) {
+                    if photoOutput.__supportedFlashModes.contains(NSNumber(value: AVCaptureDevice.FlashMode.off.rawValue)) {
                         settings.flashMode = .off
                     }
                 case .on:
-                    if photoOutput.supportedFlashModes.contains(.on) {
-                        settings.flashMode = .on
-                    }
-                }
-            }
-        }*/
-        
-        #if arch(i386) || arch(x86_64)
-        settings.flashMode = .off
-        #else
-        if let deviceInput = deviceInput {
-                if deviceInput.device.isFlashAvailable {
-                switch currentFlashMode {
-                case .auto:
-                    if photoOutput.supportedFlashModes.contains(.auto) {
-                        settings.flashMode = .auto
-                    }
-                case .off:
-                    if photoOutput.supportedFlashModes.contains(.off) {
-                        settings.flashMode = .off
-                    }
-                case .on:
-                    if photoOutput.supportedFlashModes.contains(.on) {
+                    if photoOutput.__supportedFlashModes.contains(NSNumber(value: AVCaptureDevice.FlashMode.on.rawValue)) {
                         settings.flashMode = .on
                     }
                 }
             }
         }
-        #endif
         return settings
     }
     

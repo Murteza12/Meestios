@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/cocoapods/v/MMPlayerView.svg?style=flat)](http://cocoapods.org/pods/MMPlayerView)
 [![License](https://img.shields.io/cocoapods/l/MMPlayerView.svg?style=flat)](http://cocoapods.org/pods/MMPlayerView)
 [![Platform](https://img.shields.io/cocoapods/p/MMPlayerView.svg?style=flat)](http://cocoapods.org/pods/MMPlayerView)
-## Demo
+## Demo-Swift
 
 ## List / Shrink / Transition / Landscape
 ![list](https://github.com/MillmanY/MMPlayerView/blob/master/demo/list_demo.gif)
@@ -23,18 +23,6 @@
     self.mmPlayerLayer.set(url: DemoSource.shared.demoData[indexPath.row].play_Url)
     self.mmPlayerLayer.resume()
 
-
-## MMPlayerView
-    let url = URL.init(string: "http://www.html5videoplayer.net/videos/toystory.mp4")!
-    playView.replace(cover: CoverA.instantiateFromNib())
-    playView.set(url: url, thumbImage: #imageLiteral(resourceName: "seven")) { (status) in
-        switch status {
-           case ....
-        }
-    }
-    
-    
-    playView.startLoading()
 ## Transition
     
     ##PresentedViewController
@@ -49,22 +37,19 @@
     2. Set MMPLayerToProtocol on PresentedViewController
     3. Set MMPlayerPrsentFromProtocol on PresentingViewController
 
-## Shrink
-    ex. only set present transition can use shrink video
-    (self.presentationController as? PassViewPresentatinController)?.shrinkView()
 ## Landscape
-    1.Set AppDelegate
-    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) ->        
-        UIInterfaceOrientationMask {
-        if window == MMLandscapeWindow.shared {
-            return .allButUpsideDown
-        } else {
-            return ....
-        }
-     }
-    2. Observer orientation when landscape call function
-        MMLandscapeWindow.shared.makeKey(root: full, playLayer: self.mmPlayerLayer, completed: {
-        })
+    1.Set MMPlayerLayer
+       // roation screen to landscape can change player to fullscreen
+       mmplayerLayer.fullScreenWhenLandscape = true
+       
+    2. Set from code
+       mmplayerLayer.setOrientation(.landsacpeLeft)
+       
+    3. Observer
+      mmPlayerLayer.getOrientationChange { (status) in
+            print("Player OrientationChange \(status)")
+      }
+ 
 ## Cover View
 ![landscape](https://github.com/MillmanY/MMPlayerView/blob/master/demo/cover.png)
 
@@ -97,46 +82,6 @@
     ) // 
     }
  
-## Parameter
-    
-    public enum MMPlayerCoverAutoHideType {
-        case autoHide(after: TimeInterval)
-        case disable
-    }
-
-    public enum MMPlayerCacheType {
-       case none // set no cache and remove all
-       case memory(count: Int) // cache player seek time in memory
-    }
-    public enum CoverViewFitType {
-      case fitToPlayerView // coverview fit with playerview
-      case fitToVideoRect // fit with VideoRect
-    }
-         
-    public enum ProgressType {
-       case `default`
-       case none
-       case custom(view: ProgressProtocol)
-    }
-    public var autoHideCoverType = MMPlayerCoverAutoHideType.autoHide(after: 3.0) // Default hide after 3.0 , set disable to close auto hide cover            
-    public var progressType: MMPlayerView.ProgressType  
-    public var coverFitType: MMPlayerView.CoverViewFitType
-    lazy public var thumbImageView: UIImageView 
-    public var playView: UIView?
-    public var coverView: UIView? { get }
-    public var autoPlay: Bool // when MMPlayerView.MMPlayerPlayStatus == ready auto play video
-    public var currentPlayStatus: MMPlayerView.MMPlayerPlayStatus 
-    public var cacheType: MMPlayerCacheType = .none
-    public var playUrl: URL?
-    public func showCover(isShow: Bool)
-    public func setCoverView(enable: Bool)
-    public func delayHideCover()
-    public func replace<T: UIView>(cover:T) where T: CoverViewProtocol
-    public func set(url: URL?, state: ((MMPlayerView.MMPlayerPlayStatus) -> Swift.Void)?)
-    public func resume() // if loading finish autoPlay = false, need call playerLayer.player.play() where you want
-    public weak var mmDelegate: MMPlayerLayerProtocol?
-    public func download(observer status: @escaping ((MMPlayerDownloader.DownloadStatus)->Void)) -> MMPlayerObservation? //Downlaod and observer
-
 ## Downloader
             var downloadObservation: MMPlayerObservation?
 
@@ -180,11 +125,79 @@
             if let info = MMPlayerDownloader.shared.localFileFrom(url: downloadURL)  {
                 MMPlayerDownloader.shared.deleteVideo(info)
             }
+## Subtitle
+![](https://github.com/MillmanY/MMPlayerView/blob/master/demo/subTitleSmall.png)
 
+         let subTitleStr = Bundle.main.path(forResource: "test", ofType: "srt")!
+             if let str = try? String.init(contentsOfFile: subTitleStr) {
+                 self.mmPlayerLayer.subtitleSetting.subtitleType = .srt(info: str)
+                 self.mmPlayerLayer.subtitleSetting.defaultTextColor = .red
+                 self.mmPlayerLayer.subtitleSetting.defaultFont = UIFont.boldSystemFont(ofSize: 20)
+             }
+         }
+## Shrink
+        // Return a view which you want back
+        self.mmPlayerLayer.shrinkView(onVC: self, isHiddenVC: false) { [weak self] () -> UIView? in
+            guard let self = self, let path = self.findCurrentPath() else {return nil}
+            let cell = self.findCurrentCell(path: path) as! PlayerCell
+            self.mmPlayerLayer.set(url: cell.data!.play_Url)
+            self.mmPlayerLayer.resume()
+            return cell.imgView
+        }
+        // Check player is shrink or not
+        self.mmPlayerL.isShrink
+## Demo-SwiftUI
+
+### Control
+    let control = MMPlayerControl()
+    //Play
+    control.set(url: self.videoList[idx].play_Url)
+    control.resume()
+    //InValidate
+    control.invalidate()
+    //Observation parameter
+    @Published
+    public var orientation: PlayerOrientation = .protrait
+    @Published
+    public var timeInfo = TimeInfo()
+    @Published
+    public var isMuted = false
+    @Published
+    public var isBackgroundPause = true
+    @Published
+    @Published
+    public var repeatWhenEnd: Bool = false
+    @Published
+    public var isLoading: Bool = false
+    public var cacheType: PlayerCacheType = .none
+    @Published
+    public private(set) var isCoverShow = false
+    @Published
+    public var autoHideCoverType = CoverAutoHideType.disable
+    public var coverAnimationInterval = 0.3
+    @Published
+    public var error: MMPlayerViewUIError?
+### Init View
+    let player = MMPlayerViewUI(control: self.control, cover: CoverAUI())
+### Download
+    view.modifier(MMPlayerDownloaderModifier(url: obj.play_Url!, status: $downloadStatus))
+### Transition Player
+    //func playerTransition<Content: View>(view: Content, from: CGRect?) -> AnyTransition
+    if showDetailIdx != nil {
+        DetailView(obj: self.playListViewModel.videoList[showDetailIdx!], showDetailIdx: $showDetailIdx)
+           .edgesIgnoringSafeArea(.all)
+           .transition(.playerTransition(view: MMPlayerViewUI(control: control) ,from: fromFrame))
+            .zIndex(1)
+    }
+    // Trigger transition
+    withAnimation { 
+          self.fromFrame = obj.frame
+          self.showDetailIdx = offset
+    }
 ## Requirements
 
-    iOS 10.0+
-    Swift 4.0+
+    iOS 12.0+
+    Swift 5.0+
     
 ## Installation
 
@@ -192,9 +205,7 @@ MMPlayerView is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-Swift 3 
-pod 'MMPlayerView', '~> 2.1.8'
-Swift 4 (> 3.0.1)
+Swift 5 
 pod 'MMPlayerView'
 ```
 ## Author

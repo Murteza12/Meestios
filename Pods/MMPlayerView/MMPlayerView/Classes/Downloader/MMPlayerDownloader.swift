@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import Combine
 typealias DownloaderPath = (fullPath: URL, subPath: String)
 private let videoExpireInterval = TimeInterval(60*60*12)
 extension MMPlayerDownloader {
@@ -23,11 +24,11 @@ extension MMPlayerDownloader {
 }
 
 public class MMPlayerDownloader: NSObject {
-    fileprivate var _downloadInfo = [MMPlayerDownLoadVideoInfo]()
-    fileprivate let queue = DispatchQueue(label: "MMPlayerDownloader.Request")
-    fileprivate let download: MMPlayerDownloadManager
-    fileprivate var mapList = [URL: MMPlayerDownloadRequest]()
-    fileprivate var plistPath: URL {
+    private var _downloadInfo = [MMPlayerDownLoadVideoInfo]()
+    private let queue = DispatchQueue(label: "MMPlayerDownloader.Request")
+    private let download: MMPlayerDownloadManager
+    private var mapList = [URL: MMPlayerDownloadRequest]()
+    private var plistPath: URL {
         return self.downloadPathInfo.fullPath.appendingPathComponent("Video")
     }
 
@@ -42,7 +43,7 @@ public class MMPlayerDownloader: NSObject {
     static public func cleanTmpFile() {
         guard let items = try? FileManager.default.contentsOfDirectory(atPath: NSTemporaryDirectory()) else {
             return
-        }
+        }        
         let pathURL = items.compactMap { $0.contains(".tmp") ? URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent($0, isDirectory: false) : nil }
         pathURL.forEach {
             try? FileManager.default.removeItem(at: $0)
@@ -67,6 +68,12 @@ public class MMPlayerDownloader: NSObject {
         self.createPlist(path: plistPath.path)
         if let info = try? Data.init(contentsOf: plistPath) {
             self._downloadInfo = info.decodeObject() ?? [MMPlayerDownLoadVideoInfo]()
+        }
+    }
+    
+    public func deleteVideo(_ url: URL) {
+        if let info = MMPlayerDownloader.shared.localFileFrom(url: url)  {
+            MMPlayerDownloader.shared.deleteVideo(info)
         }
     }
     
@@ -101,33 +108,33 @@ public class MMPlayerDownloader: NSObject {
         return value
     }
     
-    public func download(url: URL, fileName: String? = nil, coverExist: Bool = false) {
+    public func download(asset: AVURLAsset, fileName: String? = nil, coverExist: Bool = false) {
         queue.async { [weak self] in
             guard let self = self else {return}
-            if url.isFileURL {
+            if asset.url.isFileURL {
                 fatalError("Input fileURL are Invalid")
             }
             
-            if !coverExist, let _ = self.localFileFrom(url: url) {
-                self.downloadObserverManager[url].forEach({ $0(.exist) })
+            if !coverExist, let _ = self.localFileFrom(url: asset.url) {
+                self.downloadObserverManager[asset.url].forEach({ $0(.exist) })
                 return
             }
             
-            if self.mapList[url] != nil { return }
-            self.downloadInfo.removeAll { $0.url == url }
-            self.mapList[url] = MMPlayerDownloadRequest(url: url,
+            if self.mapList[asset.url] != nil { return }
+            self.downloadInfo.removeAll { $0.url == asset.url }
+            self.mapList[asset.url] = MMPlayerDownloadRequest(asset: asset,
                                                         pathInfo: self.downloadPathInfo,
                                                         fileName: fileName,
                                                         manager: self.download)
-            self.mapList[url]?.start(status: { [weak self] (status) in
+            self.mapList[asset.url]?.start(status: { [weak self] (status) in
                 guard let self = self else {return}
-                self.downloadObserverManager[url].forEach({ $0(status) })
+                self.downloadObserverManager[asset.url].forEach({ $0(status) })
                 switch status {
                 case .completed(let info):
                     self.downloadInfo.append(info)
-                    self.mapList[url] = nil
+                    self.mapList[asset.url] = nil
                 case  .cancelled , .failed:
-                    self.mapList[url] = nil
+                    self.mapList[asset.url] = nil
                 default:
                     break
                 }
@@ -135,7 +142,7 @@ public class MMPlayerDownloader: NSObject {
         }
     }
     
-    fileprivate func create(path: String) {
+    private func create(path: String) {
         let manager = FileManager.default
         var dir: ObjCBool = false
         if !manager.fileExists(atPath: path, isDirectory: &dir) {
@@ -147,7 +154,7 @@ public class MMPlayerDownloader: NSObject {
         }
     }
     
-    fileprivate func createPlist(path: String) {
+    private func createPlist(path: String) {
         let manager = FileManager.default
         var dir: ObjCBool = false
         if !manager.fileExists(atPath: path, isDirectory: &dir) {
