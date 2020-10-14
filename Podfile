@@ -33,14 +33,16 @@ target 'meestApp' do
    pod 'GrowingTextView', '0.7.2'
    pod 'Hero'
    pod 'SwiftVideoBackground', '~> 3.0'
-   pod 'MMPlayerView'
+   #pod 'MMPlayerView'
    pod 'SwiftyCam'
-   pod 'YPImagePicker'
+   #pod 'YPImagePicker'
    pod 'RangeSeekSlider'
    pod 'JitsiMeetSDK'
    pod 'PeekPop', '~> 1.0'
    pod 'iOSPhotoEditor'
-
+    pod 'IQKeyboardManagerSwift'
+     pod 'NVActivityIndicatorView'
+   pod 'Charts'
   target 'meestAppTests' do
     inherit! :search_paths
     # Pods for testing

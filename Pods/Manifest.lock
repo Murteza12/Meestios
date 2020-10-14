@@ -1,5 +1,8 @@
 PODS:
   - Alamofire (5.2.2)
+  - Charts (3.6.0):
+    - Charts/Core (= 3.6.0)
+  - Charts/Core (3.6.0)
   - CountdownLabel (4.0.1)
   - DatePicker (1.0.0):
     - Extended (~> 1.0.4)
@@ -66,7 +69,7 @@ PODS:
     - GoogleUtilities/Network (~> 6.7)
     - "GoogleUtilities/NSData+zlib (~> 6.7)"
     - nanopb (~> 1.30906.0)
-  - GoogleDataTransport (7.5.0):
+  - GoogleDataTransport (7.5.1):
     - nanopb (~> 1.30906.0)
   - GoogleUtilities/AppDelegateSwizzler (6.7.2):
     - GoogleUtilities/Environment
@@ -94,12 +97,13 @@ PODS:
     - InputBarAccessoryView/Core (= 5.2.1)
   - InputBarAccessoryView/Core (5.2.1)
   - iOSPhotoEditor (1.0.0)
+  - IQKeyboardManagerSwift (6.5.6)
   - JitsiMeetSDK (2.10.2)
   - KeyboardAvoidingView (5.0.1):
     - ViewState (>= 1.0.0)
-  - Kingfisher (5.15.5):
-    - Kingfisher/Core (= 5.15.5)
-  - Kingfisher/Core (5.15.5)
+  - Kingfisher (5.15.6):
+    - Kingfisher/Core (= 5.15.6)
+  - Kingfisher/Core (5.15.6)
   - KWVerificationCodeView (0.4.0)
   - LGSideMenuController (2.1.1)
   - lottie-ios (3.1.8)
@@ -109,7 +113,6 @@ PODS:
     - Motion (~> 3.1.1)
   - MessageKit (3.4.2):
     - InputBarAccessoryView (~> 5.2.1)
-  - MMPlayerView (6.0.2)
   - Motion (3.1.3):
     - Motion/Core (= 3.1.3)
   - Motion/Core (3.1.3)
@@ -118,36 +121,35 @@ PODS:
     - nanopb/encode (= 1.30906.0)
   - nanopb/decode (1.30906.0)
   - nanopb/encode (1.30906.0)
+  - NVActivityIndicatorView (5.1.1):
+    - NVActivityIndicatorView/Base (= 5.1.1)
+  - NVActivityIndicatorView/Base (5.1.1)
   - PeekPop (1.0.0)
-  - PixelSDK (10.1.1):
+  - PixelSDK (10.1.2):
     - PixelSDK-GPUImage3 (~> 1.1.1)
   - PixelSDK-GPUImage3 (1.1.13)
   - Player (0.13.3)
   - PromisesObjC (1.2.11)
   - Protobuf (3.13.0)
-  - PryntTrimmerView (4.0.2)
   - RangeSeekSlider (1.8.0)
-  - Realm (5.4.8):
-    - Realm/Headers (= 5.4.8)
-  - Realm/Headers (5.4.8)
-  - RealmSwift (5.4.8):
-    - Realm (= 5.4.8)
+  - Realm (5.5.0):
+    - Realm/Headers (= 5.5.0)
+  - Realm/Headers (5.5.0)
+  - RealmSwift (5.5.0):
+    - Realm (= 5.5.0)
   - SimpleAnimation (0.4.2)
   - Socket.IO-Client-Swift (15.2.0):
     - Starscream (~> 3.1)
   - Starscream (3.1.1)
-  - SteviaLayout (4.7.3)
   - SwiftRichString (3.7.2)
   - SwiftVideoBackground (3.4.0)
   - SwiftyCam (4.0.0)
   - SwiftyGif (5.3.0)
   - ViewState (1.0.0)
-  - YPImagePicker (4.4.0):
-    - PryntTrimmerView (~> 4.0.2)
-    - SteviaLayout (~> 4.7.3)
 
 DEPENDENCIES:
   - Alamofire
+  - Charts
   - CountdownLabel
   - DatePicker (= 1.0.0)
   - DropDown
@@ -158,6 +160,7 @@ DEPENDENCIES:
   - Hero
   - IHKeyboardAvoiding
   - iOSPhotoEditor
+  - IQKeyboardManagerSwift
   - JitsiMeetSDK
   - KeyboardAvoidingView (~> 5.0)
   - Kingfisher
@@ -166,7 +169,7 @@ DEPENDENCIES:
   - lottie-ios
   - Material
   - MessageKit
-  - MMPlayerView
+  - NVActivityIndicatorView
   - PeekPop (~> 1.0)
   - PixelSDK
   - Player (~> 0.13.2)
@@ -178,11 +181,11 @@ DEPENDENCIES:
   - SwiftVideoBackground (~> 3.0)
   - SwiftyCam
   - SwiftyGif
-  - YPImagePicker
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Charts
     - CountdownLabel
     - DatePicker
     - DropDown
@@ -203,6 +206,7 @@ SPEC REPOS:
     - IHKeyboardAvoiding
     - InputBarAccessoryView
     - iOSPhotoEditor
+    - IQKeyboardManagerSwift
     - JitsiMeetSDK
     - KeyboardAvoidingView
     - Kingfisher
@@ -211,32 +215,30 @@ SPEC REPOS:
     - lottie-ios
     - Material
     - MessageKit
-    - MMPlayerView
     - Motion
     - nanopb
+    - NVActivityIndicatorView
     - PeekPop
     - PixelSDK
     - PixelSDK-GPUImage3
     - Player
     - PromisesObjC
     - Protobuf
-    - PryntTrimmerView
     - RangeSeekSlider
     - Realm
     - RealmSwift
     - SimpleAnimation
     - Socket.IO-Client-Swift
     - Starscream
-    - SteviaLayout
     - SwiftRichString
     - SwiftVideoBackground
     - SwiftyCam
     - SwiftyGif
     - ViewState
-    - YPImagePicker
 
 SPEC CHECKSUMS:
   Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
+  Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   CountdownLabel: c9975e3f329140b5e7d1f45cd63b1300badd1712
   DatePicker: 7eb10cf9d75d2ff975e3724763d4df8f2cf96ce1
   DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
@@ -250,45 +252,43 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: bd3ffc24367f901a43c063b36c640b345a4a5dd1
   FirebaseMessaging: 5eca4ef173de76253352511aafef774caa1cba2a
   GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
-  GoogleDataTransport: 445302b7da4216da63071a4c29e7023f47192e5a
+  GoogleDataTransport: f56af7caa4ed338dc8e138a5d7c5973e66440833
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   GrowingTextView: 876bf42005b5e4a4fd740597db12caaf41f0fe6c
   Hero: b7385b75e7259da62f4f85462f59a5082d66b058
   IHKeyboardAvoiding: 4cae0880c3975feffa278495df894c5166e71ad0
   InputBarAccessoryView: 39a7ed22727baf3b8550ecdf6c8a4d28b2c6aa91
   iOSPhotoEditor: 2951f35246a31dcb428b6292248a9c065582d03e
+  IQKeyboardManagerSwift: c7df9d2deb356c04522f5c4b7b6e4ce4d8ed94fe
   JitsiMeetSDK: d7612d73befd3f7f51f989458a816bbd05d0bc8e
   KeyboardAvoidingView: ef26d0d7e55ae412e9ef6e02ba84e7540af0ce4e
-  Kingfisher: e3ec347a5ab8817b7585ef46923a2d2b9a7d8fbe
+  Kingfisher: b3554e7bf6106115b44e8795300bad580ef2fdc7
   KWVerificationCodeView: 92cca6ad028546d3232fa75cda3a40d00109a1a2
   LGSideMenuController: ae40c80983ab8b8801c7cef0a6804d43aaa72d45
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   Material: a2a3f400a3b549d53ef89e56c58c4535b29db387
   MessageKit: 5ff0908bce5a7b6e11bd0b60e13a33e03697d161
-  MMPlayerView: e28bace82369bcfbfbe29f9dcd30eeb641a46754
   Motion: cf1e060e489f6661126374d5c60dbd2ed991605c
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
+  NVActivityIndicatorView: 1f6c5687f1171810aa27a3296814dc2d7dec3667
   PeekPop: dcac0f339476b99eb50f8e3bc584f332c744ecf1
-  PixelSDK: b09c9125f4163addb6d8687703e96ebfbcfaac5e
+  PixelSDK: 733ada36c2c43e0ba9c2e6437daa612ed00de595
   PixelSDK-GPUImage3: 739e8363b869501fbb9cd3e4230755798e4609cb
   Player: e1889a481f14b3bc4065b62bed304c3de3b47dfe
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
-  PryntTrimmerView: 6a43cc90df5d99addeabd33d4ba09b1365322130
   RangeSeekSlider: 650b11fa1edcb92e1e0ede797669d98622570fb5
-  Realm: 042bbb59227a0159eda397b8a5a49fbd67495ce7
-  RealmSwift: 15ddd6b3398ebfc99810811c44f095df1313adb3
+  Realm: fb399d76f44042e5cdfc630f33828fdb4d077345
+  RealmSwift: 3b7e62356207ef16d34de4e55d475163bd2062bb
   SimpleAnimation: 5430010b9548f392e7459290acce01c9ceba7171
   Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
-  SteviaLayout: c2ecdcff57d44e38fd2f65e54ad52aeae28ca0c4
   SwiftRichString: d61b807db1f8834c26fee92b6dd3e1be2dc5af03
   SwiftVideoBackground: 826e0567c737ded2a211aa309e9951c643695e8f
   SwiftyCam: 6e57914771d972fbe508e759dc9d0150a44a93fd
   SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
   ViewState: 78aa77483e74e592c22e841619b853bc686843be
-  YPImagePicker: 15aed8bcaa4dad976e11b6114126d731a2f9f3c9
 
-PODFILE CHECKSUM: 1c14b9f721bd73c0aeee6219939a47a28f9f54fe
+PODFILE CHECKSUM: 4871e827ce89ad209f6d3abe96a8fea7d046bb39
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.8.3
