@@ -20,9 +20,9 @@ target 'meestApp' do
    pod 'lottie-ios'
    pod 'Socket.IO-Client-Swift' , '15.2.0'
    pod 'LGSideMenuController'
-   pod 'DatePicker', '1.0.0'
+   pod 'DatePicker'
    pod "SimpleAnimation"
-   pod 'Firebase/Messaging'
+   #pod 'Firebase/Messaging'
    pod 'MessageKit'
    pod 'IHKeyboardAvoiding'
    pod "KeyboardAvoidingView", '~> 5.0'
@@ -33,9 +33,9 @@ target 'meestApp' do
    pod 'GrowingTextView', '0.7.2'
    pod 'Hero'
    pod 'SwiftVideoBackground', '~> 3.0'
-   #pod 'MMPlayerView'
+  pod 'MMPlayerView'
    pod 'SwiftyCam'
-   #pod 'YPImagePicker'
+   pod 'YPImagePicker'
    pod 'RangeSeekSlider'
    pod 'JitsiMeetSDK'
    pod 'PeekPop', '~> 1.0'
@@ -43,6 +43,7 @@ target 'meestApp' do
     pod 'IQKeyboardManagerSwift'
      pod 'NVActivityIndicatorView'
    pod 'Charts'
+  pod 'Firebase/Messaging'
   target 'meestAppTests' do
     inherit! :search_paths
     # Pods for testing
@@ -53,3 +54,4 @@ target 'meestApp' do
   end
 
 end
+

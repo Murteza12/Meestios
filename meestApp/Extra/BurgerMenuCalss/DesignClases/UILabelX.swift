@@ -23,11 +23,7 @@ class UILabelX: UILabel {
         }
     }
     
-    @IBInspectable var borderColor: UIColor = UIColor.clear {
-        didSet {
-            self.layer.borderColor = borderColor.cgColor
-        }
-    }
+   
     
     @IBInspectable var rotationAngle: CGFloat = 0 {
         didSet {

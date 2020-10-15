@@ -1,4 +1,8 @@
 # DatePicker
+### A DatePicker for iOS 10 and Above
+- iPad and iPhone support
+- Dark mode support
+- Can personalize colours
 
 [![CI Status](https://img.shields.io/travis/amirshayegh/DatePicker.svg?style=flat)](https://travis-ci.org/amirshayegh/DatePicker)
 [![Version](https://img.shields.io/cocoapods/v/DatePicker.svg?style=flat)](https://cocoapods.org/pods/DatePicker)
@@ -15,10 +19,37 @@ DatePicker is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'DatePicker', '1.0.0'
+pod 'DatePicker', '~> 1.3.0'
 ```
 
 ## Quick Usage
+
+```swift
+import DatePicker
+
+class ViewController: UIViewController {
+    
+    @IBAction func DateButton(_ sender: UIButton) {
+        let minDate = DatePickerHelper.shared.dateFrom(day: 18, month: 08, year: 1990)!
+        let maxDate = DatePickerHelper.shared.dateFrom(day: 18, month: 08, year: 2030)!
+        let today = Date()
+        // Create picker object
+        let datePicker = DatePicker()
+        // Setup
+        datePicker.setup(beginWith: today, min: minDate, max: maxDate) { (selected, date) in
+            if selected, let selectedDate = date {
+                print(selectedDate.string())
+            } else {
+                print("Cancelled")
+            }
+        }
+        // Display
+        datePicker.show(in: self, on: sender)
+    }
+}
+```
+
+## Detailed Usage
 
 1) Import the library
 
@@ -32,24 +63,62 @@ class ViewController: UIViewController {
 
 2) Setup
 
-- Picker between today and 100 years from now:
-
-```Swift
+here are multiple ways to configure DatePicker:
+- Basic - Picker between today and 100 years from now
+```swift
 let datePicker = DatePicker()
-datePickersetup { (selected, date) in
-	if selected, let selectedDate = date {
-		print("\(selectedDate)"
-	} else {
-		print("cancelled")
-	}
+datePicker.setup { (selected, date) in
+    if selected, let selectedDate = date {
+        print("\(selectedDate)"
+    } else {
+        print("cancelled")
+    }
+}
+```
+Set initial selected by setting the `beginWith` parameter:
+```swift
+datePicker.setup(beginWith: Date()) { (selected, date) in
+            if selected, let selectedDate = date {
+                print(selectedDate.string())
+            } else {
+                print("Cancelled")
+            }
+}
+```
+Set initial selected by setting the `beginWith` parameter:
+```swift
+datePicker.setup(beginWith: Date()) { (selected, date) in
+            if selected, let selectedDate = date {
+                print(selectedDate.string())
+            } else {
+                print("Cancelled")
+            }
 }
 ```
 
-- Picker with minimum and maximum dates:
-
-```Swift
-let datePicker = DatePicker()
+- Picker with minimum and maximum dates
+```swift
 datePicker.setup(min: minDate, max: maxDate) { (selected, date) in
+    if selected, let selectedDate = date {
+        print("\(selectedDate)"
+    } else {
+        print("cancelled")
+    }
+}
+```
+Set initial selected by setting the `beginWith` parameter
+```swift
+datePicker.setup(beginWith: Date(), min: minDate, max: maxDate) { (selected, date) in
+    if selected, let selectedDate = date {
+        print("\(selectedDate)"
+    } else {
+        print("cancelled")
+    }
+}
+```
+Set initial selected by setting the `beginWith` parameter
+```swift
+datePicker.setup(beginWith: Date(), min: minDate, max: maxDate) { (selected, date) in
 	if selected, let selectedDate = date {
 		print("\(selectedDate)"
 	} else {
@@ -58,11 +127,11 @@ datePicker.setup(min: minDate, max: maxDate) { (selected, date) in
 }
 ```
 
-You could also use DatePickerHelper's functions to help generate dates:
+You can also use DatePickerHelper's functions to help generate dates:
 
 ```Swift
-let minDate = FDHelper.shared.dateFrom(day: 18, month: 08, year: 1990)
-let maxDate = FDHelper.shared.dateFrom(day: 18, month: 08, year: 2020)
+let minDate = DatePickerHelper.shared.dateFrom(day: 18, month: 08, year: 1990)
+let maxDate = DatePickerHelper.shared.dateFrom(day: 18, month: 08, year: 2020)
 ```
 
 - Yearless Picker: select and return day and month integers independent of year. 
@@ -70,14 +139,14 @@ let maxDate = FDHelper.shared.dateFrom(day: 18, month: 08, year: 2020)
 ```Swift
 let datePicker = DatePicker()
 datePicker.setupYearless { (selected, month, day) in
-	if selected, let day = day, let month = month {
-		print("selected \(month) \(day)")
-		// You can also use DatePickerHelper's functions:
-		// FDHelper.shared.month(number: Int) will return the month string name
-		print("selected FDHelper.shared.month(number: month) \(day)")
-	} else {
-		print("cancelled")
-	}
+    if selected, let day = day, let month = month {
+        print("selected \(month) \(day)")
+        // You can also use DatePickerHelper's functions:
+        // DatePickerHelper.shared.month(number: Int) will return the month string name
+        print("selected DatePickerHelper.shared.month(number: month) \(day)")
+    } else {
+        print("cancelled")
+    }
 }
 ``` 
 ![Alt Text](https://github.com/AmirShayegh/DatePicker/blob/master/ReadmeFiles/Yearless.png)

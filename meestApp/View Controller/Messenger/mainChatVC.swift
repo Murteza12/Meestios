@@ -72,7 +72,7 @@ class mainChatVC: RootBaseVC {
         l.cacheType = .memory(count: 5)
         l.coverFitType = .fitToPlayerView
         l.videoGravity = AVLayerVideoGravity.resizeAspect
-        l.replace(cover: CoverA.instantiateFromNib())
+        //l.replace(cover: CoverA.instantiateFromNib())
         return l
     }()
             

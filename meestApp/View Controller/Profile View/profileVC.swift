@@ -53,6 +53,29 @@ class profileVC:RootBaseVC {
         
         self.editBtn.cornerRadius(radius: self.editBtn.frame.height / 2)
     }
+    
+    func showMenu(){
+           let myMenu = self.storyboard?.instantiateViewController(withIdentifier: "MenuVC")
+        myMenu?.hidesBottomBarWhenPushed = true
+           let transition = CATransition()
+           transition.duration = 0.4
+           transition.type = CATransitionType.push
+           transition.subtype = CATransitionSubtype.fromRight
+           transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+           view.window!.layer.add(transition, forKey: kCATransition)
+           self.navigationController?.view?.layer.add(transition, forKey: nil)
+           // self.navigationController?.pushViewController(myMenu, animated: false)
+        myMenu?.modalPresentationStyle = .overCurrentContext
+        
+        present(myMenu!, animated: false, completion: nil)
+
+       }
+    
+    
+    @IBAction func showMenu(_ sender: Any) {
+        self.showMenu()
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let totalBythree = 10 / 3

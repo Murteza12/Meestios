@@ -28,3 +28,5 @@ class faqVC: UIViewController {
     }
     
 }
+
+

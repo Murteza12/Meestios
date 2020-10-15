@@ -58,20 +58,7 @@ class UIButtonX: UIButton {
             }, completion: nil)
         }
         
-        if shadowView == nil && shadowOpacity > 0 {
-            shadowView = UIView(frame: self.frame)
-            shadowView.backgroundColor = UIColor.clear
-            shadowView.layer.shadowColor = shadowColor.cgColor
-            shadowView.layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: self.cornerRadius).cgPath
-            shadowView.layer.shadowOffset = shadowOffset
-            shadowView.layer.shadowOpacity = Float(shadowOpacity)
-            shadowView.layer.shadowRadius = shadowRadius
-            shadowView.layer.masksToBounds = true
-            shadowView.clipsToBounds = false
-            
-            self.superview?.addSubview(shadowView)
-            self.superview?.bringSubviewToFront(self)
-        }
+     
     }
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
@@ -105,18 +92,6 @@ class UIButtonX: UIButton {
         }
     }
     
-    @IBInspectable var borderColor: UIColor = UIColor.clear {
-        didSet {
-            layer.borderColor = borderColor.cgColor
-        }
-    }
-    
-    // MARK: - Shadow
-    
-    @IBInspectable public var shadowOpacity: CGFloat = 0
-    @IBInspectable public var shadowColor: UIColor = UIColor.clear
-    @IBInspectable public var shadowRadius: CGFloat = 0
-    @IBInspectable public var shadowOffset: CGSize = CGSize(width: 0, height: 0)
     
     
    //    MARK: - Gradient
